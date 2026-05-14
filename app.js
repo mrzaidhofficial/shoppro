@@ -13,7 +13,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-var mongoUri = process.env.MONGODB_URI || 'mongodb://admin:18980@ac-om48oau-shard-00-00.qysg3mc.mongodb.net:27017,ac-om48oau-shard-00-01.qysg3mc.mongodb.net:27017,ac-om48oau-shard-00-02.qysg3mc.mongodb.net:27017/ecommerce?ssl=true&replicaSet=atlas-cfmec8-shard-0&authSource=admin&appName=ecommerce-cluster';
+var mongoUri = process.env.MONGODB_URI;
+
+if (!mongoUri) {
+  console.error('MONGODB_URI environment variable is not set!');
+  process.exit(1);
+}
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'shopProSecret2024',
@@ -96,12 +101,13 @@ async function start() {
     });
 
     var PORT = process.env.PORT || 3000;
-    app.listen(PORT, function() {
-      console.log('Server: http://localhost:' + PORT);
+    app.listen(PORT, '0.0.0.0', function() {
+      console.log('Server running on port ' + PORT);
     });
 
   } catch (err) {
     console.error('Database connection failed:', err.message);
+    process.exit(1);
   }
 }
 
