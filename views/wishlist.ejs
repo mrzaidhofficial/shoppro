@@ -1,0 +1,46 @@
+<%- include('partials/header') %>
+
+<div style="padding:56px 0;min-height:60vh;background:var(--white);">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;">
+      <h1 style="font-family:var(--font-display);font-size:2rem;color:var(--gray-900);">My Wishlist</h1>
+      <a href="/products" class="btn btn-outline" style="padding:10px 24px;border:2px solid var(--primary);color:var(--primary);border-radius:var(--radius-full);font-weight:600;text-decoration:none;">Browse Products</a>
+    </div>
+    
+    <% if (wishlistProducts && wishlistProducts.length > 0) { %>
+      <div class="product-grid">
+        <% wishlistProducts.forEach(function(product) { %>
+          <div class="product-card">
+            <div class="product-card-image">
+              <a href="/products/<%= product._id %>">
+                <img src="<%= product.images && product.images[0] ? product.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= product.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'">
+              </a>
+              <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= product._id %>">Quick View</button></div>
+            </div>
+            <div class="product-card-body">
+              <span class="product-card-category"><%= product.category %></span>
+              <h3 class="product-card-title"><a href="/products/<%= product._id %>"><%= product.name %></a></h3>
+              <div class="product-card-rating">
+                <% for (var i = 1; i <= 5; i++) { %><span class="star <%= i <= Math.floor(product.averageRating) ? 'filled' : '' %>"><i class="fas fa-star"></i></span><% } %>
+              </div>
+              <div class="product-card-price">$<%= product.price.toFixed(2) %></div>
+            </div>
+            <div class="product-card-footer">
+              <form action="/cart/wishlist/remove/<%= product._id %>" method="POST" style="flex:1;"><button type="submit" class="btn btn-outline btn-sm btn-block" style="width:100%;">Remove</button></form>
+              <form action="/cart/add/<%= product._id %>" method="POST" style="flex:1;"><input type="hidden" name="quantity" value="1"><button type="submit" class="btn btn-primary btn-sm btn-block" style="width:100%;">Add to Cart</button></form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div style="text-align:center;padding:80px 20px;">
+        <i class="fas fa-heart" style="font-size:5rem;color:var(--gray-200);margin-bottom:20px;display:block;"></i>
+        <h3 style="font-family:var(--font-display);font-size:1.5rem;color:var(--gray-700);margin-bottom:10px;">Your wishlist is empty</h3>
+        <p style="color:var(--gray-500);margin-bottom:24px;">Save your favorite products here for later!</p>
+        <a href="/products" class="btn btn-primary" style="padding:12px 28px;background:var(--primary-gradient);color:white;border-radius:var(--radius-full);font-weight:600;text-decoration:none;display:inline-block;">Start Shopping</a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

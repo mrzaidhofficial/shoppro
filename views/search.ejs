@@ -1,0 +1,47 @@
+<%- include('partials/header') %>
+
+<div class="container" style="padding:44px 0;">
+  <h1 style="font-family:var(--font-heading);font-size:1.75rem;margin-bottom:6px;">Search: <%= typeof query !== 'undefined' ? query : '' %></h1>
+
+  <% if (typeof products !== 'undefined' && products.length > 0) { %>
+    <p style="color:#6B7280;margin-bottom:28px;"><%= products.length %> product(s) found</p>
+    <div class="product-grid">
+      <% products.forEach(function(product) { %>
+        <div class="product-card">
+          <div class="product-card-image">
+            <a href="/products/<%= product._id %>">
+              <img src="<%= product.images && product.images[0] ? product.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= product.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'">
+            </a>
+            <% if (product.stock <= 5 && product.stock > 0) { %>
+              <span class="product-badge" style="background:#F59E0B;color:white;">Low Stock</span>
+            <% } %>
+            <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= product._id %>">Quick View</button></div>
+          </div>
+          <div class="product-card-body">
+            <span class="product-card-category"><%= product.category %></span>
+            <h3 class="product-card-title"><a href="/products/<%= product._id %>"><%= product.name %></a></h3>
+            <div class="product-card-rating">
+              <% for (var i = 1; i <= 5; i++) { %>
+                <span class="star <%= i <= Math.floor(product.averageRating) ? 'filled' : '' %>"><i class="fas fa-star"></i></span>
+              <% } %>
+              <span style="font-size:0.7rem;color:var(--gray-400);margin-left:4px;">(<%= product.numReviews || product.ratings.length %>)</span>
+            </div>
+            <div class="product-card-price">$<%= product.price.toFixed(2) %></div>
+          </div>
+          <div class="product-card-footer">
+            <a href="/products/<%= product._id %>" class="btn btn-outline btn-sm">Details</a>
+            <form action="/cart/add/<%= product._id %>" method="POST" style="flex:1;"><input type="hidden" name="quantity" value="1"><button type="submit" class="btn btn-primary btn-sm btn-block">Add to Cart</button></form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div style="text-align:center;padding:80px 0;">
+      <h2>No results found</h2>
+      <p style="color:#888;">Try a different search term.</p>
+      <a href="/products" class="btn btn-primary mt-3">Browse All</a>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>
