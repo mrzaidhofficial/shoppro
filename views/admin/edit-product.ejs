@@ -1,0 +1,112 @@
+<%- include('../partials/header') %>
+
+<style>
+  .admin-layout { display: grid; grid-template-columns: 250px 1fr; gap: 32px; padding: 40px 0; min-height: 70vh; }
+  .admin-sidebar { background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 24px 0; height: fit-content; position: sticky; top: 100px; box-shadow: var(--shadow-xs); }
+  .admin-sidebar-header { padding: 0 24px 20px; border-bottom: var(--border); margin-bottom: 12px; }
+  .admin-sidebar-header h3 { font-family: var(--font-display); font-size: 1.1rem; color: var(--gray-900); margin-bottom: 4px; }
+  .admin-sidebar-header span { font-size: 0.78rem; color: var(--gray-500); }
+  .admin-nav-item { display: flex; align-items: center; gap: 12px; padding: 13px 24px; color: var(--gray-600); font-weight: 500; font-size: 0.9rem; transition: var(--transition-fast); border-left: 3px solid transparent; text-decoration: none; }
+  .admin-nav-item:hover { background: var(--primary-light); color: var(--primary); }
+  .admin-nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+  .admin-nav-item i { width: 20px; text-align: center; }
+  .admin-content { min-width: 0; }
+  .admin-page-title { font-family: var(--font-display); font-size: 1.8rem; color: var(--gray-900); margin-bottom: 28px; }
+  .form-card { background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 36px; box-shadow: var(--shadow-xs); max-width: 700px; }
+  .form-group { margin-bottom: 22px; }
+  .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--gray-700); margin-bottom: 7px; }
+  .form-input, .form-select, .form-textarea { width: 100%; padding: 14px 18px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 0.92rem; font-family: var(--font-primary); color: var(--gray-700); background: var(--gray-50); outline: none; transition: var(--transition-fast); }
+  .form-textarea { resize: vertical; min-height: 120px; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 4px rgba(0,102,255,0.06); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-hint { font-size: 0.75rem; color: var(--gray-400); margin-top: 5px; }
+  .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .checkbox-group input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+  .checkbox-group label { font-size: 0.9rem; color: var(--gray-700); cursor: pointer; font-weight: 500; }
+  .btn-submit { display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px; background: var(--primary-gradient); color: var(--white); border: none; border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: var(--transition); box-shadow: 0 4px 16px rgba(0,102,255,0.3); }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,102,255,0.4); }
+  .btn-cancel { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: var(--white); color: var(--gray-600); border: 2px solid var(--gray-200); border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; text-decoration: none; transition: var(--transition); }
+  .btn-cancel:hover { background: var(--gray-50); border-color: var(--gray-300); }
+  .form-actions { display: flex; gap: 12px; margin-top: 10px; }
+  .image-preview-container { margin-bottom: 22px; }
+  .image-preview { width: 200px; height: 200px; border-radius: var(--radius-lg); object-fit: cover; background: var(--gray-100); border: 2px solid var(--gray-200); display: block; }
+  .image-preview-placeholder { width: 200px; height: 200px; border-radius: var(--radius-lg); background: var(--gray-100); border: 2px dashed var(--gray-300); display: flex; align-items: center; justify-content: center; color: var(--gray-400); font-size: 0.85rem; }
+  .image-urls-section { margin-bottom: 22px; }
+  .image-url-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+  .image-url-row .form-input { flex: 1; }
+  .btn-add-image { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; background: var(--gray-100); color: var(--primary); border: 2px dashed var(--primary); border-radius: var(--radius-full); font-size: 0.82rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: var(--transition); }
+  .btn-add-image:hover { background: var(--primary-light); }
+  .btn-remove-image { width: 38px; height: 38px; border-radius: var(--radius-full); border: none; background: var(--error-bg); color: var(--error); cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: var(--transition); }
+  .btn-remove-image:hover { background: var(--error); color: var(--white); }
+  .product-preview { width: 100px; height: 100px; border-radius: var(--radius); object-fit: cover; background: var(--gray-100); margin-bottom: 10px; }
+  @media (max-width: 900px) { .admin-layout { grid-template-columns: 1fr; } .admin-sidebar { position: static; display: flex; overflow-x: auto; padding: 12px; gap: 4px; } .admin-sidebar-header { display: none; } .admin-nav-item { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 10px 16px; font-size: 0.8rem; } .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--primary); } .form-row { grid-template-columns: 1fr; } .form-card { padding: 24px; } }
+</style>
+
+<div class="container">
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header"><h3>Admin Panel</h3><span><i class="fas fa-circle" style="font-size:0.4rem;color:var(--accent);"></i> Logged in as <strong><%= user.firstName %></strong></span></div>
+      <a href="/admin/dashboard" class="admin-nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="/admin/products" class="admin-nav-item active"><i class="fas fa-box"></i> Products</a>
+      <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
+      <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+      <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+    </aside>
+    <div class="admin-content">
+      <h1 class="admin-page-title">Edit Product</h1>
+      <div class="form-card">
+        <% if (product.images && product.images[0]) { %><img src="<%= product.images[0] %>" alt="<%= product.name %>" class="product-preview" onerror="this.style.display='none'"><% } %>
+        <form action="/admin/products/edit/<%= product._id %>" method="POST" id="editProductForm">
+          <div class="image-urls-section">
+            <label class="form-label">Product Images</label>
+            <span class="form-hint" style="margin-bottom:10px;display:block;">Add image URLs. The first image will be the main product image.</span>
+            <div class="image-preview-container">
+              <% if (product.images && product.images.length > 0) { %><img src="<%= product.images[0] %>" alt="Preview" class="image-preview" id="imagePreview" onerror="this.src='https://picsum.photos/200/200'"><% } else { %><div class="image-preview-placeholder" id="imagePreviewPlaceholder"><span>No image</span></div><img src="" alt="Preview" class="image-preview" id="imagePreview" style="display:none;" onerror="this.style.display='none';document.getElementById('imagePreviewPlaceholder').style.display='flex';"><% } %>
+            </div>
+            <div id="imageUrlsContainer">
+              <% if (product.images && product.images.length > 0) { product.images.forEach(function(img, index) { %><div class="image-url-row"><input type="text" name="images" class="form-input" value="<%= img %>" placeholder="https://example.com/image.jpg" oninput="updatePreview()"><button type="button" class="btn-remove-image" onclick="removeImageRow(this)" title="Remove image"><i class="fas fa-times"></i></button></div><% }); } else { %><div class="image-url-row"><input type="text" name="images" class="form-input" value="" placeholder="https://example.com/image.jpg" oninput="updatePreview()"><button type="button" class="btn-remove-image" onclick="removeImageRow(this)" title="Remove image"><i class="fas fa-times"></i></button></div><% } %>
+            </div>
+            <button type="button" class="btn-add-image" onclick="addImageRow()"><i class="fas fa-plus"></i> Add Another Image</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="name">Product Name *</label>
+            <input type="text" class="form-input" id="name" name="name" required value="<%= product.name %>" maxlength="200">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="shortDescription">Short Description</label>
+            <input type="text" class="form-input" id="shortDescription" name="shortDescription" value="<%= product.shortDescription || '' %>" placeholder="Brief summary shown in quick view (max 200 characters)" maxlength="200">
+            <span class="form-hint">This appears in quick view popups and search results. Keep it brief.</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="description">Full Description *</label>
+            <textarea class="form-textarea" id="description" name="description" required><%= product.description %></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="price">Price (USD) *</label><input type="number" class="form-input" id="price" name="price" required value="<%= product.price %>" min="0" step="0.01"></div>
+            <div class="form-group"><label class="form-label" for="stock">Stock Quantity *</label><input type="number" class="form-input" id="stock" name="stock" required value="<%= product.stock %>" min="0"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="category">Category *</label>
+            <select class="form-select" id="category" name="category" required>
+              <option value="">Select a category</option>
+              <% var categories = ['Electronics', 'Clothing', 'Home & Garden', 'Accessories', 'Sports', 'Books', 'Other']; categories.forEach(function(cat) { %><option value="<%= cat %>" <%= product.category === cat ? 'selected' : '' %>><%= cat %></option><% }); %>
+            </select>
+          </div>
+          <div class="checkbox-group"><input type="checkbox" id="featured" name="featured" <%= product.featured ? 'checked' : '' %>><label for="featured">Mark as Featured Product</label></div>
+          <div class="form-actions">
+            <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Save Changes</button>
+            <a href="/admin/products" class="btn-cancel">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function updatePreview() { var firstInput = document.querySelector('#imageUrlsContainer input[name="images"]'); var previewImg = document.getElementById('imagePreview'); var placeholder = document.getElementById('imagePreviewPlaceholder'); if (firstInput && firstInput.value.trim()) { if (placeholder) placeholder.style.display = 'none'; previewImg.style.display = 'block'; previewImg.src = firstInput.value.trim(); } else { previewImg.style.display = 'none'; if (placeholder) placeholder.style.display = 'flex'; } }
+function addImageRow() { var container = document.getElementById('imageUrlsContainer'); var row = document.createElement('div'); row.className = 'image-url-row'; row.innerHTML = '<input type="text" name="images" class="form-input" value="" placeholder="https://example.com/image.jpg" oninput="updatePreview()"><button type="button" class="btn-remove-image" onclick="removeImageRow(this)" title="Remove image"><i class="fas fa-times"></i></button>'; container.appendChild(row); }
+function removeImageRow(btn) { var container = document.getElementById('imageUrlsContainer'); var rows = container.querySelectorAll('.image-url-row'); if (rows.length <= 1) { rows[0].querySelector('input').value = ''; updatePreview(); return; } btn.parentElement.remove(); updatePreview(); }
+</script>
+
+<%- include('../partials/footer') %>

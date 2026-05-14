@@ -1,0 +1,97 @@
+<%- include('partials/header') %>
+
+<div class="container products-layout">
+  <aside class="filter-panel">
+    <h3 class="filter-title">Filters</h3>
+    <form method="GET" action="/products">
+      <div class="filter-group">
+        <label class="filter-label">Category</label>
+        <select name="category" class="filter-select" onchange="this.form.submit()">
+          <option value="">All Categories</option>
+          <% if (typeof categories !== 'undefined') { %>
+            <% categories.forEach(function(cat) { %>
+              <option value="<%= cat %>" <%= (typeof currentCategory !== 'undefined' && currentCategory === cat) ? 'selected' : '' %>><%= cat %></option>
+            <% }) %>
+          <% } %>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Sort By</label>
+        <select name="sort" class="filter-select" onchange="this.form.submit()">
+          <option value="newest" <%= currentSort === 'newest' ? 'selected' : '' %>>Newest First</option>
+          <option value="price-asc" <%= currentSort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
+          <option value="price-desc" <%= currentSort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
+          <option value="rating" <%= currentSort === 'rating' ? 'selected' : '' %>>Top Rated</option>
+        </select>
+      </div>
+    </form>
+  </aside>
+
+  <div>
+    <div class="products-main-header">
+      <h2><%= typeof currentCategory !== 'undefined' && currentCategory ? currentCategory : 'All Products' %></h2>
+      <span class="products-count"><%= totalProducts %> product(s)</span>
+    </div>
+
+    <% if (typeof products !== 'undefined' && products.length > 0) { %>
+      <div class="product-grid">
+        <% products.forEach(function(product) { %>
+          <div class="product-card">
+            <div class="product-card-image">
+              <a href="/products/<%= product._id %>">
+                <img src="<%= product.images && product.images[0] ? product.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= product.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'">
+              </a>
+              <% if (product.stock <= 5 && product.stock > 0) { %>
+                <span class="product-badge" style="background:#F59E0B;color:white;">Low Stock</span>
+              <% } %>
+              <div class="quick-view-overlay">
+                <button class="quick-view-btn" data-id="<%= product._id %>">Quick View</button>
+              </div>
+            </div>
+            <div class="product-card-body">
+              <span class="product-card-category"><%= product.category %></span>
+              <h3 class="product-card-title"><a href="/products/<%= product._id %>"><%= product.name %></a></h3>
+              <div class="product-card-rating">
+                <% for (var i = 1; i <= 5; i++) { %>
+                  <span class="star <%= i <= Math.floor(product.averageRating) ? 'filled' : '' %>"><i class="fas fa-star"></i></span>
+                <% } %>
+                <span style="font-size:0.7rem;color:var(--gray-400);margin-left:4px;">(<%= product.numReviews || product.ratings.length %>)</span>
+              </div>
+              <div class="product-card-price">$<%= product.price.toFixed(2) %></div>
+            </div>
+            <div class="product-card-footer">
+              <a href="/products/<%= product._id %>" class="btn btn-outline btn-sm">Details</a>
+              <form action="/cart/add/<%= product._id %>" method="POST" style="flex:1;">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn btn-primary btn-sm btn-block">Add to Cart</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      
+      <!-- Pagination -->
+      <% if (totalPages > 1) { %>
+        <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:40px;">
+          <% if (currentPage > 1) { %>
+            <a href="/products?page=<%= currentPage - 1 %><%= currentCategory ? '&category=' + currentCategory : '' %><%= currentSort !== 'newest' ? '&sort=' + currentSort : '' %>" style="padding:10px 18px;border:2px solid var(--gray-200);border-radius:var(--radius-full);font-weight:600;color:var(--gray-700);text-decoration:none;transition:var(--transition);">← Previous</a>
+          <% } %>
+          <% for (var p = 1; p <= totalPages; p++) { %>
+            <a href="/products?page=<%= p %><%= currentCategory ? '&category=' + currentCategory : '' %><%= currentSort !== 'newest' ? '&sort=' + currentSort : '' %>" style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-full);font-weight:600;text-decoration:none;transition:var(--transition);<%= p === currentPage ? 'background:var(--primary-gradient);color:white;' : 'border:2px solid var(--gray-200);color:var(--gray-700);' %>"><%= p %></a>
+          <% } %>
+          <% if (currentPage < totalPages) { %>
+            <a href="/products?page=<%= currentPage + 1 %><%= currentCategory ? '&category=' + currentCategory : '' %><%= currentSort !== 'newest' ? '&sort=' + currentSort : '' %>" style="padding:10px 18px;border:2px solid var(--gray-200);border-radius:var(--radius-full);font-weight:600;color:var(--gray-700);text-decoration:none;transition:var(--transition);">Next →</a>
+          <% } %>
+        </div>
+      <% } %>
+    <% } else { %>
+      <div style="text-align:center;padding:80px 0;">
+        <h3>No products found</h3>
+        <p style="color:#888;">Try adjusting your filters.</p>
+        <a href="/products" class="btn btn-primary mt-3">Clear Filters</a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

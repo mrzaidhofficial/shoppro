@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ShopPro - Premium Enterprise Ecommerce Platform. Quality products, fast shipping, secure checkout.">
+  <title><%= typeof title !== 'undefined' ? title : 'ShopPro' %> | ShopPro</title>
+  <link rel="stylesheet" href="/css/style.css?v=3">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="announcement-bar">
+  <div class="container">
+    <div class="announcement-inner">
+      <span><i class="fas fa-truck"></i> Free Express Shipping on Orders Over $50</span>
+      <span class="announcement-separator">|</span>
+      <span><i class="fas fa-undo-alt"></i> 30-Day Hassle-Free Returns</span>
+      <span class="announcement-separator">|</span>
+      <span><i class="fas fa-shield-alt"></i> Secure Checkout Guaranteed</span>
+    </div>
+  </div>
+</div>
+
+<header class="site-header" id="siteHeader">
+  <div class="container">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon"><i class="fas fa-store"></i></span>
+        <span class="logo-text">Shop<span class="logo-accent">Pro</span></span>
+      </a>
+      <div class="header-search-wrapper">
+        <form class="search-form" action="/search" method="GET">
+          <input class="search-input" type="text" name="q" placeholder="Search for products, brands, categories..." required>
+          <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+      <div class="header-actions-wrapper">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <a href="/auth/profile" class="header-btn header-btn-signin"><i class="fas fa-user-circle"></i><span class="btn-text"><%= user.firstName %></span></a>
+          <a href="/auth/logout" class="header-btn header-btn-signout"><i class="fas fa-sign-out-alt"></i><span class="btn-text">Sign Out</span></a>
+        <% } else { %>
+          <a href="/auth/signup" class="header-btn header-btn-signup"><i class="fas fa-user-plus"></i><span class="btn-text">Sign Up</span></a>
+          <a href="/auth/signin" class="header-btn header-btn-signin"><i class="fas fa-sign-in-alt"></i><span class="btn-text">Sign In</span></a>
+        <% } %>
+        <a href="/cart" class="header-btn header-btn-cart">
+          <i class="fas fa-shopping-bag"></i><span class="btn-text">Cart</span>
+          <% if (typeof cartCount !== 'undefined' && cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="category-nav">
+  <div class="container">
+    <ul class="nav-list">
+      <li><a href="/products" class="nav-link<%= (typeof currentCategory !== 'undefined' && currentCategory === '') ? ' active' : '' %>"><i class="fas fa-th-large"></i> All Products</a></li>
+      <li><a href="/products?category=Electronics" class="nav-link<%= (typeof currentCategory !== 'undefined' && currentCategory === 'Electronics') ? ' active' : '' %>"><i class="fas fa-laptop"></i> Electronics</a></li>
+      <li><a href="/products?category=Clothing" class="nav-link<%= (typeof currentCategory !== 'undefined' && currentCategory === 'Clothing') ? ' active' : '' %>"><i class="fas fa-tshirt"></i> Clothing</a></li>
+      <li><a href="/products?category=Home+%26+Garden" class="nav-link<%= (typeof currentCategory !== 'undefined' && currentCategory === 'Home & Garden') ? ' active' : '' %>"><i class="fas fa-home"></i> Home &amp; Garden</a></li>
+      <li><a href="/products?category=Accessories" class="nav-link<%= (typeof currentCategory !== 'undefined' && currentCategory === 'Accessories') ? ' active' : '' %>"><i class="fas fa-gem"></i> Accessories</a></li>
+      <li><a href="/products?category=Sports" class="nav-link<%= (typeof currentCategory !== 'undefined' && currentCategory === 'Sports') ? ' active' : '' %>"><i class="fas fa-running"></i> Sports</a></li>
+      <li><a href="/products?category=Books" class="nav-link<%= (typeof currentCategory !== 'undefined' && currentCategory === 'Books') ? ' active' : '' %>"><i class="fas fa-book"></i> Books</a></li>
+    </ul>
+  </div>
+</nav>
+
+<% if (typeof messages !== 'undefined' && messages) { %>
+  <% if (messages.success) { %><div class="container mt-2"><div class="alert alert-success"><span><i class="fas fa-check-circle"></i> <%= messages.success %></span><span class="alert-close" onclick="this.parentElement.remove()">&times;</span></div></div><% } %>
+  <% if (messages.error) { %><div class="container mt-2"><div class="alert alert-error"><span><i class="fas fa-exclamation-circle"></i> <%= messages.error %></span><span class="alert-close" onclick="this.parentElement.remove()">&times;</span></div></div><% } %>
+<% } %>
+
+<main>

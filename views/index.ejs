@@ -1,0 +1,246 @@
+<%- include('partials/header') %>
+
+<!-- HERO BANNER -->
+<section class="hero">
+  <div class="hero-bg-glow"></div>
+  <div class="hero-grid-dots"></div>
+  
+  <div class="container">
+    <div class="hero-content">
+      <span class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        New Collection 2026
+      </span>
+      <h1 class="hero-title">
+        Premium Products<br>
+        <span class="hero-title-highlight">Delivered to Your Door</span>
+      </h1>
+      <p class="hero-description">Discover handpicked quality essentials with free express shipping. Shop with confidence from a platform trusted by thousands.</p>
+      <div class="hero-actions">
+        <a href="/products" class="hero-btn-primary">
+          <i class="fas fa-shopping-bag"></i> Shop Now
+        </a>
+        <a href="/products?category=Electronics" class="hero-btn-outline">
+          <i class="fas fa-laptop"></i> Electronics
+        </a>
+        <a href="/products?category=Accessories" class="hero-btn-outline">
+          <i class="fas fa-gem"></i> Accessories
+        </a>
+      </div>
+      <div class="hero-trust-section">
+        <div class="hero-trust-item">
+          <div class="trust-icon-circle">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="trust-info">
+            <span class="trust-number">10,000+</span>
+            <span class="trust-label">Happy Customers</span>
+          </div>
+        </div>
+        <div class="hero-trust-item">
+          <div class="trust-icon-circle">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="trust-info">
+            <span class="trust-number">4.9 / 5</span>
+            <span class="trust-label">Average Rating</span>
+          </div>
+        </div>
+        <div class="hero-trust-item">
+          <div class="trust-icon-circle">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="trust-info">
+            <span class="trust-number">100%</span>
+            <span class="trust-label">Secure Checkout</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="hero-visual">
+      <div class="hero-showcase">
+        <div class="hero-orbital hero-orbital-1"></div>
+        <div class="hero-orbital hero-orbital-2"></div>
+        <div class="hero-orbital hero-orbital-3"></div>
+        <div class="hero-center-emblem">
+          <i class="fas fa-crown"></i>
+        </div>
+        <div class="hero-float-card hero-card-1">
+          <i class="fas fa-truck-fast"></i> Free Shipping
+        </div>
+        <div class="hero-float-card hero-card-2">
+          <i class="fas fa-shield-alt"></i> Secure Payment
+        </div>
+        <div class="hero-float-card hero-card-3">
+          <i class="fas fa-undo-alt"></i> Easy Returns
+        </div>
+        <div class="hero-float-card hero-card-4">
+          <i class="fas fa-headset"></i> 24/7 Support
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="section featured-section-bg">
+  <div class="section-bg-pattern"></div>
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Featured</span>
+      <h2 class="section-title">Top Picks For You</h2>
+      <p class="section-description">Handpicked products our customers love.</p>
+    </div>
+    <div class="product-grid">
+      <% if (typeof featuredProducts !== 'undefined' && featuredProducts.length > 0) { %>
+        <% featuredProducts.forEach(function(product) { %>
+          <div class="product-card">
+            <div class="product-card-image">
+              <a href="/products/<%= product._id %>">
+                <img src="<%= product.images && product.images[0] ? product.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= product.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'">
+              </a>
+              <span class="product-badge badge-featured">Featured</span>
+              <% if (product.stock <= 5 && product.stock > 0) { %>
+                <span class="product-badge" style="background:#F59E0B;color:white;top:48px;">Low Stock</span>
+              <% } %>
+              <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= product._id %>">Quick View</button></div>
+            </div>
+            <div class="product-card-body">
+              <span class="product-card-category"><%= product.category %></span>
+              <h3 class="product-card-title"><a href="/products/<%= product._id %>"><%= product.name %></a></h3>
+              <div class="product-card-rating">
+                <% for (var i = 1; i <= 5; i++) { %>
+                  <span class="star <%= i <= Math.floor(product.averageRating) ? 'filled' : '' %>"><i class="fas fa-star"></i></span>
+                <% } %>
+                <span style="font-size:0.7rem;color:var(--gray-400);margin-left:4px;">(<%= product.numReviews || product.ratings.length %>)</span>
+              </div>
+              <div class="product-card-price">$<%= product.price.toFixed(2) %></div>
+            </div>
+            <div class="product-card-footer">
+              <a href="/products/<%= product._id %>" class="btn btn-outline btn-sm">Details</a>
+              <form action="/cart/add/<%= product._id %>" method="POST" style="flex:1;"><input type="hidden" name="quantity" value="1"><button type="submit" class="btn btn-primary btn-sm btn-block">Add to Cart</button></form>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES BAR -->
+<div class="features-bar features-premium-bg">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-item"><div class="feature-icon-circle"><i class="fas fa-truck-fast"></i></div><div class="feature-text"><h4>Free Shipping</h4><p>On orders over $50</p></div></div>
+      <div class="feature-item"><div class="feature-icon-circle"><i class="fas fa-undo-alt"></i></div><div class="feature-text"><h4>Easy Returns</h4><p>30-day return window</p></div></div>
+      <div class="feature-item"><div class="feature-icon-circle"><i class="fas fa-shield-alt"></i></div><div class="feature-text"><h4>Secure Checkout</h4><p>SSL encrypted</p></div></div>
+      <div class="feature-item"><div class="feature-icon-circle"><i class="fas fa-headset"></i></div><div class="feature-text"><h4>24/7 Support</h4><p>We're here to help</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW ARRIVALS -->
+<section class="section new-arrivals-section-bg">
+  <div class="section-bg-pattern"></div>
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">New Arrivals</span>
+      <h2 class="section-title">Fresh In Store</h2>
+      <p class="section-description">Be the first to shop our latest products.</p>
+    </div>
+    <div class="product-grid">
+      <% if (typeof newArrivals !== 'undefined' && newArrivals.length > 0) { %>
+        <% newArrivals.forEach(function(product) { %>
+          <div class="product-card">
+            <div class="product-card-image">
+              <a href="/products/<%= product._id %>"><img src="<%= product.images && product.images[0] ? product.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= product.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'"></a>
+              <span class="product-badge badge-new">New</span>
+              <% if (product.stock <= 5 && product.stock > 0) { %>
+                <span class="product-badge" style="background:#F59E0B;color:white;top:48px;">Low Stock</span>
+              <% } %>
+              <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= product._id %>">Quick View</button></div>
+            </div>
+            <div class="product-card-body">
+              <span class="product-card-category"><%= product.category %></span>
+              <h3 class="product-card-title"><a href="/products/<%= product._id %>"><%= product.name %></a></h3>
+              <div class="product-card-rating">
+                <% for (var i = 1; i <= 5; i++) { %>
+                  <span class="star <%= i <= Math.floor(product.averageRating) ? 'filled' : '' %>"><i class="fas fa-star"></i></span>
+                <% } %>
+                <span style="font-size:0.7rem;color:var(--gray-400);margin-left:4px;">(<%= product.numReviews || product.ratings.length %>)</span>
+              </div>
+              <div class="product-card-price">$<%= product.price.toFixed(2) %></div>
+            </div>
+            <div class="product-card-footer">
+              <a href="/products/<%= product._id %>" class="btn btn-outline btn-sm">Details</a>
+              <form action="/cart/add/<%= product._id %>" method="POST" style="flex:1;"><input type="hidden" name="quantity" value="1"><button type="submit" class="btn btn-primary btn-sm btn-block">Add to Cart</button></form>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- CUSTOMER REVIEWS -->
+<section class="section reviews-section-bg">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Testimonials</span>
+      <h2 class="section-title">What Our Customers Say</h2>
+      <p class="section-description">Join thousands of happy shoppers worldwide.</p>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars"><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i></div>
+        <p class="review-text">"Amazing quality products and lightning fast delivery! ShopPro has become my go-to online store for everything."</p>
+        <div class="review-author"><div class="review-avatar">JD</div><div><strong>James D.</strong><span>Verified Buyer</span></div></div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars"><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i></div>
+        <p class="review-text">"The customer service is outstanding. They helped me with a return within hours. Highly recommended platform!"</p>
+        <div class="review-author"><div class="review-avatar">SP</div><div><strong>Sarah P.</strong><span>Verified Buyer</span></div></div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars"><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i></div>
+        <p class="review-text">"Best prices on electronics I've found anywhere. The checkout process was smooth and secure. Will definitely shop again!"</p>
+        <div class="review-author"><div class="review-avatar">MK</div><div><strong>Michael K.</strong><span>Verified Buyer</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section">
+  <div class="newsletter-bg-shapes">
+    <div class="newsletter-shape ns-1"></div>
+    <div class="newsletter-shape ns-2"></div>
+    <div class="newsletter-shape ns-3"></div>
+  </div>
+  <div class="container">
+    <div class="newsletter-content">
+      <div class="newsletter-icon-wrapper">
+        <i class="fas fa-paper-plane"></i>
+      </div>
+      <h2 class="newsletter-title">Get 15% Off Your First Order</h2>
+      <p class="newsletter-desc">Subscribe to our newsletter and receive exclusive deals, new arrivals alerts, and a welcome discount code straight to your inbox.</p>
+      <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing! Check your email for your 15% discount code.');">
+        <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+        <button type="submit" class="newsletter-btn">
+          <i class="fas fa-arrow-right"></i> Subscribe
+        </button>
+      </form>
+      <p class="newsletter-trust">No spam, unsubscribe anytime. Your email is safe with us.</p>
+      <div class="newsletter-stats">
+        <div class="nl-stat"><span class="nl-stat-number">25K+</span><span class="nl-stat-label">Subscribers</span></div>
+        <div class="nl-stat-divider"></div>
+        <div class="nl-stat"><span class="nl-stat-number">4.9</span><span class="nl-stat-label">User Rating</span></div>
+        <div class="nl-stat-divider"></div>
+        <div class="nl-stat"><span class="nl-stat-number">1M+</span><span class="nl-stat-label">Products Sold</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,318 @@
+<%- include('../partials/header') %>
+
+<style>
+  .admin-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 32px;
+    padding: 40px 0;
+    min-height: 70vh;
+  }
+  .admin-sidebar {
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-xl);
+    padding: 24px 0;
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+    box-shadow: var(--shadow-xs);
+  }
+  .admin-sidebar-header {
+    padding: 0 24px 20px;
+    border-bottom: var(--border);
+    margin-bottom: 12px;
+  }
+  .admin-sidebar-header h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--gray-900);
+    margin-bottom: 4px;
+  }
+  .admin-sidebar-header span {
+    font-size: 0.78rem;
+    color: var(--gray-500);
+  }
+  .admin-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 24px;
+    color: var(--gray-600);
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+    border-left: 3px solid transparent;
+    text-decoration: none;
+  }
+  .admin-nav-item:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+  .admin-nav-item.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-left-color: var(--primary);
+    font-weight: 600;
+  }
+  .admin-nav-item i { width: 20px; text-align: center; }
+  .admin-content { min-width: 0; }
+  .admin-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .admin-page-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--gray-900);
+  }
+  .btn-admin-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: var(--primary-gradient);
+    color: var(--white) !important;
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition);
+    box-shadow: 0 4px 16px rgba(0,102,255,0.3);
+  }
+  .btn-admin-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,102,255,0.4);
+  }
+  .btn-admin-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--error);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .btn-admin-danger:hover {
+    background: #DC2626;
+    transform: translateY(-1px);
+  }
+  .btn-admin-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-full);
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition);
+    margin-right: 6px;
+  }
+  .btn-admin-edit:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+  .table-wrapper {
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-xs);
+  }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .admin-table th {
+    text-align: left;
+    padding: 14px 18px;
+    background: var(--gray-50);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-500);
+    border-bottom: var(--border);
+    white-space: nowrap;
+  }
+  .admin-table td {
+    padding: 14px 18px;
+    font-size: 0.87rem;
+    color: var(--gray-700);
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: middle;
+  }
+  .admin-table tr:last-child td { border-bottom: none; }
+  .admin-table tr:hover td { background: var(--gray-50); }
+  .product-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    object-fit: cover;
+    background: var(--gray-100);
+  }
+  .badge-featured-sm {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #FEF3C7;
+    color: #D97706;
+  }
+  .stock-low { color: var(--error); font-weight: 600; }
+  .stock-ok { color: var(--success); font-weight: 600; }
+  .actions-cell { display: flex; gap: 8px; flex-wrap: nowrap; }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-xl);
+  }
+  .empty-state i { font-size: 4rem; color: var(--gray-200); margin-bottom: 16px; display: block; }
+  .empty-state p { color: var(--gray-500); margin-bottom: 20px; }
+  
+  @media (max-width: 900px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .admin-sidebar {
+      position: static;
+      display: flex;
+      overflow-x: auto;
+      padding: 12px;
+      gap: 4px;
+    }
+    .admin-sidebar-header { display: none; }
+    .admin-nav-item {
+      white-space: nowrap;
+      border-left: none;
+      border-bottom: 3px solid transparent;
+      padding: 10px 16px;
+      font-size: 0.8rem;
+    }
+    .admin-nav-item.active {
+      border-left-color: transparent;
+      border-bottom-color: var(--primary);
+    }
+  }
+</style>
+
+<div class="container">
+  <div class="admin-layout">
+    
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <h3>Admin Panel</h3>
+        <span><i class="fas fa-circle" style="font-size:0.4rem;color:var(--accent);"></i> Logged in as <strong><%= user.firstName %></strong></span>
+      </div>
+      <a href="/admin/dashboard" class="admin-nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="/admin/products" class="admin-nav-item active"><i class="fas fa-box"></i> Products</a>
+      <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
+      <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+      <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+    </aside>
+    
+    <div class="admin-content">
+      <div class="admin-page-header">
+        <h1 class="admin-page-title">Products</h1>
+        <a href="/admin/products/add" class="btn-admin-primary">
+          <i class="fas fa-plus"></i> Add New Product
+        </a>
+      </div>
+      
+      <% if (products && products.length > 0) { %>
+        <div class="table-wrapper" style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Featured</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% products.forEach(function(product) { %>
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                      <img src="<%= product.images && product.images[0] ? product.images[0] : 'https://picsum.photos/48/48' %>" alt="<%= product.name %>" class="product-thumb" onerror="this.src='https://picsum.photos/48/48'">
+                      <div>
+                        <div style="font-weight:600;color:var(--gray-900);"><%= product.name %></div>
+                        <div style="font-size:0.75rem;color:var(--gray-400);">ID: <%= product._id.toString().slice(-8) %></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span style="background:var(--gray-100);padding:4px 12px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:500;"><%= product.category %></span></td>
+                  <td style="font-weight:600;">$<%= product.price.toFixed(2) %></td>
+                  <td>
+                    <% if (product.stock === 0) { %>
+                      <span class="stock-low">Out of Stock</span>
+                    <% } else if (product.stock < 10) { %>
+                      <span class="stock-low"><%= product.stock %> left</span>
+                    <% } else { %>
+                      <span class="stock-ok"><%= product.stock %> in stock</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <% if (product.featured) { %>
+                      <span class="badge-featured-sm">Featured</span>
+                    <% } else { %>
+                      <span style="color:var(--gray-400);">—</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <div class="actions-cell">
+                      <a href="/admin/products/edit/<%= product._id %>" class="btn-admin-edit">
+                        <i class="fas fa-pen"></i> Edit
+                      </a>
+                      <form action="/admin/products/delete/<%= product._id %>" method="POST" onsubmit="return confirm('Delete this product? This cannot be undone.');" style="display:inline;">
+                        <button type="submit" class="btn-admin-danger">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <i class="fas fa-box-open"></i>
+          <p>No products found. Add your first product to get started.</p>
+          <a href="/admin/products/add" class="btn-admin-primary">
+            <i class="fas fa-plus"></i> Add Product
+          </a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

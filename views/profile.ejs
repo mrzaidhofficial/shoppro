@@ -1,0 +1,283 @@
+<%- include('partials/header') %>
+
+<style>
+  .profile-section {
+    padding: 56px 0;
+    min-height: 60vh;
+    background: var(--white);
+  }
+  .profile-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 36px;
+    align-items: start;
+  }
+  .profile-sidebar {
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    box-shadow: var(--shadow-xs);
+    text-align: center;
+  }
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: var(--font-display);
+    margin: 0 auto 16px;
+  }
+  .profile-name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 4px;
+  }
+  .profile-email {
+    font-size: 0.88rem;
+    color: var(--gray-500);
+    margin-bottom: 20px;
+  }
+  .profile-role-badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    background: var(--primary-light);
+    color: var(--primary);
+    margin-bottom: 20px;
+  }
+  .profile-role-badge.admin {
+    background: var(--accent-light);
+    color: var(--accent-dark);
+  }
+  .profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .profile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid var(--gray-200);
+    background: var(--white);
+    color: var(--gray-700);
+  }
+  .profile-btn:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-300);
+  }
+  .profile-btn.primary {
+    background: var(--primary-gradient);
+    color: var(--white);
+    border: none;
+    box-shadow: 0 4px 16px rgba(0,102,255,0.3);
+  }
+  .profile-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 26px rgba(0,102,255,0.4);
+  }
+  .profile-btn.admin {
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    border-color: var(--accent);
+  }
+  .profile-btn.admin:hover {
+    background: var(--accent);
+    color: var(--white);
+  }
+  .profile-btn.wishlist {
+    background: #FFF7ED;
+    color: #EA580C;
+    border-color: #FED7AA;
+  }
+  .profile-btn.wishlist:hover {
+    background: #EA580C;
+    color: var(--white);
+    border-color: #EA580C;
+  }
+  .profile-btn.logout {
+    color: var(--error);
+    border-color: var(--error-bg);
+  }
+  .profile-btn.logout:hover {
+    background: var(--error-bg);
+  }
+  .profile-content-title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 22px;
+  }
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .order-card {
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-xl);
+    padding: 22px 26px;
+    box-shadow: var(--shadow-xs);
+    transition: var(--transition);
+  }
+  .order-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+  .order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .order-card-number {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.95rem;
+  }
+  .order-card-date {
+    font-size: 0.82rem;
+    color: var(--gray-500);
+  }
+  .order-card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .order-card-items {
+    font-size: 0.88rem;
+    color: var(--gray-600);
+  }
+  .order-card-total {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gray-900);
+  }
+  .badge-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+  .badge-processing { background: #FEF3C7; color: #D97706; }
+  .badge-shipped { background: #DBEAFE; color: #2563EB; }
+  .badge-delivered { background: var(--success-bg); color: var(--success); }
+  .badge-cancelled { background: var(--error-bg); color: var(--error); }
+  .empty-orders {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-xl);
+  }
+  .empty-orders i {
+    font-size: 3.5rem;
+    color: var(--gray-200);
+    margin-bottom: 14px;
+    display: block;
+  }
+  .empty-orders p {
+    color: var(--gray-500);
+    margin-bottom: 18px;
+  }
+  
+  @media (max-width: 768px) {
+    .profile-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="profile-section">
+  <div class="container">
+    <div class="profile-layout">
+      
+      <aside class="profile-sidebar">
+        <div class="profile-avatar"><%= user.firstName.charAt(0).toUpperCase() %></div>
+        <div class="profile-name"><%= user.firstName %> <%= user.lastName %></div>
+        <div class="profile-email"><%= user.email %></div>
+        <span class="profile-role-badge<%= typeof isAdmin !== 'undefined' && isAdmin ? ' admin' : '' %>"><%= user.role %></span>
+        
+        <div class="profile-actions">
+          <a href="/products" class="profile-btn primary"><i class="fas fa-shopping-bag"></i> Shop Now</a>
+          <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+            <a href="/admin/dashboard" class="profile-btn admin"><i class="fas fa-gauge"></i> Admin Panel</a>
+          <% } %>
+          <a href="/cart/wishlist" class="profile-btn wishlist"><i class="fas fa-heart"></i> My Wishlist</a>
+          <a href="/cart" class="profile-btn"><i class="fas fa-shopping-cart"></i> View Cart</a>
+          <a href="/auth/logout" class="profile-btn logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+        </div>
+      </aside>
+      
+      <div>
+        <h2 class="profile-content-title">Order History</h2>
+        
+        <% if (typeof orders !== 'undefined' && orders.length > 0) { %>
+          <div class="orders-list">
+            <% orders.forEach(function(order) { %>
+              <a href="/cart/order-confirmation/<%= order._id %>" style="text-decoration:none;color:inherit;">
+                <div class="order-card">
+                  <div class="order-card-header">
+                    <span class="order-card-number">#<%= order.orderNumber %></span>
+                    <span class="badge-status badge-<%= order.status %>"><%= order.status %></span>
+                    <span class="order-card-date">
+                      <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                    </span>
+                  </div>
+                  <div class="order-card-body">
+                    <span class="order-card-items">
+                      <%= order.items ? order.items.length : 0 %> item(s)
+                      <% if (order.items && order.items.length > 0) { %>
+                        — <%= order.items.slice(0, 2).map(function(i) { return i.name; }).join(', ') %><%= order.items.length > 2 ? '...' : '' %>
+                      <% } %>
+                    </span>
+                    <span class="order-card-total">$<%= order.total.toFixed(2) %></span>
+                  </div>
+                </div>
+              </a>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="empty-orders">
+            <i class="fas fa-box-open"></i>
+            <p>No orders yet. Start shopping to see your order history here.</p>
+            <a href="/products" class="profile-btn primary" style="display:inline-flex;">Browse Products</a>
+          </div>
+        <% } %>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
