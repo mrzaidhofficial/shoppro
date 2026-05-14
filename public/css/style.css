@@ -75,12 +75,12 @@ ul { list-style: none; }
 /* ========== HEADER ========== */
 .site-header { background: rgba(255,255,255,0.95); border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; }
 .site-header.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.06); }
-.header-inner { display: flex; align-items: center; padding: 12px 0; position: relative; min-height: 56px; flex-wrap: wrap; gap: 10px; }
-.logo { flex-shrink: 0; text-decoration: none; z-index: 2; display: flex; align-items: center; gap: 8px; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; gap: 16px; min-height: 56px; }
+.logo { flex-shrink: 0; text-decoration: none; display: flex; align-items: center; gap: 8px; }
 .logo-icon { width: 36px; height: 36px; background: var(--primary-gradient); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 1rem; }
 .logo-text { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--gray-900); letter-spacing: -0.5px; }
 .logo-accent { color: var(--primary); }
-.header-search-wrapper { flex: 1; min-width: 200px; max-width: 500px; z-index: 1; }
+.header-search-wrapper { flex: 1; max-width: 500px; min-width: 200px; }
 .search-form { display: flex; border: 2px solid var(--gray-200); border-radius: var(--radius-full); overflow: hidden; background: var(--gray-50); transition: var(--transition); }
 .search-form:focus-within { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 4px rgba(0,102,255,0.06); }
 .search-input { flex: 1; padding: 10px 16px; border: none; background: transparent; font-size: 0.88rem; color: var(--gray-700); outline: none; font-family: var(--font-primary); min-width: 0; }
@@ -88,7 +88,7 @@ ul { list-style: none; }
 .search-btn { padding: 10px 18px; background: var(--primary-gradient); border: none; color: var(--white); cursor: pointer; font-size: 0.88rem; flex-shrink: 0; transition: opacity 0.25s ease; }
 .search-btn:hover { opacity: 0.9; }
 
-.header-actions-wrapper { display: flex; align-items: center; gap: 8px; flex-shrink: 0; z-index: 2; }
+.header-actions-wrapper { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
 /* ===== HEADER BUTTONS ===== */
 .header-btn {
