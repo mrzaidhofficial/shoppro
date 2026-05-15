@@ -1,41 +1,52 @@
 /**
  * Email Service - ShopNest
  * Sends transactional emails using Nodemailer
- * 
- * Setup:
- * 1. Create a Gmail account (e.g., shopnest.management@gmail.com)
- * 2. Enable 2-Factor Authentication
- * 3. Generate an App Password at https://myaccount.google.com/apppasswords
- * 4. Add to .env:
- *    EMAIL_HOST=smtp.gmail.com
- *    EMAIL_PORT=587
- *    EMAIL_USER=shopnest.management@gmail.com
- *    EMAIL_PASS=your_app_password
+ * Fails gracefully if email credentials are not configured
  */
 
 var nodemailer = require('nodemailer');
 
 var transporter = null;
+var emailConfigured = false;
 
-function getTransporter() {
-  if (transporter) return transporter;
+function setupTransporter() {
+  if (transporter) return;
+  
+  var user = process.env.EMAIL_USER || '';
+  var pass = process.env.EMAIL_PASS || '';
+  
+  if (!user || !pass) {
+    console.log('Email service: No credentials configured. Emails will be skipped.');
+    emailConfigured = false;
+    return;
+  }
   
   transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.EMAIL_PORT) || 587,
     secure: false,
     auth: {
-      user: process.env.EMAIL_USER || 'shopnest.management@gmail.com',
-      pass: process.env.EMAIL_PASS || ''
-    }
+      user: user,
+      pass: pass
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000
   });
   
-  return transporter;
+  emailConfigured = true;
+  console.log('Email service: Transporter configured for ' + user);
 }
 
 async function sendOrderConfirmation(userEmail, userName, order) {
+  setupTransporter();
+  
+  if (!emailConfigured) {
+    console.log('Email skipped: No email credentials configured');
+    return;
+  }
+  
   try {
-    var transport = getTransporter();
     var itemsList = order.items.map(function(item) {
       return '<tr><td style="padding:8px;border-bottom:1px solid #eee;">' + item.name + ' x' + item.quantity + '</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">$' + item.subtotal.toFixed(2) + '</td></tr>';
     }).join('');
@@ -55,7 +66,6 @@ async function sendOrderConfirmation(userEmail, userName, order) {
             <tr><td style="padding:8px;font-weight:bold;">Total</td><td style="padding:8px;text-align:right;font-weight:bold;">$${order.total.toFixed(2)}</td></tr>
           </table>
           <p>Your order is being processed and will be shipped soon.</p>
-          <a href="https://shoppro-production.up.railway.app/cart/order-confirmation/${order._id}" style="display:inline-block;padding:12px 24px;background:#0066FF;color:white;text-decoration:none;border-radius:24px;margin-top:8px;">View Order</a>
         </div>
         <div style="text-align:center;padding:16px;color:#888;font-size:12px;">
           <p>ShopNest - Your cozy curated marketplace</p>
@@ -63,22 +73,28 @@ async function sendOrderConfirmation(userEmail, userName, order) {
       </div>
     `;
     
-    await transport.sendMail({
+    var info = await transporter.sendMail({
       from: '"ShopNest" <' + (process.env.EMAIL_USER || 'shopnest.management@gmail.com') + '>',
       to: userEmail,
       subject: 'Order Confirmed - #' + order.orderNumber,
       html: html
     });
     
-    console.log('Order confirmation email sent to ' + userEmail);
+    console.log('Order confirmation email sent to ' + userEmail + ' (ID: ' + info.messageId + ')');
   } catch (err) {
-    console.error('Email send error:', err.message);
+    console.error('Email send error (non-blocking):', err.message);
   }
 }
 
 async function sendOrderStatusUpdate(userEmail, userName, order) {
+  setupTransporter();
+  
+  if (!emailConfigured) {
+    console.log('Email skipped: No email credentials configured');
+    return;
+  }
+  
   try {
-    var transport = getTransporter();
     var statusMessages = {
       shipped: 'Your order has been shipped and is on its way!',
       delivered: 'Your order has been delivered. Enjoy!',
@@ -95,7 +111,6 @@ async function sendOrderStatusUpdate(userEmail, userName, order) {
           <p>Hi ${userName},</p>
           <p><strong>Order #${order.orderNumber}</strong></p>
           <p>${statusMessages[order.status] || 'Your order status has been updated to: ' + order.status}</p>
-          <a href="https://shoppro-production.up.railway.app/cart/order-confirmation/${order._id}" style="display:inline-block;padding:12px 24px;background:#0066FF;color:white;text-decoration:none;border-radius:24px;margin-top:8px;">View Order</a>
         </div>
         <div style="text-align:center;padding:16px;color:#888;font-size:12px;">
           <p>ShopNest - Your cozy curated marketplace</p>
@@ -103,16 +118,16 @@ async function sendOrderStatusUpdate(userEmail, userName, order) {
       </div>
     `;
     
-    await transport.sendMail({
+    var info = await transporter.sendMail({
       from: '"ShopNest" <' + (process.env.EMAIL_USER || 'shopnest.management@gmail.com') + '>',
       to: userEmail,
       subject: 'Order Update - #' + order.orderNumber,
       html: html
     });
     
-    console.log('Status update email sent to ' + userEmail);
+    console.log('Status update email sent to ' + userEmail + ' (ID: ' + info.messageId + ')');
   } catch (err) {
-    console.error('Email send error:', err.message);
+    console.error('Email send error (non-blocking):', err.message);
   }
 }
 
