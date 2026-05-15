@@ -52,6 +52,9 @@
           <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--gray-600); font-size: 0.9rem;"><span>Subtotal</span><span>$<%= order.subtotal.toFixed(2) %></span></div>
           <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--gray-600); font-size: 0.9rem;"><span>Shipping</span><span><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></span></div>
           <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--gray-600); font-size: 0.9rem;"><span>Tax</span><span>$<%= order.tax.toFixed(2) %></span></div>
+          <% if (order.couponDiscount && order.couponDiscount > 0) { %>
+            <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--success); font-size: 0.9rem;"><span>Discount (<%= order.couponCode %>)</span><span>-$<%= order.couponDiscount.toFixed(2) %></span></div>
+          <% } %>
           <div style="display: flex; justify-content: space-between; padding: 8px 0; font-weight: 700; color: var(--gray-900); font-size: 1.05rem; border-top: var(--border); margin-top: 8px;"><span>Total</span><span>$<%= order.total.toFixed(2) %></span></div>
         </div>
         
@@ -67,12 +70,15 @@
         <% } %>
       </div>
       
-      <!-- Styled Buttons -->
+      <!-- Buttons -->
       <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <a href="/cart/invoice/<%= order._id %>" class="hero-btn-outline" style="font-size: 0.95rem; border-color: var(--primary); color: var(--primary); background: transparent;">
+          <i class="fas fa-download"></i> Download Invoice
+        </a>
         <a href="/products" class="hero-btn-primary" style="font-size: 0.95rem;">
           <i class="fas fa-shopping-bag"></i> Continue Shopping
         </a>
-        <a href="/" class="hero-btn-outline" style="font-size: 0.95rem; border-color: var(--primary); color: var(--primary); background: transparent;">
+        <a href="/" class="hero-btn-outline" style="font-size: 0.95rem; border-color: var(--gray-300); color: var(--gray-600); background: transparent;">
           <i class="fas fa-home"></i> Go Home
         </a>
       </div>

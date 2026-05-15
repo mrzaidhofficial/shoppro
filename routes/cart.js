@@ -407,7 +407,7 @@ router.post('/checkout', async function(req, res) {
             await Coupon.findByIdAndUpdate(appliedCouponId, { $inc: { usedCount: 1 } });
         }
 
-        // Send order confirmation email (non-blocking — fire and forget)
+        // Send order confirmation email (non-blocking)
         var User = require('../models/User');
         User.findById(req.session.user.id).then(function(customer) {
             if (customer && customer.email) {
@@ -463,6 +463,11 @@ router.get('/invoice/:id', async function(req, res) {
         }
 
         var order = await Order.findById(req.params.id).populate('user', 'firstName lastName email');
+        
+        // If not found by _id, try finding by orderNumber
+        if (!order) {
+            order = await Order.findOne({ orderNumber: req.params.id }).populate('user', 'firstName lastName email');
+        }
 
         if (!order) {
             req.flash('error', 'Order not found');
