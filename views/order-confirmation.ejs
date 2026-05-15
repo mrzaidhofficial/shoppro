@@ -11,7 +11,15 @@
       
       <h1 style="font-family: var(--font-display); font-size: 2.2rem; color: var(--gray-900); margin-bottom: 8px;">Order Confirmed!</h1>
       <p style="color: var(--gray-500); font-size: 1.05rem; margin-bottom: 8px;">Thank you for your purchase!</p>
-      <p style="color: var(--primary); font-weight: 600; font-size: 1.1rem; margin-bottom: 36px;">Order #<%= order.orderNumber %></p>
+      <p style="color: var(--primary); font-weight: 600; font-size: 1.1rem; margin-bottom: 16px;">Order #<%= order.orderNumber %></p>
+      
+      <!-- Spam Notice -->
+      <div style="background: #FEF3C7; border: 1px solid #F59E0B; border-radius: var(--radius-lg); padding: 14px 20px; margin-bottom: 28px; display: inline-block; text-align: left;">
+        <p style="color: #92400E; font-size: 0.88rem; margin: 0;">
+          <i class="fas fa-info-circle" style="margin-right: 6px;"></i>
+          <strong>Important:</strong> A confirmation email has been sent to your inbox. Please check your <strong>spam/junk folder</strong> and mark our emails as <strong>"Not Spam"</strong> to ensure you receive future order updates.
+        </p>
+      </div>
       
       <!-- Order Details Card -->
       <div style="background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 30px; text-align: left; box-shadow: var(--shadow-sm); margin-bottom: 32px;">
