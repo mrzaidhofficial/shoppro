@@ -4,6 +4,8 @@ var Product = require('../models/Product');
 var Order = require('../models/Order');
 var Coupon = require('../models/Coupon');
 var paymentService = require('../services/paymentService');
+var emailService = require('../services/emailService');
+var invoiceService = require('../services/invoiceService');
 
 // View cart
 router.get('/', function(req, res) {
@@ -405,6 +407,17 @@ router.post('/checkout', async function(req, res) {
             await Coupon.findByIdAndUpdate(appliedCouponId, { $inc: { usedCount: 1 } });
         }
 
+        // Send order confirmation email
+        try {
+            var User = require('../models/User');
+            var customer = await User.findById(req.session.user.id);
+            if (customer && customer.email) {
+                await emailService.sendOrderConfirmation(customer.email, customer.firstName, order);
+            }
+        } catch (emailErr) {
+            console.error('Failed to send confirmation email:', emailErr.message);
+        }
+
         req.session.cart = [];
         req.session.coupon = null;
 
@@ -436,6 +449,30 @@ router.get('/order-confirmation/:id', async function(req, res) {
     } catch (err) {
         console.error('Order confirmation error:', err);
         req.flash('error', 'Error loading order details');
+        res.redirect('/');
+    }
+});
+
+// Download invoice PDF
+router.get('/invoice/:id', async function(req, res) {
+    try {
+        if (!req.session.user) {
+            req.flash('error', 'Please sign in');
+            return res.redirect('/auth/signin');
+        }
+
+        var order = await Order.findById(req.params.id).populate('user', 'firstName lastName email');
+
+        if (!order) {
+            req.flash('error', 'Order not found');
+            return res.redirect('/');
+        }
+
+        invoiceService.generateInvoice(order, res);
+
+    } catch (err) {
+        console.error('Invoice error:', err);
+        req.flash('error', 'Error generating invoice');
         res.redirect('/');
     }
 });

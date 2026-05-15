@@ -3,6 +3,7 @@ const router = express.Router();
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Coupon = require('../models/Coupon');
+const emailService = require('../services/emailService');
 
 const isAdmin = (req, res, next) => {
     if (req.session.user && req.session.user.role === 'admin') {
@@ -20,7 +21,6 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         const totalCustomers = await require('../models/User').countDocuments({ role: 'customer' });
         const recentOrders = await Order.find().populate('user', 'firstName lastName email').sort({ createdAt: -1 }).limit(10);
         
-        // Revenue stats
         const revenueResult = await Order.aggregate([
             { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $group: { _id: null, totalRevenue: { $sum: '$total' }, avgOrder: { $avg: '$total' }, count: { $sum: 1 } } }
@@ -28,7 +28,6 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalRevenue : 0;
         const avgOrderValue = revenueResult.length > 0 ? revenueResult[0].avgOrder : 0;
         
-        // Monthly sales (last 6 months)
         var sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
         const monthlySales = await Order.aggregate([
@@ -37,7 +36,6 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             { $sort: { _id: 1 } }
         ]);
         
-        // Top products
         const topProducts = await Order.aggregate([
             { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $unwind: '$items' },
@@ -49,7 +47,6 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             { $project: { name: '$product.name', totalSold: 1, revenue: 1 } }
         ]);
         
-        // Orders by status
         const ordersByStatus = await Order.aggregate([
             { $group: { _id: '$status', count: { $sum: 1 } } }
         ]);
@@ -72,7 +69,7 @@ router.get('/dashboard', isAdmin, async (req, res) => {
     }
 });
 
-// Products CRUD (unchanged)
+// Products CRUD
 router.get('/products', isAdmin, async (req, res) => {
     const products = await Product.find().sort({ createdAt: -1 });
     res.render('admin/products', { title: 'Manage Products', products });
@@ -140,6 +137,17 @@ router.post('/orders/update-status/:id', isAdmin, async (req, res) => {
             req.flash('error', 'Invalid status'); return res.redirect('/admin/orders');
         }
         await Order.findByIdAndUpdate(req.params.id, { status: status, updatedAt: new Date() });
+        
+        // Send status update email
+        try {
+            var updatedOrder = await Order.findById(req.params.id).populate('user', 'firstName lastName email');
+            if (updatedOrder.user && updatedOrder.user.email) {
+                await emailService.sendOrderStatusUpdate(updatedOrder.user.email, updatedOrder.user.firstName, updatedOrder);
+            }
+        } catch (emailErr) {
+            console.error('Failed to send status email:', emailErr.message);
+        }
+        
         req.flash('success', 'Order status updated to ' + status);
         res.redirect('/admin/orders');
     } catch (error) { req.flash('error', 'Error updating order status'); res.redirect('/admin/orders'); }
