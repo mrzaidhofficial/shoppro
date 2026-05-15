@@ -1,47 +1,41 @@
 /**
  * Email Service - ShopNest
  * Sends transactional emails using Nodemailer
- * Fails gracefully if email credentials are not configured
+ * Uses direct Gmail OAuth2-compatible App Password approach
  */
 
 var nodemailer = require('nodemailer');
 
-var transporter = null;
 var emailConfigured = false;
 
-function setupTransporter() {
-  if (transporter) return;
-  
+function getTransporter() {
   var user = process.env.EMAIL_USER || '';
   var pass = process.env.EMAIL_PASS || '';
   
   if (!user || !pass) {
     console.log('Email service: No credentials configured. Emails will be skipped.');
     emailConfigured = false;
-    return;
+    return null;
   }
   
-  transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.EMAIL_PORT) || 587,
-    secure: false,
+  emailConfigured = true;
+  
+  return nodemailer.createTransport({
+    service: 'gmail',
     auth: {
       user: user,
       pass: pass
     },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000
+    tls: {
+      rejectUnauthorized: false
+    }
   });
-  
-  emailConfigured = true;
-  console.log('Email service: Transporter configured for ' + user);
 }
 
 async function sendOrderConfirmation(userEmail, userName, order) {
-  setupTransporter();
+  var transporter = getTransporter();
   
-  if (!emailConfigured) {
+  if (!emailConfigured || !transporter) {
     console.log('Email skipped: No email credentials configured');
     return;
   }
@@ -87,9 +81,9 @@ async function sendOrderConfirmation(userEmail, userName, order) {
 }
 
 async function sendOrderStatusUpdate(userEmail, userName, order) {
-  setupTransporter();
+  var transporter = getTransporter();
   
-  if (!emailConfigured) {
+  if (!emailConfigured || !transporter) {
     console.log('Email skipped: No email credentials configured');
     return;
   }
