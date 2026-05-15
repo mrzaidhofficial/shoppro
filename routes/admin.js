@@ -138,15 +138,16 @@ router.post('/orders/update-status/:id', isAdmin, async (req, res) => {
         }
         await Order.findByIdAndUpdate(req.params.id, { status: status, updatedAt: new Date() });
         
-        // Send status update email
-        try {
-            var updatedOrder = await Order.findById(req.params.id).populate('user', 'firstName lastName email');
-            if (updatedOrder.user && updatedOrder.user.email) {
-                await emailService.sendOrderStatusUpdate(updatedOrder.user.email, updatedOrder.user.firstName, updatedOrder);
+        // Send status update email (non-blocking — fire and forget)
+        Order.findById(req.params.id).populate('user', 'firstName lastName email').then(function(updatedOrder) {
+            if (updatedOrder && updatedOrder.user && updatedOrder.user.email) {
+                emailService.sendOrderStatusUpdate(updatedOrder.user.email, updatedOrder.user.firstName, updatedOrder).catch(function(err) {
+                    console.error('Email failed (non-blocking):', err.message);
+                });
             }
-        } catch (emailErr) {
-            console.error('Failed to send status email:', emailErr.message);
-        }
+        }).catch(function(err) {
+            console.error('Order lookup failed:', err.message);
+        });
         
         req.flash('success', 'Order status updated to ' + status);
         res.redirect('/admin/orders');

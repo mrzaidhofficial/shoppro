@@ -407,16 +407,17 @@ router.post('/checkout', async function(req, res) {
             await Coupon.findByIdAndUpdate(appliedCouponId, { $inc: { usedCount: 1 } });
         }
 
-        // Send order confirmation email
-        try {
-            var User = require('../models/User');
-            var customer = await User.findById(req.session.user.id);
+        // Send order confirmation email (non-blocking — fire and forget)
+        var User = require('../models/User');
+        User.findById(req.session.user.id).then(function(customer) {
             if (customer && customer.email) {
-                await emailService.sendOrderConfirmation(customer.email, customer.firstName, order);
+                emailService.sendOrderConfirmation(customer.email, customer.firstName, order).catch(function(err) {
+                    console.error('Email failed (non-blocking):', err.message);
+                });
             }
-        } catch (emailErr) {
-            console.error('Failed to send confirmation email:', emailErr.message);
-        }
+        }).catch(function(err) {
+            console.error('Customer lookup failed:', err.message);
+        });
 
         req.session.cart = [];
         req.session.coupon = null;
