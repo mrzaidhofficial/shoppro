@@ -96,8 +96,8 @@
         <div class="checkout-form-section">
           <h3 class="checkout-section-title">Payment</h3>
           <p style="color:var(--gray-500);font-size:0.9rem;margin-bottom:20px;text-align:center;">
-            You will be redirected to PayPal to complete your payment securely.<br>
-            You can pay with your PayPal account or any credit/debit card.
+            Complete your payment securely with PayPal.<br>
+            You can pay using your PayPal account or any major credit/debit card.
           </p>
           
           <% if (typeof paypalConfigured !== 'undefined' && paypalConfigured) { %>
@@ -134,7 +134,14 @@
           <% } %>
           <div class="order-total-row grand-total"><span>Total</span><span>$<%= total %></span></div>
         </div>
-        <div class="secure-checkout-badge"><i class="fas fa-shield-alt"></i><span>Secured by PayPal</span></div>
+        <div style="text-align:center;margin-top:18px;padding:16px 20px;background:var(--success-bg);border-radius:var(--radius-lg);">
+          <p style="color:var(--success);font-size:0.82rem;font-weight:500;margin:0;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <i class="fas fa-lock" style="font-size:1rem;"></i>
+            Secured &amp; Processed by
+            <i class="fab fa-cc-paypal" style="font-size:1.2rem;color:#003087;"></i>
+            <span style="font-weight:700;color:#003087;">PayPal</span>
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -153,10 +160,8 @@ paypal_sdk.Buttons({
     layout: 'vertical',
     label: 'paypal',
     tagline: false
-},
-  // Validate shipping form before creating order
+  },
   createOrder: function() {
-    // Check if shipping form is filled
     var firstName = document.getElementById('firstName').value.trim();
     var lastName = document.getElementById('lastName').value.trim();
     var email = document.getElementById('email').value.trim();
