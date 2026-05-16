@@ -148,11 +148,12 @@
 <% if (typeof paypalConfigured !== 'undefined' && paypalConfigured) { %>
 paypal_sdk.Buttons({
   style: {
-    shape: 'pill',
-    color: 'blue',
+    shape: 'rect',
+    color: 'gold',
     layout: 'vertical',
-    label: 'pay'
-  },
+    label: 'paypal',
+    tagline: false
+},
   // Validate shipping form before creating order
   createOrder: function() {
     // Check if shipping form is filled
