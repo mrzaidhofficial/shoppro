@@ -3,9 +3,9 @@ var router = express.Router();
 var Product = require('../models/Product');
 var Order = require('../models/Order');
 var Coupon = require('../models/Coupon');
-var paymentService = require('../services/paymentService');
 var emailService = require('../services/emailService');
 var invoiceService = require('../services/invoiceService');
+var paypalService = require('../services/paypalService');
 
 // View cart
 router.get('/', function(req, res) {
@@ -299,11 +299,185 @@ router.get('/checkout', function(req, res) {
         tax: tax.toFixed(2),
         couponDiscount: couponDiscount.toFixed(2),
         total: total.toFixed(2),
-        appliedCoupon: appliedCoupon
+        appliedCoupon: appliedCoupon,
+        paypalConfigured: paypalService.isConfigured()
     });
 });
 
-// Process checkout
+// PayPal Create Order (called from frontend)
+router.post('/paypal/create-order', async function(req, res) {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ error: 'Please sign in' });
+        }
+        
+        var cart = req.session.cart || [];
+        if (cart.length === 0) {
+            return res.status(400).json({ error: 'Cart is empty' });
+        }
+        
+        var subtotal = 0;
+        var items = cart.map(function(item) {
+            subtotal += item.price * item.quantity;
+            return {
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+            };
+        });
+        
+        var shipping = subtotal > 50 ? 0 : 5.99;
+        var tax = subtotal * 0.08;
+        var discount = 0;
+        
+        if (req.session.coupon) {
+            var coupon = req.session.coupon;
+            if (coupon.discountType === 'percentage') {
+                discount = subtotal * (coupon.discountValue / 100);
+                if (coupon.maxDiscount && discount > coupon.maxDiscount) {
+                    discount = coupon.maxDiscount;
+                }
+            } else {
+                discount = coupon.discountValue;
+            }
+            if (discount > subtotal) discount = subtotal;
+        }
+        
+        var total = subtotal + shipping + tax - discount;
+        if (total < 0) total = 0;
+        
+        var paypalOrder = await paypalService.createOrder({
+            items: items,
+            subtotal: subtotal,
+            shipping: shipping,
+            tax: tax,
+            discount: discount,
+            total: total
+        });
+        
+        // Store order details in session for capture
+        req.session.pendingOrder = {
+            paypalOrderId: paypalOrder.id,
+            subtotal: subtotal,
+            shipping: shipping,
+            tax: tax,
+            discount: discount,
+            total: total,
+            items: items
+        };
+        
+        req.session.save(function(err) {
+            if (err) console.error('Session save error:', err);
+            res.json({ id: paypalOrder.id });
+        });
+        
+    } catch (err) {
+        console.error('PayPal create order error:', err.message);
+        res.status(500).json({ error: 'Failed to create PayPal order' });
+    }
+});
+
+// PayPal Capture Payment (called after customer approves)
+router.post('/paypal/capture-payment', async function(req, res) {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ error: 'Please sign in' });
+        }
+        
+        var pendingOrder = req.session.pendingOrder;
+        if (!pendingOrder) {
+            return res.status(400).json({ error: 'No pending order found' });
+        }
+        
+        var paypalOrderId = req.body.orderID;
+        
+        // Capture payment
+        var captureResult = await paypalService.capturePayment(paypalOrderId);
+        
+        // Create order in database
+        var cart = req.session.cart || [];
+        var orderItems = [];
+        
+        for (var i = 0; i < cart.length; i++) {
+            var item = cart[i];
+            var product = await Product.findById(item.productId);
+            
+            if (product) {
+                if (product.stock >= item.quantity) {
+                    product.stock -= item.quantity;
+                    await product.save();
+                }
+                
+                orderItems.push({
+                    product: product._id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    subtotal: item.price * item.quantity
+                });
+            }
+        }
+        
+        var shippingAddress = { street: 'N/A', city: 'N/A', state: 'N/A', zipCode: '00000', country: 'US' };
+        
+        var order = new Order({
+            user: req.session.user.id,
+            items: orderItems,
+            shippingAddress: shippingAddress,
+            billingAddress: shippingAddress,
+            paymentInfo: {
+                method: 'paypal',
+                transactionId: captureResult.transactionId,
+                status: 'completed',
+                paypalOrderId: captureResult.paypalOrderId,
+                payerEmail: captureResult.payerEmail
+            },
+            subtotal: pendingOrder.subtotal,
+            shippingCost: pendingOrder.shipping,
+            tax: pendingOrder.tax,
+            total: pendingOrder.total,
+            couponCode: req.session.coupon ? req.session.coupon.code : null,
+            couponDiscount: pendingOrder.discount,
+            status: 'processing'
+        });
+        
+        await order.save();
+        
+        // Update coupon usage
+        if (req.session.coupon) {
+            await Coupon.findByIdAndUpdate(req.session.coupon._id, { $inc: { usedCount: 1 } });
+        }
+        
+        // Send confirmation email
+        var User = require('../models/User');
+        User.findById(req.session.user.id).then(function(customer) {
+            if (customer && customer.email) {
+                emailService.sendOrderConfirmation(customer.email, customer.firstName, order).catch(function(err) {
+                    console.error('Email failed:', err.message);
+                });
+            }
+        }).catch(function(err) {
+            console.error('Customer lookup failed:', err.message);
+        });
+        
+        // Clear cart
+        req.session.cart = [];
+        req.session.coupon = null;
+        req.session.pendingOrder = null;
+        
+        res.json({
+            success: true,
+            orderId: order._id,
+            orderNumber: order.orderNumber
+        });
+        
+    } catch (err) {
+        console.error('PayPal capture error:', err.message);
+        res.status(500).json({ error: 'Payment failed. Please try again.' });
+    }
+});
+
+// Process checkout (fallback for non-PayPal payments)
 router.post('/checkout', async function(req, res) {
     try {
         if (!req.session.user) {
@@ -388,7 +562,7 @@ router.post('/checkout', async function(req, res) {
             items: orderItems,
             shippingAddress: shippingAddress,
             billingAddress: shippingAddress,
-            paymentInfo: { method: paymentMethod, transactionId: 'PENDING', status: 'pending' },
+            paymentInfo: { method: paymentMethod, transactionId: 'TXN-' + Date.now(), status: 'completed' },
             subtotal: subtotal,
             shippingCost: shipping,
             tax: tax,
@@ -398,21 +572,17 @@ router.post('/checkout', async function(req, res) {
             status: 'processing'
         });
 
-        var paymentResult = await paymentService.processPayment({ orderId: order._id, amount: total, currency: 'USD' }, { method: paymentMethod });
-
-        order.paymentInfo = { method: paymentMethod, transactionId: paymentResult.transactionId, status: paymentResult.status };
         await order.save();
 
         if (appliedCouponId) {
             await Coupon.findByIdAndUpdate(appliedCouponId, { $inc: { usedCount: 1 } });
         }
 
-        // Send order confirmation email (non-blocking)
         var User = require('../models/User');
         User.findById(req.session.user.id).then(function(customer) {
             if (customer && customer.email) {
                 emailService.sendOrderConfirmation(customer.email, customer.firstName, order).catch(function(err) {
-                    console.error('Email failed (non-blocking):', err.message);
+                    console.error('Email failed:', err.message);
                 });
             }
         }).catch(function(err) {
@@ -422,7 +592,7 @@ router.post('/checkout', async function(req, res) {
         req.session.cart = [];
         req.session.coupon = null;
 
-        res.json({ success: true, orderId: order._id, orderNumber: order.orderNumber, transactionId: paymentResult.transactionId });
+        res.json({ success: true, orderId: order._id, orderNumber: order.orderNumber });
 
     } catch (err) {
         console.error('Checkout error:', err.message);
@@ -464,7 +634,6 @@ router.get('/invoice/:id', async function(req, res) {
 
         var order = await Order.findById(req.params.id).populate('user', 'firstName lastName email');
         
-        // If not found by _id, try finding by orderNumber
         if (!order) {
             order = await Order.findOne({ orderNumber: req.params.id }).populate('user', 'firstName lastName email');
         }

@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var mongoose = require('mongoose');
 var session = require('express-session');
@@ -21,7 +22,7 @@ if (!mongoUri) {
 }
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'shopProSecret2024',
+  secret: process.env.SESSION_SECRET || 'ShopNest2024Secure!',
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
