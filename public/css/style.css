@@ -410,7 +410,18 @@ ul { list-style: none; }
 .footer-payments i.fa-cc-discover:hover { color: #FF6000; }
 .footer-payments i.fa-cc-jcb:hover { color: #0B7CBE; }
 .footer-payments i.fa-cc-diners-club:hover { color: #0079BE; }
-.footer-payments i.fa-cc-unionpay:hover { color: #D5002B; }
+.footer-payment-unionpay {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  transition: color 0.15s ease;
+  cursor: default;
+  font-family: var(--font-display);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+}
+.footer-payment-unionpay:hover { color: #D5002B; }
 .footer-payments i.fa-cc-paypal:hover { color: #003087; }
 .footer-payments i.fa-cc-apple-pay:hover { color: #000000; }
 .footer-payments i.fa-google-pay:hover { color: #4285F4; }
