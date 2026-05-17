@@ -3,6 +3,7 @@ const router = express.Router();
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Coupon = require('../models/Coupon');
+const User = require('../models/User');
 const emailService = require('../services/emailService');
 
 const isAdmin = (req, res, next) => {
@@ -18,7 +19,19 @@ router.get('/dashboard', isAdmin, async (req, res) => {
     try {
         const totalProducts = await Product.countDocuments();
         const totalOrders = await Order.countDocuments();
-        const totalCustomers = await require('../models/User').countDocuments({ role: 'customer' });
+        
+        // Count only users who have placed at least one order
+        const customerIds = await Order.distinct('user');
+        const totalCustomers = customerIds.length;
+        
+        // Total registered users
+        const totalRegisteredUsers = await User.countDocuments({ role: 'customer' });
+        
+        // Conversion Rate
+        const conversionRate = totalRegisteredUsers > 0 
+            ? ((totalCustomers / totalRegisteredUsers) * 100).toFixed(1) 
+            : 0;
+        
         const recentOrders = await Order.find().populate('user', 'firstName lastName email').sort({ createdAt: -1 }).limit(10);
         
         const revenueResult = await Order.aggregate([
@@ -56,6 +69,8 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             totalProducts,
             totalOrders,
             totalCustomers,
+            totalRegisteredUsers,
+            conversionRate,
             totalRevenue,
             avgOrderValue,
             recentOrders,
@@ -138,7 +153,6 @@ router.post('/orders/update-status/:id', isAdmin, async (req, res) => {
         }
         await Order.findByIdAndUpdate(req.params.id, { status: status, updatedAt: new Date() });
         
-        // Send status update email (non-blocking — fire and forget)
         Order.findById(req.params.id).populate('user', 'firstName lastName email').then(function(updatedOrder) {
             if (updatedOrder && updatedOrder.user && updatedOrder.user.email) {
                 emailService.sendOrderStatusUpdate(updatedOrder.user.email, updatedOrder.user.firstName, updatedOrder).catch(function(err) {

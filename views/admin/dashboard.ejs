@@ -95,6 +95,7 @@
   .stat-icon.orders { background: var(--accent-light); color: var(--accent-dark); }
   .stat-icon.revenue { background: var(--secondary-light); color: var(--secondary); }
   .stat-icon.customers { background: #FEF3C7; color: #D97706; }
+  .stat-icon.conversion { background: #E0E7FF; color: #4F46E5; }
   .stat-number {
     font-family: var(--font-display);
     font-size: 1.8rem;
@@ -105,6 +106,20 @@
     font-size: 0.82rem;
     color: var(--gray-500);
     margin-top: 4px;
+  }
+  .conversion-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .conversion-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4F46E5, #818CF8);
+    border-radius: 3px;
+    transition: width 0.5s ease;
   }
   .analytics-grid {
     display: grid;
@@ -252,7 +267,6 @@
     <div class="admin-content">
       <h1 class="admin-page-title">Dashboard</h1>
       
-      <!-- Quick Actions -->
       <div class="quick-actions">
         <a href="/admin/products/add" class="quick-action-card">
           <i class="fas fa-plus-circle"></i>
@@ -268,7 +282,6 @@
         </a>
       </div>
       
-      <!-- Stats -->
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon products"><i class="fas fa-box"></i></div>
@@ -288,13 +301,37 @@
         <div class="stat-card">
           <div class="stat-icon customers"><i class="fas fa-users"></i></div>
           <div class="stat-number"><%= typeof totalCustomers !== 'undefined' ? totalCustomers : 0 %></div>
-          <div class="stat-label">Total Customers</div>
+          <div class="stat-label">Customers <span style="font-size:0.7rem;color:var(--gray-400);">(<%= typeof totalRegisteredUsers !== 'undefined' ? totalRegisteredUsers : 0 %> registered)</span></div>
         </div>
       </div>
       
-      <!-- Analytics -->
+      <!-- Conversion Rate Card -->
+      <div class="analytics-card" style="margin-bottom:36px;">
+        <h3>Conversion Rate</h3>
+        <div style="display:flex;align-items:center;gap:24px;">
+          <div style="text-align:center;">
+            <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:700;color:#4F46E5;"><%= conversionRate %>%</div>
+            <div style="font-size:0.8rem;color:var(--gray-500);margin-top:4px;">
+              <%= typeof totalCustomers !== 'undefined' ? totalCustomers : 0 %> customers / <%= typeof totalRegisteredUsers !== 'undefined' ? totalRegisteredUsers : 0 %> registered
+            </div>
+          </div>
+          <div style="flex:1;">
+            <div class="conversion-bar">
+              <div class="conversion-fill" style="width:<%= conversionRate %>%"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.7rem;color:var(--gray-400);">
+              <span>0%</span>
+              <span>50%</span>
+              <span>100%</span>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:0.78rem;color:var(--gray-400);margin-top:12px;">
+          <i class="fas fa-info-circle"></i> Percentage of registered users who have made at least one purchase.
+        </p>
+      </div>
+      
       <div class="analytics-grid">
-        <!-- Monthly Sales Chart -->
         <div class="analytics-card">
           <h3>Monthly Sales <span style="font-weight:400;font-size:0.78rem;color:var(--gray-400);">(Last 6 months)</span></h3>
           <% if (typeof monthlySales !== 'undefined' && monthlySales.length > 0) { %>
@@ -313,7 +350,6 @@
           <% } %>
         </div>
         
-        <!-- Top Products -->
         <div class="analytics-card">
           <h3>Top Selling Products</h3>
           <% if (typeof topProducts !== 'undefined' && topProducts.length > 0) { %>
@@ -335,7 +371,6 @@
         </div>
       </div>
       
-      <!-- Order Status Summary -->
       <% if (typeof ordersByStatus !== 'undefined' && ordersByStatus.length > 0) { %>
         <div class="analytics-card" style="margin-bottom:36px;">
           <h3>Orders by Status</h3>
@@ -349,7 +384,6 @@
         </div>
       <% } %>
       
-      <!-- Recent Orders -->
       <h3 style="font-family:var(--font-display);font-size:1.2rem;color:var(--gray-900);margin-bottom:18px;">Recent Orders</h3>
       <% if (recentOrders && recentOrders.length > 0) { %>
         <div style="overflow-x:auto;">
