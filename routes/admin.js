@@ -20,17 +20,10 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         const totalProducts = await Product.countDocuments();
         const totalOrders = await Order.countDocuments();
         
-        // Count only users who have placed at least one order
         const customerIds = await Order.distinct('user');
         const totalCustomers = customerIds.length;
-        
-        // Total registered users
         const totalRegisteredUsers = await User.countDocuments({ role: 'customer' });
-        
-        // Conversion Rate
-        const conversionRate = totalRegisteredUsers > 0 
-            ? ((totalCustomers / totalRegisteredUsers) * 100).toFixed(1) 
-            : 0;
+        const conversionRate = totalRegisteredUsers > 0 ? ((totalCustomers / totalRegisteredUsers) * 100).toFixed(1) : 0;
         
         // Total Sales = Cost + Profit + Shipping - Coupons (all orders)
         const salesResult = await Order.aggregate([
@@ -50,7 +43,7 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             totalSales = (salesResult[0].totalCost || 0) + (salesResult[0].totalProfit || 0) + (salesResult[0].totalShipping || 0) - (salesResult[0].totalCoupons || 0);
         }
         
-        // Net Profit = Product Profit - Coupons (all orders, excluding cancelled)
+        // Net Profit = Product Profit - Coupons (paid orders)
         const revenueResult = await Order.aggregate([
             { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $unwind: '$items' },
@@ -67,12 +60,25 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             totalRevenue = (revenueResult[0].totalProfit || 0) - (revenueResult[0].totalCoupons || 0);
         }
         
-        const avgOrderValue = revenueResult.length > 0 && revenueResult[0].count ? revenueResult[0].avgOrder : 0;
+        // Shipping Stats
+        const shippingStats = await Order.aggregate([
+            { $match: { shippingCost: { $gt: 0 } } },
+            { $group: { _id: null, totalShipping: { $sum: '$shippingCost' }, orderCount: { $sum: 1 } } }
+        ]);
+        const totalShippingCollected = shippingStats.length > 0 ? shippingStats[0].totalShipping : 0;
+        const paidShippingOrders = shippingStats.length > 0 ? shippingStats[0].orderCount : 0;
+        
+        // Coupon Stats
+        const couponStats = await Order.aggregate([
+            { $match: { couponDiscount: { $gt: 0 } } },
+            { $group: { _id: null, totalCoupons: { $sum: '$couponDiscount' }, orderCount: { $sum: 1 } } }
+        ]);
+        const totalCouponsGiven = couponStats.length > 0 ? couponStats[0].totalCoupons : 0;
+        const couponOrderCount = couponStats.length > 0 ? couponStats[0].orderCount : 0;
         
         const recentOrders = await Order.find().populate('user', 'firstName lastName email').sort({ createdAt: -1 }).limit(10);
         
-        var sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        var sixMonthsAgo = new Date(); sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
         const monthlySales = await Order.aggregate([
             { $match: { createdAt: { $gte: sixMonthsAgo }, status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $group: { _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } }, revenue: { $sum: '$total' }, orders: { $sum: 1 } } },
@@ -83,16 +89,13 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $unwind: '$items' },
             { $group: { _id: '$items.product', totalSold: { $sum: '$items.quantity' }, revenue: { $sum: '$items.subtotal' } } },
-            { $sort: { totalSold: -1 } },
-            { $limit: 5 },
+            { $sort: { totalSold: -1 } }, { $limit: 5 },
             { $lookup: { from: 'products', localField: '_id', foreignField: '_id', as: 'product' } },
             { $unwind: '$product' },
             { $project: { name: '$product.name', totalSold: 1, revenue: 1 } }
         ]);
         
-        const ordersByStatus = await Order.aggregate([
-            { $group: { _id: '$status', count: { $sum: 1 } } }
-        ]);
+        const ordersByStatus = await Order.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]);
         
         res.render('admin/dashboard', {
             title: 'Admin Dashboard',
@@ -103,7 +106,11 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             conversionRate,
             totalSales,
             totalRevenue,
-            avgOrderValue,
+            totalShippingCollected,
+            paidShippingOrders,
+            totalCouponsGiven,
+            couponOrderCount,
+            avgOrderValue: 0,
             recentOrders,
             monthlySales,
             topProducts,
@@ -133,16 +140,9 @@ router.post('/products/add', isAdmin, async (req, res) => {
             else if (typeof req.body.images === 'string' && req.body.images.trim() !== '') images = [req.body.images.trim()];
         }
         const product = new Product({
-            name: req.body.name,
-            shortDescription: req.body.shortDescription || '',
-            description: req.body.description,
-            price: req.body.price,
-            cost: req.body.cost || 0,
-            category: req.body.category,
-            stock: req.body.stock,
-            featured: req.body.featured === 'on',
-            freeShipping: req.body.freeShipping === 'on',
-            images: images
+            name: req.body.name, shortDescription: req.body.shortDescription || '', description: req.body.description,
+            price: req.body.price, cost: req.body.cost || 0, category: req.body.category, stock: req.body.stock,
+            featured: req.body.featured === 'on', freeShipping: req.body.freeShipping === 'on', images: images
         });
         await product.save();
         req.flash('success', 'Product added successfully');
@@ -163,23 +163,12 @@ router.post('/products/edit/:id', isAdmin, async (req, res) => {
             else if (typeof req.body.images === 'string' && req.body.images.trim() !== '') images = [req.body.images.trim()];
         }
         await Product.findByIdAndUpdate(req.params.id, {
-            name: req.body.name,
-            shortDescription: req.body.shortDescription || '',
-            description: req.body.description,
-            price: req.body.price,
-            cost: req.body.cost || 0,
-            category: req.body.category,
-            stock: req.body.stock,
-            featured: req.body.featured === 'on',
-            freeShipping: req.body.freeShipping === 'on',
-            images: images
+            name: req.body.name, shortDescription: req.body.shortDescription || '', description: req.body.description,
+            price: req.body.price, cost: req.body.cost || 0, category: req.body.category, stock: req.body.stock,
+            featured: req.body.featured === 'on', freeShipping: req.body.freeShipping === 'on', images: images
         });
-        // Recalculate profit
         var updatedProduct = await Product.findById(req.params.id);
-        if (updatedProduct.cost && updatedProduct.price) {
-            updatedProduct.profit = updatedProduct.price - updatedProduct.cost;
-            await updatedProduct.save();
-        }
+        if (updatedProduct.cost && updatedProduct.price) { updatedProduct.profit = updatedProduct.price - updatedProduct.cost; await updatedProduct.save(); }
         req.flash('success', 'Product updated successfully');
         res.redirect('/admin/products');
     } catch (error) { req.flash('error', 'Error updating product'); res.redirect('/admin/products'); }
@@ -199,22 +188,13 @@ router.get('/orders', isAdmin, async (req, res) => {
 router.post('/orders/update-status/:id', isAdmin, async (req, res) => {
     try {
         const { status } = req.body;
-        if (!['processing', 'shipped', 'delivered', 'cancelled'].includes(status)) {
-            req.flash('error', 'Invalid status'); return res.redirect('/admin/orders');
-        }
+        if (!['processing', 'shipped', 'delivered', 'cancelled'].includes(status)) { req.flash('error', 'Invalid status'); return res.redirect('/admin/orders'); }
         await Order.findByIdAndUpdate(req.params.id, { status: status, updatedAt: new Date() });
-        
-        // Send status update email (non-blocking)
         Order.findById(req.params.id).populate('user', 'firstName lastName email').then(function(updatedOrder) {
             if (updatedOrder && updatedOrder.user && updatedOrder.user.email) {
-                emailService.sendOrderStatusUpdate(updatedOrder.user.email, updatedOrder.user.firstName, updatedOrder).catch(function(err) {
-                    console.error('Email failed (non-blocking):', err.message);
-                });
+                emailService.sendOrderStatusUpdate(updatedOrder.user.email, updatedOrder.user.firstName, updatedOrder).catch(function(err) { console.error('Email failed:', err.message); });
             }
-        }).catch(function(err) {
-            console.error('Order lookup failed:', err.message);
-        });
-        
+        }).catch(function(err) { console.error('Order lookup failed:', err.message); });
         req.flash('success', 'Order status updated to ' + status);
         res.redirect('/admin/orders');
     } catch (error) { req.flash('error', 'Error updating order status'); res.redirect('/admin/orders'); }
@@ -223,9 +203,7 @@ router.post('/orders/update-status/:id', isAdmin, async (req, res) => {
 router.post('/orders/bulk-update', isAdmin, async (req, res) => {
     try {
         const { orderIds, status } = req.body;
-        if (!['processing', 'shipped', 'delivered', 'cancelled'].includes(status)) {
-            req.flash('error', 'Invalid status selected'); return res.redirect('/admin/orders');
-        }
+        if (!['processing', 'shipped', 'delivered', 'cancelled'].includes(status)) { req.flash('error', 'Invalid status'); return res.redirect('/admin/orders'); }
         if (!orderIds || orderIds.length === 0) { req.flash('error', 'No orders selected'); return res.redirect('/admin/orders'); }
         const ids = Array.isArray(orderIds) ? orderIds : [orderIds];
         await Order.updateMany({ _id: { $in: ids } }, { status: status, updatedAt: new Date() });
@@ -240,29 +218,15 @@ router.get('/coupons', isAdmin, async (req, res) => {
     res.render('admin/coupons', { title: 'Manage Coupons', coupons });
 });
 
-router.get('/coupons/add', isAdmin, (req, res) => {
-    res.render('admin/add-coupon', { title: 'Add Coupon' });
-});
+router.get('/coupons/add', isAdmin, (req, res) => { res.render('admin/add-coupon', { title: 'Add Coupon' }); });
 
 router.post('/coupons/add', isAdmin, async (req, res) => {
     try {
-        var coupon = new Coupon({
-            code: req.body.code.trim().toUpperCase(),
-            description: req.body.description || '',
-            discountType: req.body.discountType,
-            discountValue: req.body.discountValue,
-            minPurchase: req.body.minPurchase || 0,
-            maxDiscount: req.body.maxDiscount || null,
-            usageLimit: req.body.usageLimit || null,
-            expiryDate: req.body.expiryDate || null
-        });
+        var coupon = new Coupon({ code: req.body.code.trim().toUpperCase(), description: req.body.description || '', discountType: req.body.discountType, discountValue: req.body.discountValue, minPurchase: req.body.minPurchase || 0, maxDiscount: req.body.maxDiscount || null, usageLimit: req.body.usageLimit || null, expiryDate: req.body.expiryDate || null });
         await coupon.save();
         req.flash('success', 'Coupon created successfully');
         res.redirect('/admin/coupons');
-    } catch (error) {
-        req.flash('error', 'Error creating coupon. Code may already exist.');
-        res.redirect('/admin/coupons/add');
-    }
+    } catch (error) { req.flash('error', 'Error creating coupon'); res.redirect('/admin/coupons/add'); }
 });
 
 router.post('/coupons/delete/:id', isAdmin, async (req, res) => {
@@ -274,8 +238,7 @@ router.post('/coupons/delete/:id', isAdmin, async (req, res) => {
 router.post('/coupons/toggle/:id', isAdmin, async (req, res) => {
     try {
         var coupon = await Coupon.findById(req.params.id);
-        coupon.isActive = !coupon.isActive;
-        await coupon.save();
+        coupon.isActive = !coupon.isActive; await coupon.save();
         req.flash('success', 'Coupon ' + (coupon.isActive ? 'activated' : 'deactivated'));
     } catch (error) { req.flash('error', 'Error toggling coupon'); }
     res.redirect('/admin/coupons');
