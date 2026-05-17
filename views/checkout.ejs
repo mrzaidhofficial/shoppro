@@ -7,7 +7,6 @@
     <div class="checkout-layout">
       <div class="checkout-form-card">
         
-        <!-- Shipping Address Section -->
         <div class="checkout-form-section">
           <h3 class="checkout-section-title">Shipping Address</h3>
           <div class="form-row">
@@ -38,61 +37,12 @@
                 <option value="CN">China</option>
                 <option value="IN">India</option>
                 <option value="LK">Sri Lanka</option>
-                <option value="BR">Brazil</option>
-                <option value="MX">Mexico</option>
-                <option value="NL">Netherlands</option>
-                <option value="SE">Sweden</option>
-                <option value="NO">Norway</option>
-                <option value="DK">Denmark</option>
-                <option value="FI">Finland</option>
-                <option value="CH">Switzerland</option>
-                <option value="AT">Austria</option>
-                <option value="BE">Belgium</option>
-                <option value="PT">Portugal</option>
-                <option value="IE">Ireland</option>
-                <option value="NZ">New Zealand</option>
-                <option value="SG">Singapore</option>
-                <option value="MY">Malaysia</option>
-                <option value="PH">Philippines</option>
-                <option value="TH">Thailand</option>
-                <option value="VN">Vietnam</option>
-                <option value="ID">Indonesia</option>
-                <option value="KR">South Korea</option>
-                <option value="AE">United Arab Emirates</option>
-                <option value="SA">Saudi Arabia</option>
-                <option value="QA">Qatar</option>
-                <option value="KW">Kuwait</option>
-                <option value="OM">Oman</option>
-                <option value="BH">Bahrain</option>
-                <option value="ZA">South Africa</option>
-                <option value="NG">Nigeria</option>
-                <option value="KE">Kenya</option>
-                <option value="EG">Egypt</option>
-                <option value="MA">Morocco</option>
-                <option value="AR">Argentina</option>
-                <option value="CL">Chile</option>
-                <option value="CO">Colombia</option>
-                <option value="PE">Peru</option>
-                <option value="PL">Poland</option>
-                <option value="RO">Romania</option>
-                <option value="CZ">Czech Republic</option>
-                <option value="GR">Greece</option>
-                <option value="TR">Turkey</option>
-                <option value="RU">Russia</option>
-                <option value="UA">Ukraine</option>
-                <option value="HK">Hong Kong</option>
-                <option value="TW">Taiwan</option>
-                <option value="BD">Bangladesh</option>
-                <option value="PK">Pakistan</option>
-                <option value="NP">Nepal</option>
-                <option value="MV">Maldives</option>
                 <option value="Other">Other</option>
               </select>
             </div>
           </div>
         </div>
 
-        <!-- Payment Section -->
         <div class="checkout-form-section">
           <h3 class="checkout-section-title">Payment</h3>
           <p style="color:var(--gray-500);font-size:0.9rem;margin-bottom:20px;text-align:center;">
@@ -112,7 +62,6 @@
 
       </div>
 
-      <!-- Order Summary Sidebar -->
       <div class="order-summary-card">
         <h3 class="order-summary-title">Your Order</h3>
         <div class="order-items-list">
@@ -134,10 +83,10 @@
           <div class="order-total-row grand-total"><span>Total</span><span>$<%= total %></span></div>
         </div>
         <div style="text-align:center;margin-top:18px;padding:14px 20px;background:var(--success-bg);border-radius:var(--radius-lg);">
-          <p style="color:var(--success);font-size:0.82rem;font-weight:500;margin:0;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <p style="color:var(--success);font-size:0.82rem;font-weight:500;margin:0;display:flex;align-items:center;justify-content:center;gap:8px;">
             <i class="fas fa-lock" style="font-size:0.9rem;"></i>
             Secured &amp; Processed by
-            <span style="font-weight:700;color:#003087;font-family:var(--font-display);font-size:0.9rem;">PayPal</span>
+            <span style="font-weight:700;color:#003087;font-family:var(--font-display);letter-spacing:-0.3px;">Pay</span><span style="font-weight:700;color:#009CDE;font-family:var(--font-display);letter-spacing:-0.3px;">Pal</span>
           </p>
         </div>
       </div>
@@ -145,7 +94,6 @@
   </div>
 </section>
 
-<!-- PayPal SDK -->
 <script src="https://www.paypal.com/sdk/js?client-id=<%= typeof paypalConfigured !== 'undefined' && paypalConfigured ? process.env.PAYPAL_CLIENT_ID : 'test' %>&currency=USD" data-namespace="paypal_sdk"></script>
 
 <script>
