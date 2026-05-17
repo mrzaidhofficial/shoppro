@@ -4,7 +4,6 @@
   <div class="container">
     <div style="max-width: 700px; margin: 0 auto; text-align: center;">
       
-      <!-- Success Icon -->
       <div style="width: 80px; height: 80px; background: var(--success-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; animation: popIn 0.5s ease;">
         <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success);"></i>
       </div>
@@ -13,7 +12,6 @@
       <p style="color: var(--gray-500); font-size: 1.05rem; margin-bottom: 8px;">Thank you for your purchase!</p>
       <p style="color: var(--primary); font-weight: 600; font-size: 1.1rem; margin-bottom: 16px;">Order #<%= order.orderNumber %></p>
       
-      <!-- Spam Notice -->
       <div style="background: #FEF3C7; border: 1px solid #F59E0B; border-radius: var(--radius-lg); padding: 14px 20px; margin-bottom: 28px; display: inline-block; text-align: left;">
         <p style="color: #92400E; font-size: 0.88rem; margin: 0;">
           <i class="fas fa-info-circle" style="margin-right: 6px;"></i>
@@ -21,7 +19,6 @@
         </p>
       </div>
       
-      <!-- Order Details Card -->
       <div style="background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 30px; text-align: left; box-shadow: var(--shadow-sm); margin-bottom: 32px;">
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
@@ -59,11 +56,11 @@
         <div style="border-top: var(--border); padding-top: 16px; margin-top: 16px;">
           <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--gray-600); font-size: 0.9rem;"><span>Subtotal</span><span>$<%= order.subtotal.toFixed(2) %></span></div>
           <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--gray-600); font-size: 0.9rem;"><span>Shipping</span><span><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></span></div>
-          <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--gray-600); font-size: 0.9rem;"><span>Tax</span><span>$<%= order.tax.toFixed(2) %></span></div>
           <% if (order.couponDiscount && order.couponDiscount > 0) { %>
             <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--success); font-size: 0.9rem;"><span>Discount (<%= order.couponCode %>)</span><span>-$<%= order.couponDiscount.toFixed(2) %></span></div>
           <% } %>
           <div style="display: flex; justify-content: space-between; padding: 8px 0; font-weight: 700; color: var(--gray-900); font-size: 1.05rem; border-top: var(--border); margin-top: 8px;"><span>Total</span><span>$<%= order.total.toFixed(2) %></span></div>
+          <div style="font-size:0.75rem;color:var(--gray-400);text-align:right;margin-top:4px;">Tax/VAT included</div>
         </div>
         
         <% if (order.shippingAddress && order.shippingAddress.street) { %>
@@ -78,7 +75,6 @@
         <% } %>
       </div>
       
-      <!-- Buttons -->
       <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
         <a href="/cart/invoice/<%= order._id %>" class="hero-btn-outline" style="font-size: 0.95rem; border-color: var(--primary); color: var(--primary); background: transparent;">
           <i class="fas fa-download"></i> Download Invoice

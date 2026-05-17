@@ -48,6 +48,7 @@
       <a href="/admin/dashboard" class="admin-nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
       <a href="/admin/products" class="admin-nav-item active"><i class="fas fa-box"></i> Products</a>
       <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
+      <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
       <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
     </aside>
@@ -83,16 +84,20 @@
           </div>
           <div class="form-row">
             <div class="form-group"><label class="form-label" for="price">Price (USD) *</label><input type="number" class="form-input" id="price" name="price" required placeholder="0.00" min="0" step="0.01"></div>
-            <div class="form-group"><label class="form-label" for="stock">Stock Quantity *</label><input type="number" class="form-input" id="stock" name="stock" required placeholder="0" min="0" value="0"></div>
+            <div class="form-group"><label class="form-label" for="cost">Cost (USD)</label><input type="number" class="form-input" id="cost" name="cost" placeholder="0.00" min="0" step="0.01" value="0"><span class="form-hint">What you paid for this product. Profit = Price - Cost</span></div>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="category">Category *</label>
-            <select class="form-select" id="category" name="category" required>
-              <option value="">Select a category</option>
-              <option value="Electronics">Electronics</option><option value="Clothing">Clothing</option><option value="Home & Garden">Home & Garden</option><option value="Accessories">Accessories</option><option value="Sports">Sports</option><option value="Books">Books</option><option value="Other">Other</option>
-            </select>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="stock">Stock Quantity *</label><input type="number" class="form-input" id="stock" name="stock" required placeholder="0" min="0" value="0"></div>
+            <div class="form-group">
+              <label class="form-label" for="category">Category *</label>
+              <select class="form-select" id="category" name="category" required>
+                <option value="">Select a category</option>
+                <option value="Electronics">Electronics</option><option value="Clothing">Clothing</option><option value="Home & Garden">Home & Garden</option><option value="Accessories">Accessories</option><option value="Sports">Sports</option><option value="Books">Books</option><option value="Other">Other</option>
+              </select>
+            </div>
           </div>
           <div class="checkbox-group"><input type="checkbox" id="featured" name="featured"><label for="featured">Mark as Featured Product</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="freeShipping" name="freeShipping"><label for="freeShipping">Free Shipping</label></div>
           <div class="form-actions">
             <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> Add Product</button>
             <a href="/admin/products" class="btn-cancel">Cancel</a>
@@ -104,33 +109,9 @@
 </div>
 
 <script>
-function updatePreview() {
-  var firstInput = document.querySelector('#imageUrlsContainer input[name="images"]');
-  var previewImg = document.getElementById('imagePreview');
-  var placeholder = document.getElementById('imagePreviewPlaceholder');
-  if (firstInput && firstInput.value.trim()) {
-    if (placeholder) placeholder.style.display = 'none';
-    previewImg.style.display = 'block';
-    previewImg.src = firstInput.value.trim();
-  } else {
-    previewImg.style.display = 'none';
-    if (placeholder) placeholder.style.display = 'flex';
-  }
-}
-function addImageRow() {
-  var container = document.getElementById('imageUrlsContainer');
-  var row = document.createElement('div');
-  row.className = 'image-url-row';
-  row.innerHTML = '<input type="text" name="images" class="form-input" value="" placeholder="https://example.com/image.jpg" oninput="updatePreview()"><button type="button" class="btn-remove-image" onclick="removeImageRow(this)" title="Remove image"><i class="fas fa-times"></i></button>';
-  container.appendChild(row);
-}
-function removeImageRow(btn) {
-  var container = document.getElementById('imageUrlsContainer');
-  var rows = container.querySelectorAll('.image-url-row');
-  if (rows.length <= 1) { rows[0].querySelector('input').value = ''; updatePreview(); return; }
-  btn.parentElement.remove();
-  updatePreview();
-}
+function updatePreview() { var firstInput = document.querySelector('#imageUrlsContainer input[name="images"]'); var previewImg = document.getElementById('imagePreview'); var placeholder = document.getElementById('imagePreviewPlaceholder'); if (firstInput && firstInput.value.trim()) { if (placeholder) placeholder.style.display = 'none'; previewImg.style.display = 'block'; previewImg.src = firstInput.value.trim(); } else { previewImg.style.display = 'none'; if (placeholder) placeholder.style.display = 'flex'; } }
+function addImageRow() { var container = document.getElementById('imageUrlsContainer'); var row = document.createElement('div'); row.className = 'image-url-row'; row.innerHTML = '<input type="text" name="images" class="form-input" value="" placeholder="https://example.com/image.jpg" oninput="updatePreview()"><button type="button" class="btn-remove-image" onclick="removeImageRow(this)" title="Remove image"><i class="fas fa-times"></i></button>'; container.appendChild(row); }
+function removeImageRow(btn) { var container = document.getElementById('imageUrlsContainer'); var rows = container.querySelectorAll('.image-url-row'); if (rows.length <= 1) { rows[0].querySelector('input').value = ''; updatePreview(); return; } btn.parentElement.remove(); updatePreview(); }
 </script>
 
 <%- include('../partials/footer') %>

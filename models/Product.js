@@ -7,6 +7,7 @@ var productSchema = new mongoose.Schema({
     price: { type: Number, required: true, min: 0 },
     cost: { type: Number, default: 0, min: 0 },
     profit: { type: Number, default: 0 },
+    freeShipping: { type: Boolean, default: false },
     category: {
         type: String,
         required: true,
@@ -27,26 +28,17 @@ var productSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-// Auto-calculate profit before saving
 productSchema.pre('save', function(next) {
-    if (this.cost && this.price) {
-        this.profit = this.price - this.cost;
-    } else {
-        this.profit = 0;
-    }
+    if (this.cost && this.price) { this.profit = this.price - this.cost; }
+    else { this.profit = 0; }
     next();
 });
 
-// Calculate average rating
 productSchema.methods.calculateAverageRating = function() {
-    if (this.ratings.length === 0) {
-        this.averageRating = 0;
-        this.numReviews = 0;
-    } else {
+    if (this.ratings.length === 0) { this.averageRating = 0; this.numReviews = 0; }
+    else {
         var total = 0;
-        this.ratings.forEach(function(r) {
-            total += r.rating;
-        });
+        this.ratings.forEach(function(r) { total += r.rating; });
         this.averageRating = Math.round((total / this.ratings.length) * 10) / 10;
         this.numReviews = this.ratings.length;
     }
