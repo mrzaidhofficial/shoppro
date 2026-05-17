@@ -49,6 +49,7 @@
       <a href="/admin/dashboard" class="admin-nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
       <a href="/admin/products" class="admin-nav-item active"><i class="fas fa-box"></i> Products</a>
       <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
+      <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
       <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
     </aside>
@@ -83,16 +84,20 @@
           </div>
           <div class="form-row">
             <div class="form-group"><label class="form-label" for="price">Price (USD) *</label><input type="number" class="form-input" id="price" name="price" required value="<%= product.price %>" min="0" step="0.01"></div>
-            <div class="form-group"><label class="form-label" for="stock">Stock Quantity *</label><input type="number" class="form-input" id="stock" name="stock" required value="<%= product.stock %>" min="0"></div>
+            <div class="form-group"><label class="form-label" for="cost">Cost (USD)</label><input type="number" class="form-input" id="cost" name="cost" value="<%= product.cost || 0 %>" placeholder="0.00" min="0" step="0.01"><span class="form-hint">What you paid for this product. Profit = Price - Cost</span></div>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="category">Category *</label>
-            <select class="form-select" id="category" name="category" required>
-              <option value="">Select a category</option>
-              <% var categories = ['Electronics', 'Clothing', 'Home & Garden', 'Accessories', 'Sports', 'Books', 'Other']; categories.forEach(function(cat) { %><option value="<%= cat %>" <%= product.category === cat ? 'selected' : '' %>><%= cat %></option><% }); %>
-            </select>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="stock">Stock Quantity *</label><input type="number" class="form-input" id="stock" name="stock" required value="<%= product.stock %>" min="0"></div>
+            <div class="form-group">
+              <label class="form-label" for="category">Category *</label>
+              <select class="form-select" id="category" name="category" required>
+                <option value="">Select a category</option>
+                <% var categories = ['Electronics', 'Clothing', 'Home & Garden', 'Accessories', 'Sports', 'Books', 'Other']; categories.forEach(function(cat) { %><option value="<%= cat %>" <%= product.category === cat ? 'selected' : '' %>><%= cat %></option><% }); %>
+              </select>
+            </div>
           </div>
           <div class="checkbox-group"><input type="checkbox" id="featured" name="featured" <%= product.featured ? 'checked' : '' %>><label for="featured">Mark as Featured Product</label></div>
+          <div class="checkbox-group"><input type="checkbox" id="freeShipping" name="freeShipping" <%= product.freeShipping ? 'checked' : '' %>><label for="freeShipping">Free Shipping</label></div>
           <div class="form-actions">
             <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Save Changes</button>
             <a href="/admin/products" class="btn-cancel">Cancel</a>

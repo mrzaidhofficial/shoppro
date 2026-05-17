@@ -36,11 +36,11 @@
           <div class="cart-summary-rows">
             <div class="cart-summary-row"><span>Subtotal</span><span>$<%= subtotal %></span></div>
             <div class="cart-summary-row"><span>Shipping</span><span><%= parseFloat(shipping) === 0 ? 'FREE' : '$' + shipping %></span></div>
-            <div class="cart-summary-row"><span>Tax (8%)</span><span>$<%= tax %></span></div>
             <% if (typeof couponDiscount !== 'undefined' && parseFloat(couponDiscount) > 0) { %>
               <div class="cart-summary-row" style="color:var(--success);"><span>Coupon Discount</span><span>-$<%= couponDiscount %></span></div>
             <% } %>
             <div class="cart-summary-row total"><span>Total</span><span>$<%= total %></span></div>
+            <div style="font-size:0.75rem;color:var(--gray-400);text-align:right;margin-top:4px;">Tax/VAT included</div>
           </div>
           
           <!-- Coupon Code -->
