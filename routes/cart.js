@@ -15,7 +15,7 @@ function calculateShipping(cartItems, products) {
       shipping += 5.99;
     }
   }
-  return shipping;
+  return Math.round(shipping * 100) / 100;
 }
 
 // View cart
@@ -27,14 +27,14 @@ router.get('/', function(req, res) {
         return item;
     });
     var shipping = req.session.cartShipping || 0;
-    var total = subtotal + shipping;
+    var total = Math.round((subtotal + shipping) * 100) / 100;
     
     var couponDiscount = 0;
     var appliedCoupon = null;
     if (req.session.coupon) {
         appliedCoupon = req.session.coupon;
         if (appliedCoupon.discountType === 'percentage') {
-            couponDiscount = subtotal * (appliedCoupon.discountValue / 100);
+            couponDiscount = Math.round(subtotal * (appliedCoupon.discountValue / 100) * 100) / 100;
             if (appliedCoupon.maxDiscount && couponDiscount > appliedCoupon.maxDiscount) {
                 couponDiscount = appliedCoupon.maxDiscount;
             }
@@ -42,7 +42,7 @@ router.get('/', function(req, res) {
             couponDiscount = appliedCoupon.discountValue;
         }
         if (couponDiscount > subtotal) couponDiscount = subtotal;
-        total = subtotal + shipping - couponDiscount;
+        total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
     }
     
     res.render('cart', {
@@ -177,11 +177,11 @@ router.get('/checkout', async function(req, res) {
     var couponDiscount = 0; var appliedCoupon = null;
     if (req.session.coupon) {
         appliedCoupon = req.session.coupon;
-        if (appliedCoupon.discountType === 'percentage') { couponDiscount = subtotal * (appliedCoupon.discountValue / 100); if (appliedCoupon.maxDiscount && couponDiscount > appliedCoupon.maxDiscount) couponDiscount = appliedCoupon.maxDiscount; }
+        if (appliedCoupon.discountType === 'percentage') { couponDiscount = Math.round(subtotal * (appliedCoupon.discountValue / 100) * 100) / 100; if (appliedCoupon.maxDiscount && couponDiscount > appliedCoupon.maxDiscount) couponDiscount = appliedCoupon.maxDiscount; }
         else { couponDiscount = appliedCoupon.discountValue; }
         if (couponDiscount > subtotal) couponDiscount = subtotal;
     }
-    var total = subtotal + shipping - couponDiscount;
+    var total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
     res.render('checkout', { title: 'Checkout', cartItems: cartItems, subtotal: subtotal.toFixed(2), shipping: shipping.toFixed(2), total: total.toFixed(2), couponDiscount: couponDiscount.toFixed(2), appliedCoupon: appliedCoupon, paypalConfigured: paypalService.isConfigured() });
 });
 
@@ -193,15 +193,17 @@ router.post('/paypal/create-order', async function(req, res) {
         if (cart.length === 0) return res.status(400).json({ error: 'Cart is empty' });
         var subtotal = 0;
         var items = cart.map(function(item) { subtotal += item.price * item.quantity; return { name: item.name, quantity: item.quantity, price: item.price }; });
+        subtotal = Math.round(subtotal * 100) / 100;
         var shipping = req.session.cartShipping || 0;
         var discount = 0;
         if (req.session.coupon) {
             var coupon = req.session.coupon;
-            if (coupon.discountType === 'percentage') { discount = subtotal * (coupon.discountValue / 100); if (coupon.maxDiscount && discount > coupon.maxDiscount) discount = coupon.maxDiscount; }
+            if (coupon.discountType === 'percentage') { discount = Math.round(subtotal * (coupon.discountValue / 100) * 100) / 100; if (coupon.maxDiscount && discount > coupon.maxDiscount) discount = coupon.maxDiscount; }
             else { discount = coupon.discountValue; }
             if (discount > subtotal) discount = subtotal;
         }
-        var total = subtotal + shipping - discount; if (total < 0) total = 0;
+        var total = Math.round((subtotal + shipping - discount) * 100) / 100;
+        if (total < 0) total = 0;
         var paypalOrder = await paypalService.createOrder({ items: items, subtotal: subtotal, shipping: shipping, tax: 0, discount: discount, total: total });
         req.session.pendingOrder = { paypalOrderId: paypalOrder.id, subtotal: subtotal, shipping: shipping, tax: 0, discount: discount, total: total, items: items };
         req.session.save(function(err) { if (err) console.error('Session save error:', err); res.json({ id: paypalOrder.id }); });
@@ -219,7 +221,7 @@ router.post('/paypal/capture-payment', async function(req, res) {
         for (var i = 0; i < cart.length; i++) {
             var item = cart[i]; var product = await Product.findById(item.productId);
             if (product && product.stock >= item.quantity) { product.stock -= item.quantity; await product.save(); }
-            if (product) orderItems.push({ product: product._id, name: item.name, price: item.price, quantity: item.quantity, subtotal: item.price * item.quantity });
+            if (product) orderItems.push({ product: product._id, name: item.name, price: item.price, quantity: item.quantity, subtotal: Math.round(item.price * item.quantity * 100) / 100 });
         }
         var shippingAddress = req.body.shippingAddress || { street: 'N/A', city: 'N/A', state: 'N/A', zipCode: '00000', country: 'US' };
         var order = new Order({
@@ -248,19 +250,21 @@ router.post('/checkout', async function(req, res) {
             var item = cart[i]; var product = await Product.findById(item.productId);
             if (!product) return res.status(400).json({ error: 'Product "' + item.name + '" is no longer available' });
             if (product.stock < item.quantity) return res.status(400).json({ error: 'Insufficient stock for ' + item.name });
-            var itemTotal = item.price * item.quantity; subtotal += itemTotal;
+            var itemTotal = Math.round(item.price * item.quantity * 100) / 100; subtotal += itemTotal;
             orderItems.push({ product: product._id, name: item.name, price: item.price, quantity: item.quantity, subtotal: itemTotal });
             product.stock -= item.quantity; await product.save();
         }
+        subtotal = Math.round(subtotal * 100) / 100;
         var shipping = req.session.cartShipping || 0;
         var couponDiscount = 0; var appliedCouponId = null;
         if (req.session.coupon) {
             var coupon = req.session.coupon;
-            if (coupon.discountType === 'percentage') { couponDiscount = subtotal * (coupon.discountValue / 100); if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) couponDiscount = coupon.maxDiscount; }
+            if (coupon.discountType === 'percentage') { couponDiscount = Math.round(subtotal * (coupon.discountValue / 100) * 100) / 100; if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) couponDiscount = coupon.maxDiscount; }
             else { couponDiscount = coupon.discountValue; }
             if (couponDiscount > subtotal) couponDiscount = subtotal; appliedCouponId = coupon._id;
         }
-        var total = subtotal + shipping - couponDiscount; if (total < 0) total = 0;
+        var total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
+        if (total < 0) total = 0;
         var shippingAddress = req.body.shippingAddress || { street: 'N/A', city: 'N/A', state: 'N/A', zipCode: '00000', country: 'US' };
         var order = new Order({
             user: req.session.user.id, items: orderItems, shippingAddress: shippingAddress, billingAddress: shippingAddress,
