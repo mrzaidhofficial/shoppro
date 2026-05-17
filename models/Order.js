@@ -48,7 +48,9 @@ var orderSchema = new mongoose.Schema({
         status: {
             type: String,
             default: 'completed'
-        }
+        },
+        paypalOrderId: String,
+        payerEmail: String
     },
     subtotal: {
         type: Number,
@@ -59,6 +61,14 @@ var orderSchema = new mongoose.Schema({
         default: 0
     },
     tax: {
+        type: Number,
+        default: 0
+    },
+    couponCode: {
+        type: String,
+        default: null
+    },
+    couponDiscount: {
         type: Number,
         default: 0
     },
