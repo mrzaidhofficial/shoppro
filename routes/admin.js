@@ -50,7 +50,7 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             totalSales = (salesResult[0].totalCost || 0) + (salesResult[0].totalProfit || 0) + (salesResult[0].totalShipping || 0) - (salesResult[0].totalCoupons || 0);
         }
         
-        // Total Revenue = Net Profit from paid orders (processing, shipped, delivered)
+        // Net Profit = Product Profit - Coupons (all orders, excluding cancelled)
         const revenueResult = await Order.aggregate([
             { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $unwind: '$items' },
@@ -59,12 +59,15 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             { $group: { 
                 _id: null, 
                 totalProfit: { $sum: { $multiply: ['$items.quantity', { $ifNull: ['$productData.profit', 0] }] } },
-                avgOrder: { $avg: '$total' },
-                count: { $sum: 1 }
+                totalCoupons: { $sum: { $ifNull: ['$couponDiscount', 0] } }
             } }
         ]);
-        const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalProfit : 0;
-        const avgOrderValue = revenueResult.length > 0 ? revenueResult[0].avgOrder : 0;
+        var totalRevenue = 0;
+        if (revenueResult.length > 0) {
+            totalRevenue = (revenueResult[0].totalProfit || 0) - (revenueResult[0].totalCoupons || 0);
+        }
+        
+        const avgOrderValue = revenueResult.length > 0 && revenueResult[0].count ? revenueResult[0].avgOrder : 0;
         
         const recentOrders = await Order.find().populate('user', 'firstName lastName email').sort({ createdAt: -1 }).limit(10);
         
