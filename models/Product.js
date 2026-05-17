@@ -5,6 +5,8 @@ var productSchema = new mongoose.Schema({
     shortDescription: { type: String, maxlength: 200 },
     description: { type: String, required: true },
     price: { type: Number, required: true, min: 0 },
+    cost: { type: Number, default: 0, min: 0 },
+    profit: { type: Number, default: 0 },
     category: {
         type: String,
         required: true,
@@ -23,6 +25,16 @@ var productSchema = new mongoose.Schema({
     averageRating: { type: Number, default: 0 },
     numReviews: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now }
+});
+
+// Auto-calculate profit before saving
+productSchema.pre('save', function(next) {
+    if (this.cost && this.price) {
+        this.profit = this.price - this.cost;
+    } else {
+        this.profit = 0;
+    }
+    next();
 });
 
 // Calculate average rating

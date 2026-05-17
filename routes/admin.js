@@ -20,26 +20,36 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         const totalProducts = await Product.countDocuments();
         const totalOrders = await Order.countDocuments();
         
-        // Count only users who have placed at least one order
+        // Customers who placed orders
         const customerIds = await Order.distinct('user');
         const totalCustomers = customerIds.length;
-        
-        // Total registered users
         const totalRegisteredUsers = await User.countDocuments({ role: 'customer' });
-        
-        // Conversion Rate
         const conversionRate = totalRegisteredUsers > 0 
-            ? ((totalCustomers / totalRegisteredUsers) * 100).toFixed(1) 
-            : 0;
+            ? ((totalCustomers / totalRegisteredUsers) * 100).toFixed(1) : 0;
         
-        const recentOrders = await Order.find().populate('user', 'firstName lastName email').sort({ createdAt: -1 }).limit(10);
+        // Total Sales (all order totals regardless of status)
+        const salesResult = await Order.aggregate([
+            { $group: { _id: null, totalSales: { $sum: '$total' }, totalOrders: { $sum: 1 } } }
+        ]);
+        const totalSales = salesResult.length > 0 ? salesResult[0].totalSales : 0;
         
+        // Total Revenue = Profit from all paid orders (processing, shipped, delivered)
         const revenueResult = await Order.aggregate([
             { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
-            { $group: { _id: null, totalRevenue: { $sum: '$total' }, avgOrder: { $avg: '$total' }, count: { $sum: 1 } } }
+            { $unwind: '$items' },
+            { $lookup: { from: 'products', localField: 'items.product', foreignField: '_id', as: 'productData' } },
+            { $unwind: { path: '$productData', preserveNullAndEmptyArrays: true } },
+            { $group: { 
+                _id: null, 
+                totalProfit: { $sum: { $multiply: ['$items.quantity', { $ifNull: ['$productData.profit', 0] }] } },
+                avgOrder: { $avg: '$total' },
+                count: { $sum: 1 }
+            } }
         ]);
-        const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalRevenue : 0;
+        const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalProfit : 0;
         const avgOrderValue = revenueResult.length > 0 ? revenueResult[0].avgOrder : 0;
+        
+        const recentOrders = await Order.find().populate('user', 'firstName lastName email').sort({ createdAt: -1 }).limit(10);
         
         var sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -71,6 +81,7 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             totalCustomers,
             totalRegisteredUsers,
             conversionRate,
+            totalSales,
             totalRevenue,
             avgOrderValue,
             recentOrders,
@@ -102,9 +113,15 @@ router.post('/products/add', isAdmin, async (req, res) => {
             else if (typeof req.body.images === 'string' && req.body.images.trim() !== '') images = [req.body.images.trim()];
         }
         const product = new Product({
-            name: req.body.name, shortDescription: req.body.shortDescription || '', description: req.body.description,
-            price: req.body.price, category: req.body.category, stock: req.body.stock,
-            featured: req.body.featured === 'on', images: images
+            name: req.body.name,
+            shortDescription: req.body.shortDescription || '',
+            description: req.body.description,
+            price: req.body.price,
+            cost: req.body.cost || 0,
+            category: req.body.category,
+            stock: req.body.stock,
+            featured: req.body.featured === 'on',
+            images: images
         });
         await product.save();
         req.flash('success', 'Product added successfully');
@@ -125,10 +142,22 @@ router.post('/products/edit/:id', isAdmin, async (req, res) => {
             else if (typeof req.body.images === 'string' && req.body.images.trim() !== '') images = [req.body.images.trim()];
         }
         await Product.findByIdAndUpdate(req.params.id, {
-            name: req.body.name, shortDescription: req.body.shortDescription || '', description: req.body.description,
-            price: req.body.price, category: req.body.category, stock: req.body.stock,
-            featured: req.body.featured === 'on', images: images
+            name: req.body.name,
+            shortDescription: req.body.shortDescription || '',
+            description: req.body.description,
+            price: req.body.price,
+            cost: req.body.cost || 0,
+            category: req.body.category,
+            stock: req.body.stock,
+            featured: req.body.featured === 'on',
+            images: images
         });
+        // Recalculate profit
+        var updatedProduct = await Product.findById(req.params.id);
+        if (updatedProduct.cost && updatedProduct.price) {
+            updatedProduct.profit = updatedProduct.price - updatedProduct.cost;
+            await updatedProduct.save();
+        }
         req.flash('success', 'Product updated successfully');
         res.redirect('/admin/products');
     } catch (error) { req.flash('error', 'Error updating product'); res.redirect('/admin/products'); }
