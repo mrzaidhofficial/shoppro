@@ -44,10 +44,6 @@
   .form-input, .form-select, .form-textarea { width: 100%; padding: 11px 14px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 0.86rem; font-family: var(--font-primary); color: var(--gray-700); background: var(--gray-50); outline: none; transition: border-color 0.15s; }
   .form-textarea { resize: vertical; min-height: 80px; }
   .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 3px rgba(0,102,255,0.06); }
-  .form-input.currency { padding-left: 30px; }
-  
-  .input-with-prefix { position: relative; }
-  .input-with-prefix .prefix { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--gray-400); font-size: 0.82rem; pointer-events: none; }
   
   .items-table { width: 100%; border-collapse: collapse; }
   .items-table th { text-align: left; padding: 10px 12px; background: var(--gray-100); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--gray-500); border-bottom: var(--border); }
@@ -61,12 +57,15 @@
   .status-delivered { background: var(--success-bg); color: var(--success); }
   .status-cancelled { background: var(--error-bg); color: var(--error); }
   
-  .cost-summary { background: var(--gray-50); border-radius: var(--radius-lg); padding: 16px 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
-  .cost-item { text-align: center; }
-  .cost-item-label { font-size: 0.68rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
-  .cost-item-value { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--gray-900); }
-  .cost-item-value.profit { color: var(--success); }
-  .cost-item-value.cost { color: var(--error); }
+  .profit-summary { background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border: 1px solid #BBF7D0; border-radius: var(--radius-lg); padding: 20px 24px; margin-top: 16px; }
+  .profit-title { font-size: 0.72rem; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+  .profit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .profit-item { text-align: center; }
+  .profit-label { font-size: 0.68rem; color: #15803D; margin-bottom: 4px; }
+  .profit-value { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: #166534; }
+  .profit-value.sub { font-size: 0.9rem; color: #15803D; }
+  .profit-divider { width: 1px; background: #BBF7D0; }
+  .profit-breakdown { font-size: 0.7rem; color: #166534; margin-top: 12px; padding-top: 12px; border-top: 1px solid #BBF7D0; text-align: center; line-height: 1.6; }
   
   .form-actions { display: flex; gap: 12px; margin-top: 20px; padding-top: 18px; border-top: var(--border); }
   .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: 11px 26px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-full); font-size: 0.86rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,102,255,0.2); }
@@ -84,7 +83,8 @@
     .detail-grid { grid-template-columns: 1fr; }
     .detail-card.span-2 { grid-column: 1; }
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
-    .cost-summary { grid-template-columns: 1fr; }
+    .profit-grid { grid-template-columns: 1fr; }
+    .profit-divider { width: 100%; height: 1px; }
   }
 </style>
 
@@ -125,7 +125,7 @@
           <div class="info-card-value"><%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div>
         </div>
         <div class="info-card">
-          <div class="info-card-label">Customer Paid</div>
+          <div class="info-card-label">Order Total</div>
           <div class="info-card-value price">$<%= order.total.toFixed(2) %></div>
         </div>
         <div class="info-card">
@@ -162,10 +162,52 @@
             </div>
           </div>
           
+          <!-- Profit Summary (Auto-calculated from product costs) -->
+          <div class="detail-card span-2">
+            <div class="card-head">
+              <div class="card-head-icon green"><i class="fas fa-chart-line"></i></div>
+              <div class="card-head-title">Profit Summary <span style="font-weight:400;font-size:0.75rem;color:var(--gray-500);">— calculated from product costs</span></div>
+            </div>
+            <div class="card-body">
+              <%
+                var productProfit = 0;
+                if (order.items && order.items.length > 0) {
+                  order.items.forEach(function(item) {
+                    productProfit += (item.price - (item.cost || 0)) * item.quantity;
+                  });
+                }
+                var couponDiscount = order.couponDiscount || 0;
+                var netProfit = productProfit - couponDiscount;
+              %>
+              <div class="profit-summary">
+                <div class="profit-title">Order Profit Breakdown</div>
+                <div class="profit-grid">
+                  <div class="profit-item">
+                    <div class="profit-label">Product Profit</div>
+                    <div class="profit-value">$<%= productProfit.toFixed(2) %></div>
+                  </div>
+                  <div class="profit-divider"></div>
+                  <div class="profit-item">
+                    <div class="profit-label">Coupon Discount</div>
+                    <div class="profit-value sub"><%= couponDiscount > 0 ? '-$' + couponDiscount.toFixed(2) : '$0.00' %></div>
+                  </div>
+                  <div class="profit-divider"></div>
+                  <div class="profit-item">
+                    <div class="profit-label">Net Profit</div>
+                    <div class="profit-value" style="color:<%= netProfit >= 0 ? '#166534' : '#DC2626' %>;"><%= netProfit >= 0 ? '$' : '-$' %><%= Math.abs(netProfit).toFixed(2) %></div>
+                  </div>
+                </div>
+                <div class="profit-breakdown">
+                  Product Profit ($<%= productProfit.toFixed(2) %>) — Coupon Discount ($<%= couponDiscount.toFixed(2) %>) = <strong>Net Profit: $<%= netProfit.toFixed(2) %></strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <!-- Supplier & Tracking Info -->
           <div class="detail-card span-2">
             <div class="card-head">
-              <div class="card-head-icon green"><i class="fas fa-dolly"></i></div>
+              <div class="card-head-icon blue"><i class="fas fa-dolly"></i></div>
               <div class="card-head-title">Supplier & Tracking Information</div>
             </div>
             <div class="card-body">
@@ -196,51 +238,10 @@
             </div>
           </div>
           
-          <!-- Your Cost & Profit Tracking -->
-          <div class="detail-card span-2">
-            <div class="card-head">
-              <div class="card-head-icon amber"><i class="fas fa-calculator"></i></div>
-              <div class="card-head-title">Cost & Profit Tracking <span style="font-weight:400;font-size:0.75rem;color:var(--gray-500);">— internal, not visible to customer</span></div>
-            </div>
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">Supplier Cost <span class="hint">— what you paid the supplier for products</span></label>
-                  <div class="input-with-prefix">
-                    <span class="prefix">$</span>
-                    <input type="number" name="supplierProductCost" class="form-input currency" value="<%= orderShipping.supplierProductCost || '' %>" min="0" step="0.01" placeholder="0.00" onchange="calcProfit()">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Supplier Shipping Cost <span class="hint">— what supplier charged you for shipping</span></label>
-                  <div class="input-with-prefix">
-                    <span class="prefix">$</span>
-                    <input type="number" name="supplierShippingCost" class="form-input currency" value="<%= orderShipping.supplierShippingCost || '' %>" min="0" step="0.01" placeholder="0.00" onchange="calcProfit()">
-                  </div>
-                </div>
-              </div>
-              
-              <div class="cost-summary" id="profitSummary">
-                <div class="cost-item">
-                  <div class="cost-item-label">Customer Paid</div>
-                  <div class="cost-item-value">$<%= order.total.toFixed(2) %></div>
-                </div>
-                <div class="cost-item">
-                  <div class="cost-item-label">Your Total Cost</div>
-                  <div class="cost-item-value cost" id="totalCost">$<%= ((orderShipping.supplierProductCost || 0) + (orderShipping.supplierShippingCost || 0)).toFixed(2) %></div>
-                </div>
-                <div class="cost-item">
-                  <div class="cost-item-label">Your Net Profit</div>
-                  <div class="cost-item-value profit" id="netProfit">$<%= (order.total - (orderShipping.supplierProductCost || 0) - (orderShipping.supplierShippingCost || 0)).toFixed(2) %></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
           <!-- Shipping Status -->
           <div class="detail-card span-2">
             <div class="card-head">
-              <div class="card-head-icon blue"><i class="fas fa-clock"></i></div>
+              <div class="card-head-icon amber"><i class="fas fa-clock"></i></div>
               <div class="card-head-title">Shipping Status</div>
             </div>
             <div class="card-body">
@@ -283,20 +284,5 @@
     </div>
   </div>
 </div>
-
-<script>
-function calcProfit() {
-  var productCost = parseFloat(document.querySelector('input[name="supplierProductCost"]').value) || 0;
-  var shippingCost = parseFloat(document.querySelector('input[name="supplierShippingCost"]').value) || 0;
-  var customerPaid = <%= order.total %>;
-  var totalCost = productCost + shippingCost;
-  var profit = customerPaid - totalCost;
-  
-  document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
-  var profitEl = document.getElementById('netProfit');
-  profitEl.textContent = (profit >= 0 ? '$' : '-$') + Math.abs(profit).toFixed(2);
-  profitEl.className = 'cost-item-value ' + (profit >= 0 ? 'profit' : 'cost');
-}
-</script>
 
 <%- include('../../partials/footer') %>

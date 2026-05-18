@@ -25,16 +25,12 @@ var orderShippingSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    // Tracking & Supplier Info
+    // Tracking & Supplier Info (for reference only)
     trackingNumber: { type: String, default: '' },
     trackingUrl: { type: String, default: '' },
     carrierName: { type: String, default: '' },
     supplierName: { type: String, default: '' },
     supplierOrderId: { type: String, default: '' },
-    
-    // Cost Tracking (internal - what you paid)
-    supplierProductCost: { type: Number, default: 0 },
-    supplierShippingCost: { type: Number, default: 0 },
     
     // Status
     shippingNotes: { type: String, default: '' },

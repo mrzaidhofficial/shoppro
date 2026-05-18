@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var { ShippingSettings, OrderShipping } = require('../models/Shipping');
 var Order = require('../models/Order');
+var Product = require('../models/Product');
 
 function isAdmin(req, res, next) {
     if (req.session.user && req.session.user.role === 'admin') {
@@ -116,6 +117,20 @@ router.get('/orders/:id', isAdmin, async function(req, res) {
     try {
         var order = await Order.findById(req.params.id).populate('user', 'firstName lastName email');
         if (!order) { req.flash('error', 'Order not found'); return res.redirect('/admin/shipping/settings'); }
+        
+        // Get product costs for profit calculation
+        if (order.items && order.items.length > 0) {
+            for (var i = 0; i < order.items.length; i++) {
+                var item = order.items[i];
+                if (item.product) {
+                    var product = await Product.findById(item.product).select('cost');
+                    item.cost = product ? product.cost : 0;
+                } else {
+                    item.cost = 0;
+                }
+            }
+        }
+        
         var orderShipping = await OrderShipping.findOne({ order: req.params.id });
         var settings = await getShippingSettings();
         res.render('admin/shipping/order-detail', {
@@ -146,10 +161,6 @@ router.post('/orders/:id', isAdmin, async function(req, res) {
         orderShipping.carrierName = req.body.carrierName || '';
         orderShipping.supplierName = req.body.supplierName || '';
         orderShipping.supplierOrderId = req.body.supplierOrderId || '';
-        
-        // Cost Tracking
-        orderShipping.supplierProductCost = parseFloat(req.body.supplierProductCost) || 0;
-        orderShipping.supplierShippingCost = parseFloat(req.body.supplierShippingCost) || 0;
         
         // Status
         orderShipping.shippingNotes = req.body.shippingNotes || '';
