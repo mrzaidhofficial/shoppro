@@ -12,14 +12,21 @@
   .admin-nav-item i { width: 20px; text-align: center; }
   .admin-content { min-width: 0; }
   
-  .page-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+  .page-top { margin-bottom: 24px; }
   .page-title { font-family: var(--font-display); font-size: 1.7rem; color: var(--gray-900); }
   .page-subtitle { font-size: 0.85rem; color: var(--gray-500); margin-top: 2px; }
-  .page-actions { display: flex; gap: 8px; }
-  .btn-action { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border: 2px solid var(--gray-200); border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600; font-family: var(--font-primary); color: var(--gray-600); background: var(--white); cursor: pointer; text-decoration: none; transition: all 0.2s ease; }
-  .btn-action:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
-  .btn-action i { font-size: 0.85rem; }
   
+  /* Tab Navigation */
+  .tab-nav { display: flex; gap: 4px; margin-bottom: 24px; background: var(--gray-100); padding: 4px; border-radius: var(--radius-lg); width: fit-content; }
+  .tab-btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 20px; border-radius: var(--radius); font-size: 0.84rem; font-weight: 600; font-family: var(--font-primary); color: var(--gray-600); background: transparent; border: none; cursor: pointer; transition: all 0.2s ease; text-decoration: none; }
+  .tab-btn:hover { color: var(--gray-900); }
+  .tab-btn.active { background: var(--white); color: var(--primary); box-shadow: var(--shadow-sm); }
+  .tab-btn i { font-size: 0.85rem; }
+  
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  
+  /* ========== SETTINGS TAB STYLES ========== */
   .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .settings-card { background: var(--white); border: var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); overflow: hidden; }
   .settings-card.span-2 { grid-column: 1 / -1; }
@@ -33,10 +40,8 @@
   .card-header-text { flex: 1; min-width: 0; }
   .card-header-title { font-weight: 700; color: var(--gray-900); font-size: 0.88rem; }
   .card-header-sub { font-size: 0.7rem; color: var(--gray-500); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  
   .card-body { padding: 16px 20px; }
   
-  /* Toggle Switch */
   .toggle { display: inline-flex; align-items: center; cursor: pointer; flex-shrink: 0; }
   .toggle input { display: none; }
   .toggle-track { width: 40px; height: 22px; background: var(--gray-300); border-radius: 11px; position: relative; transition: background 0.2s; }
@@ -44,7 +49,6 @@
   .toggle input:checked + .toggle-track { background: var(--primary); }
   .toggle input:checked + .toggle-track::after { transform: translateX(18px); }
   
-  /* Mode Selector */
   .mode-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
   .mode-card { border: 2px solid var(--gray-200); border-radius: var(--radius-lg); padding: 12px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 10px; }
   .mode-card:hover { border-color: var(--primary); }
@@ -59,15 +63,12 @@
   .mode-card-name { font-weight: 600; font-size: 0.8rem; color: var(--gray-900); line-height: 1.2; }
   .mode-card-desc { font-size: 0.66rem; color: var(--gray-500); line-height: 1.3; }
   
-  /* Preview Badge */
   .preview-badge { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-lg); background: #F0F9FF; border: 1px solid #BAE6FD; }
   .preview-badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #0284C7; flex-shrink: 0; }
   .preview-badge-text { font-size: 0.78rem; font-weight: 600; color: #0369A1; }
   .preview-badge-sub { font-size: 0.7rem; color: #0284C7; margin-left: auto; }
   
-  /* Rate Boxes */
   .rate-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .rate-item { }
   .rate-label { font-size: 0.7rem; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
   .rate-label i { font-size: 0.7rem; }
   .rate-desc { font-size: 0.64rem; color: var(--gray-400); margin-bottom: 8px; line-height: 1.3; }
@@ -76,7 +77,6 @@
   .rate-input input { width: 100%; padding: 10px 14px 10px 30px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 0.88rem; font-weight: 600; font-family: var(--font-primary); color: var(--gray-800); background: var(--white); outline: none; transition: border-color 0.15s; }
   .rate-input input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,102,255,0.06); }
   
-  /* Threshold */
   .threshold-wrap { display: flex; align-items: center; gap: 12px; }
   .threshold-input { position: relative; flex: 1; }
   .threshold-input .dollar { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--gray-400); font-size: 0.9rem; pointer-events: none; }
@@ -85,20 +85,66 @@
   .threshold-info { font-size: 0.72rem; color: var(--gray-500); margin-top: 10px; display: flex; align-items: center; gap: 6px; }
   .threshold-info i { color: var(--primary); font-size: 0.8rem; }
   
-  /* Form elements */
   .form-group { margin-bottom: 14px; }
   .form-group:last-child { margin-bottom: 0; }
   .form-label { display: block; font-size: 0.76rem; font-weight: 600; color: var(--gray-700); margin-bottom: 5px; }
   .form-label .muted { font-weight: 400; color: var(--gray-400); }
   .form-input { width: 100%; padding: 11px 14px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 0.86rem; font-family: var(--font-primary); color: var(--gray-700); background: var(--gray-50); outline: none; transition: border-color 0.15s; }
   .form-input:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 3px rgba(0,102,255,0.06); }
-  
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   
   .form-footer { display: flex; align-items: center; gap: 14px; margin-top: 24px; padding-top: 18px; border-top: var(--border); }
   .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: 11px 26px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-full); font-size: 0.86rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,102,255,0.2); }
   .btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,102,255,0.3); }
   .save-note { font-size: 0.76rem; color: var(--gray-500); }
+  
+  /* ========== ORDERS TAB STYLES ========== */
+  .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+  .filter-select { padding: 9px 14px; border: 2px solid var(--gray-200); border-radius: var(--radius-full); font-size: 0.82rem; font-family: var(--font-primary); background: var(--white); color: var(--gray-700); outline: none; }
+  .filter-btn { padding: 9px 18px; background: var(--primary); color: white; border: none; border-radius: var(--radius-full); font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: var(--font-primary); }
+  .btn-clear { padding: 9px 16px; border: 2px solid var(--gray-200); border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 600; color: var(--gray-600); text-decoration: none; }
+  
+  .table-wrap { background: var(--white); border: var(--border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-xs); }
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th { text-align: left; padding: 12px 14px; background: var(--gray-50); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-500); border-bottom: var(--border); white-space: nowrap; }
+  .data-table td { padding: 11px 14px; font-size: 0.82rem; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: var(--gray-50); }
+  
+  .badge { display: inline-block; padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.66rem; font-weight: 600; text-transform: capitalize; }
+  .badge-processing { background: #FEF3C7; color: #D97706; }
+  .badge-shipped { background: #DBEAFE; color: #2563EB; }
+  .badge-delivered { background: var(--success-bg); color: var(--success); }
+  .badge-cancelled { background: var(--error-bg); color: var(--error); }
+  .badge-pending { background: var(--gray-100); color: var(--gray-600); }
+  
+  .btn-sm { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; font-size: 0.72rem; border-radius: var(--radius-full); font-weight: 600; text-decoration: none; background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); transition: all 0.15s; }
+  .btn-sm:hover { background: var(--primary); color: white; }
+  
+  .pagination { display: flex; justify-content: center; gap: 5px; margin-top: 20px; }
+  .page-link { padding: 7px 12px; border: 2px solid var(--gray-200); border-radius: var(--radius-full); font-weight: 600; color: var(--gray-700); text-decoration: none; font-size: 0.8rem; }
+  .page-link:hover { border-color: var(--primary); color: var(--primary); }
+  .page-link.active { background: var(--primary-gradient); color: white; border-color: var(--primary); }
+  
+  .empty { text-align: center; padding: 50px 20px; }
+  .empty i { font-size: 2.5rem; color: var(--gray-200); margin-bottom: 10px; display: block; }
+  .empty p { color: var(--gray-500); font-size: 0.88rem; }
+  
+  /* ========== BULK TAB STYLES ========== */
+  .bulk-info { background: var(--primary-light); border: 1px solid var(--primary); border-radius: var(--radius-lg); padding: 14px 18px; margin-bottom: 20px; font-size: 0.82rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+  .bulk-info i { font-size: 1rem; }
+  
+  .bulk-form-card { background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-xs); margin-bottom: 20px; }
+  .bulk-form-title { font-weight: 700; color: var(--gray-900); font-size: 0.9rem; margin-bottom: 18px; }
+  .bulk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .bulk-group { }
+  .bulk-label { display: block; font-size: 0.74rem; font-weight: 600; color: var(--gray-700); margin-bottom: 5px; }
+  .bulk-input, .bulk-select { width: 100%; padding: 10px 14px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 0.84rem; font-family: var(--font-primary); color: var(--gray-700); background: var(--gray-50); outline: none; }
+  .bulk-input:focus, .bulk-select:focus { border-color: var(--primary); background: var(--white); }
+  .bulk-actions-row { display: flex; gap: 10px; align-items: center; }
+  .btn-bulk { padding: 10px 22px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-full); font-size: 0.84rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; }
+  .btn-outline-sm { padding: 10px 18px; background: transparent; color: var(--gray-600); border: 2px solid var(--gray-200); border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: var(--font-primary); }
+  .order-checkbox { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
   
   @media (max-width: 900px) {
     .admin-layout { grid-template-columns: 1fr; }
@@ -111,6 +157,7 @@
     .mode-row { grid-template-columns: 1fr; }
     .rate-row { grid-template-columns: 1fr; }
     .form-row { grid-template-columns: 1fr; }
+    .bulk-grid { grid-template-columns: 1fr; }
   }
 </style>
 
@@ -133,173 +180,316 @@
     
     <div class="admin-content">
       <div class="page-top">
-        <div>
-          <h1 class="page-title">Shipping Settings</h1>
-          <p class="page-subtitle">Configure shipping costs displayed to customers</p>
-        </div>
-        <div class="page-actions">
-          <a href="/admin/shipping/orders" class="btn-action"><i class="fas fa-list-check"></i> Order Shipping</a>
-          <a href="/admin/shipping/bulk" class="btn-action"><i class="fas fa-layer-group"></i> Bulk Update</a>
-        </div>
+        <h1 class="page-title">Shipping</h1>
+        <p class="page-subtitle">Manage shipping settings, orders, and bulk updates</p>
       </div>
       
-      <form action="/admin/shipping/settings" method="POST">
-        <div class="settings-grid">
-          
-          <!-- Card: Shipping Mode -->
-          <div class="settings-card">
-            <div class="card-header">
-              <div class="card-header-icon blue"><i class="fas fa-shipping-fast"></i></div>
-              <div class="card-header-text">
-                <div class="card-header-title">Shipping Mode</div>
-                <div class="card-header-sub">How shipping is calculated</div>
-              </div>
-              <label class="toggle">
-                <input type="checkbox" name="shippingEnabled" id="shippingEnabled" <%= settings.shippingEnabled ? 'checked' : '' %> onchange="refreshPreview()">
-                <span class="toggle-track"></span>
-              </label>
-            </div>
-            <div class="card-body">
-              <div class="mode-row">
-                <label class="mode-card <%= settings.shippingType === 'flat_rate' ? 'active' : '' %>" onclick="pickMode('flat_rate', this)">
-                  <input type="radio" name="shippingType" value="flat_rate" <%= settings.shippingType === 'flat_rate' ? 'checked' : '' %>>
-                  <span class="mode-card-icon flat"><i class="fas fa-calculator"></i></span>
-                  <div class="mode-card-info">
-                    <div class="mode-card-name">Flat Rate</div>
-                    <div class="mode-card-desc">Fixed per item/order</div>
-                  </div>
-                </label>
-                <label class="mode-card <%= settings.shippingType === 'free' ? 'active' : '' %>" onclick="pickMode('free', this)">
-                  <input type="radio" name="shippingType" value="free" <%= settings.shippingType === 'free' ? 'checked' : '' %>>
-                  <span class="mode-card-icon free"><i class="fas fa-gift"></i></span>
-                  <div class="mode-card-info">
-                    <div class="mode-card-name">Always Free</div>
-                    <div class="mode-card-desc">No charges ever</div>
-                  </div>
-                </label>
-                <label class="mode-card <%= settings.shippingType === 'disabled' ? 'active' : '' %>" onclick="pickMode('disabled', this)">
-                  <input type="radio" name="shippingType" value="disabled" <%= settings.shippingType === 'disabled' ? 'checked' : '' %>>
-                  <span class="mode-card-icon off"><i class="fas fa-ban"></i></span>
-                  <div class="mode-card-info">
-                    <div class="mode-card-name">Disable</div>
-                    <div class="mode-card-desc">Remove entirely</div>
-                  </div>
+      <!-- Tab Navigation -->
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Settings</button>
+        <button class="tab-btn" onclick="switchTab('orders')"><i class="fas fa-list-check"></i> Order Shipping</button>
+        <button class="tab-btn" onclick="switchTab('bulk')"><i class="fas fa-layer-group"></i> Bulk Update</button>
+      </div>
+      
+      <!-- ============ TAB 1: SETTINGS ============ -->
+      <div class="tab-content active" id="tab-settings">
+        <form action="/admin/shipping/settings" method="POST">
+          <div class="settings-grid">
+            
+            <div class="settings-card">
+              <div class="card-header">
+                <div class="card-header-icon blue"><i class="fas fa-shipping-fast"></i></div>
+                <div class="card-header-text">
+                  <div class="card-header-title">Shipping Mode</div>
+                  <div class="card-header-sub">How shipping is calculated</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" name="shippingEnabled" id="shippingEnabled" <%= settings.shippingEnabled ? 'checked' : '' %> onchange="refreshPreview()">
+                  <span class="toggle-track"></span>
                 </label>
               </div>
-              
-              <div class="preview-badge" id="previewBadge">
-                <span class="preview-badge-dot"></span>
-                <span class="preview-badge-text" id="previewText">
-                  <% if (!settings.shippingEnabled || settings.shippingType === 'disabled') { %>Shipping: Not charged<% } else if (settings.shippingType === 'free') { %>Shipping: FREE<% } else { %>Shipping: $<%= settings.flatRatePerOrder.toFixed(2) %> + $<%= settings.flatRatePerItem.toFixed(2) %>/item<% } %>
-                </span>
-                <span class="preview-badge-sub" id="previewSubText">
-                  <% if (settings.shippingEnabled && settings.freeShippingEnabled && settings.shippingType === 'flat_rate' && settings.freeShippingMinAmount > 0) { %>Free over $<%= settings.freeShippingMinAmount.toFixed(2) %><% } %>
-                </span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Card: Free Shipping Threshold -->
-          <div class="settings-card">
-            <div class="card-header">
-              <div class="card-header-icon green"><i class="fas fa-gift"></i></div>
-              <div class="card-header-text">
-                <div class="card-header-title">Free Shipping Threshold</div>
-                <div class="card-header-sub">Auto-apply above cart total</div>
-              </div>
-              <label class="toggle">
-                <input type="checkbox" name="freeShippingEnabled" id="freeShippingEnabled" <%= settings.freeShippingEnabled ? 'checked' : '' %> onchange="refreshPreview()">
-                <span class="toggle-track"></span>
-              </label>
-            </div>
-            <div class="card-body">
-              <div class="threshold-wrap">
-                <div class="threshold-input">
-                  <span class="dollar">$</span>
-                  <input type="number" name="freeShippingMinAmount" id="freeShippingMinAmount" value="<%= settings.freeShippingMinAmount %>" min="0" step="0.01" onchange="refreshPreview()">
+              <div class="card-body">
+                <div class="mode-row">
+                  <label class="mode-card <%= settings.shippingType === 'flat_rate' ? 'active' : '' %>" onclick="pickMode('flat_rate', this)">
+                    <input type="radio" name="shippingType" value="flat_rate" <%= settings.shippingType === 'flat_rate' ? 'checked' : '' %>>
+                    <span class="mode-card-icon flat"><i class="fas fa-calculator"></i></span>
+                    <div class="mode-card-info"><div class="mode-card-name">Flat Rate</div><div class="mode-card-desc">Fixed per item/order</div></div>
+                  </label>
+                  <label class="mode-card <%= settings.shippingType === 'free' ? 'active' : '' %>" onclick="pickMode('free', this)">
+                    <input type="radio" name="shippingType" value="free" <%= settings.shippingType === 'free' ? 'checked' : '' %>>
+                    <span class="mode-card-icon free"><i class="fas fa-gift"></i></span>
+                    <div class="mode-card-info"><div class="mode-card-name">Always Free</div><div class="mode-card-desc">No charges ever</div></div>
+                  </label>
+                  <label class="mode-card <%= settings.shippingType === 'disabled' ? 'active' : '' %>" onclick="pickMode('disabled', this)">
+                    <input type="radio" name="shippingType" value="disabled" <%= settings.shippingType === 'disabled' ? 'checked' : '' %>>
+                    <span class="mode-card-icon off"><i class="fas fa-ban"></i></span>
+                    <div class="mode-card-info"><div class="mode-card-name">Disable</div><div class="mode-card-desc">Remove entirely</div></div>
+                  </label>
+                </div>
+                <div class="preview-badge" id="previewBadge">
+                  <span class="preview-badge-dot"></span>
+                  <span class="preview-badge-text" id="previewText">
+                    <% if (!settings.shippingEnabled || settings.shippingType === 'disabled') { %>Shipping: Not charged<% } else if (settings.shippingType === 'free') { %>Shipping: FREE<% } else { %>Shipping: $<%= settings.flatRatePerOrder.toFixed(2) %> + $<%= settings.flatRatePerItem.toFixed(2) %>/item<% } %>
+                  </span>
+                  <span class="preview-badge-sub" id="previewSubText">
+                    <% if (settings.shippingEnabled && settings.freeShippingEnabled && settings.shippingType === 'flat_rate' && settings.freeShippingMinAmount > 0) { %>Free over $<%= settings.freeShippingMinAmount.toFixed(2) %><% } %>
+                  </span>
                 </div>
               </div>
-              <div class="threshold-info">
-                <i class="fas fa-info-circle"></i>
-                <span>Free shipping when cart reaches <strong>$<span id="thresholdVal"><%= settings.freeShippingMinAmount.toFixed(2) %></span></strong></span>
-              </div>
             </div>
-          </div>
-          
-          <!-- Card: Rate Configuration (Full Width) -->
-          <div class="settings-card span-2" id="rateCard">
-            <div class="card-header">
-              <div class="card-header-icon amber"><i class="fas fa-sliders-h"></i></div>
-              <div class="card-header-text">
-                <div class="card-header-title">Rate Configuration</div>
-                <div class="card-header-sub">Set your shipping rates</div>
+            
+            <div class="settings-card">
+              <div class="card-header">
+                <div class="card-header-icon green"><i class="fas fa-gift"></i></div>
+                <div class="card-header-text">
+                  <div class="card-header-title">Free Shipping Threshold</div>
+                  <div class="card-header-sub">Auto-apply above cart total</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" name="freeShippingEnabled" id="freeShippingEnabled" <%= settings.freeShippingEnabled ? 'checked' : '' %> onchange="refreshPreview()">
+                  <span class="toggle-track"></span>
+                </label>
               </div>
-            </div>
-            <div class="card-body">
-              <div class="rate-row">
-                <div class="rate-item">
-                  <div class="rate-label"><i class="fas fa-box"></i> Per Order Base</div>
-                  <div class="rate-desc">Added once per order</div>
-                  <div class="rate-input">
+              <div class="card-body">
+                <div class="threshold-wrap">
+                  <div class="threshold-input">
                     <span class="dollar">$</span>
-                    <input type="number" name="flatRatePerOrder" value="<%= settings.flatRatePerOrder %>" min="0" step="0.01" onchange="refreshPreview()">
+                    <input type="number" name="freeShippingMinAmount" id="freeShippingMinAmount" value="<%= settings.freeShippingMinAmount %>" min="0" step="0.01" onchange="refreshPreview()">
                   </div>
                 </div>
-                <div class="rate-item">
-                  <div class="rate-label"><i class="fas fa-cubes"></i> Per Item Rate</div>
-                  <div class="rate-desc">× quantity in cart</div>
-                  <div class="rate-input">
-                    <span class="dollar">$</span>
-                    <input type="number" name="flatRatePerItem" value="<%= settings.flatRatePerItem %>" min="0" step="0.01" onchange="refreshPreview()">
+                <div class="threshold-info">
+                  <i class="fas fa-info-circle"></i>
+                  <span>Free shipping when cart reaches <strong>$<span id="thresholdVal"><%= settings.freeShippingMinAmount.toFixed(2) %></span></strong></span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="settings-card span-2" id="rateCard">
+              <div class="card-header">
+                <div class="card-header-icon amber"><i class="fas fa-sliders-h"></i></div>
+                <div class="card-header-text">
+                  <div class="card-header-title">Rate Configuration</div>
+                  <div class="card-header-sub">Set your shipping rates</div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="rate-row">
+                  <div class="rate-item">
+                    <div class="rate-label"><i class="fas fa-box"></i> Per Order Base</div>
+                    <div class="rate-desc">Added once per order</div>
+                    <div class="rate-input"><span class="dollar">$</span><input type="number" name="flatRatePerOrder" value="<%= settings.flatRatePerOrder %>" min="0" step="0.01" onchange="refreshPreview()"></div>
+                  </div>
+                  <div class="rate-item">
+                    <div class="rate-label"><i class="fas fa-cubes"></i> Per Item Rate</div>
+                    <div class="rate-desc">× quantity in cart</div>
+                    <div class="rate-input"><span class="dollar">$</span><input type="number" name="flatRatePerItem" value="<%= settings.flatRatePerItem %>" min="0" step="0.01" onchange="refreshPreview()"></div>
+                  </div>
+                  <div class="rate-item">
+                    <div class="rate-label"><i class="fas fa-hand-holding"></i> Handling Fee</div>
+                    <div class="rate-desc">Processing charge</div>
+                    <div class="rate-input"><span class="dollar">$</span><input type="number" name="handlingFee" value="<%= settings.handlingFee %>" min="0" step="0.01" onchange="refreshPreview()"></div>
                   </div>
                 </div>
-                <div class="rate-item">
-                  <div class="rate-label"><i class="fas fa-hand-holding"></i> Handling Fee</div>
-                  <div class="rate-desc">Processing charge</div>
-                  <div class="rate-input">
-                    <span class="dollar">$</span>
-                    <input type="number" name="handlingFee" value="<%= settings.handlingFee %>" min="0" step="0.01" onchange="refreshPreview()">
+              </div>
+            </div>
+            
+            <div class="settings-card span-2">
+              <div class="card-header">
+                <div class="card-header-icon indigo"><i class="fas fa-eye"></i></div>
+                <div class="card-header-text">
+                  <div class="card-header-title">Display Settings</div>
+                  <div class="card-header-sub">Customer-facing information</div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Estimated Delivery Time <span class="muted">— shown on cart & checkout</span></label>
+                    <input type="text" name="estimatedDelivery" class="form-input" value="<%= settings.estimatedDelivery %>" placeholder="e.g. 7-21 business days">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Supplier Reference <span class="muted">— internal only</span></label>
+                    <input type="text" name="supplierInfo" class="form-input" value="<%= settings.supplierInfo || '' %>" placeholder="e.g. AliExpress Supplier #42">
                   </div>
                 </div>
               </div>
             </div>
+            
           </div>
           
-          <!-- Card: Display Settings -->
-          <div class="settings-card span-2">
-            <div class="card-header">
-              <div class="card-header-icon indigo"><i class="fas fa-eye"></i></div>
-              <div class="card-header-text">
-                <div class="card-header-title">Display Settings</div>
-                <div class="card-header-sub">Customer-facing information</div>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">Estimated Delivery Time <span class="muted">— shown on cart & checkout</span></label>
-                  <input type="text" name="estimatedDelivery" class="form-input" value="<%= settings.estimatedDelivery %>" placeholder="e.g. 7-21 business days">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Supplier Reference <span class="muted">— internal only</span></label>
-                  <input type="text" name="supplierInfo" class="form-input" value="<%= settings.supplierInfo || '' %>" placeholder="e.g. AliExpress Supplier #42">
-                </div>
-              </div>
-            </div>
+          <div class="form-footer">
+            <button type="submit" class="btn-save"><i class="fas fa-check"></i> Save Settings</button>
+            <span class="save-note">Changes apply immediately across the storefront</span>
+          </div>
+        </form>
+      </div>
+      
+      <!-- ============ TAB 2: ORDER SHIPPING ============ -->
+      <div class="tab-content" id="tab-orders">
+        <form class="filter-bar" method="GET" action="/admin/shipping/orders">
+          <select name="status" class="filter-select">
+            <option value="all" <%= (typeof currentStatus !== 'undefined' && currentStatus === 'all') ? 'selected' : '' %>>All Status</option>
+            <option value="processing" <%= (typeof currentStatus !== 'undefined' && currentStatus === 'processing') ? 'selected' : '' %>>Processing</option>
+            <option value="shipped" <%= (typeof currentStatus !== 'undefined' && currentStatus === 'shipped') ? 'selected' : '' %>>Shipped</option>
+            <option value="delivered" <%= (typeof currentStatus !== 'undefined' && currentStatus === 'delivered') ? 'selected' : '' %>>Delivered</option>
+            <option value="cancelled" <%= (typeof currentStatus !== 'undefined' && currentStatus === 'cancelled') ? 'selected' : '' %>>Cancelled</option>
+          </select>
+          <button type="submit" class="filter-btn">Filter</button>
+          <% if (typeof currentStatus !== 'undefined' && currentStatus !== 'all') { %>
+            <a href="/admin/shipping/orders" class="btn-clear">Clear</a>
+          <% } %>
+        </form>
+        
+        <% if (typeof ordersList !== 'undefined' && ordersList && ordersList.length > 0) { %>
+          <div class="table-wrap" style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order #</th><th>Customer</th><th>Items</th><th>Total</th><th>Shipping</th><th>Status</th><th>Ship Status</th><th>Supplier</th><th>Tracking</th><th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% ordersList.forEach(function(order) { 
+                  var si = (typeof shippingMap !== 'undefined' && shippingMap[order._id.toString()]) || {};
+                %>
+                  <tr>
+                    <td style="font-weight:600;color:var(--primary);white-space:nowrap;"><%= order.orderNumber %></td>
+                    <td style="font-size:0.8rem;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></td>
+                    <td><%= order.items ? order.items.length : 0 %></td>
+                    <td style="font-weight:600;">$<%= order.total.toFixed(2) %></td>
+                    <td><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></td>
+                    <td><span class="badge badge-<%= order.status %>"><%= order.status %></span></td>
+                    <td><span class="badge badge-<%= si.shippingStatus || 'pending' %>"><%= si.shippingStatus || 'pending' %></span></td>
+                    <td style="font-size:0.78rem;"><%= si.supplierName || '—' %></td>
+                    <td style="font-size:0.78rem;"><%= si.trackingNumber || '—' %></td>
+                    <td><a href="/admin/shipping/orders/<%= order._id %>" class="btn-sm">Edit</a></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
           </div>
           
+          <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+            <div class="pagination">
+              <% for (var p = 1; p <= totalPages; p++) { %>
+                <a href="/admin/shipping/orders?page=<%= p %><%= (typeof currentStatus !== 'undefined' && currentStatus !== 'all') ? '&status=' + currentStatus : '' %>" class="page-link <%= p === (typeof currentPage !== 'undefined' ? currentPage : 1) ? 'active' : '' %>"><%= p %></a>
+              <% } %>
+            </div>
+          <% } %>
+        <% } else { %>
+          <div class="empty">
+            <i class="fas fa-box-open"></i>
+            <p>No orders found.</p>
+          </div>
+        <% } %>
+      </div>
+      
+      <!-- ============ TAB 3: BULK UPDATE ============ -->
+      <div class="tab-content" id="tab-bulk">
+        <div class="bulk-info">
+          <i class="fas fa-info-circle"></i>
+          <span>Select orders below, fill in the fields you want to update, and click apply. Only filled fields will be updated on selected orders.</span>
         </div>
         
-        <div class="form-footer">
-          <button type="submit" class="btn-save"><i class="fas fa-check"></i> Save Settings</button>
-          <span class="save-note">Changes apply immediately across the storefront</span>
+        <div class="bulk-form-card">
+          <div class="bulk-form-title">Bulk Update Values</div>
+          <form action="/admin/shipping/bulk" method="POST" id="bulkForm">
+            <div class="bulk-grid">
+              <div class="bulk-group">
+                <label class="bulk-label">Shipping Type</label>
+                <select name="shippingType" class="bulk-select">
+                  <option value="">Don't Change</option>
+                  <option value="flat_rate">Flat Rate</option>
+                  <option value="free">Free Shipping</option>
+                  <option value="disabled">No Shipping</option>
+                  <option value="custom">Custom Amount</option>
+                </select>
+              </div>
+              <div class="bulk-group">
+                <label class="bulk-label">Custom Shipping Cost ($)</label>
+                <input type="number" name="customShippingCost" class="bulk-input" min="0" step="0.01" placeholder="Leave empty">
+              </div>
+              <div class="bulk-group">
+                <label class="bulk-label">Shipping Status</label>
+                <select name="shippingStatus" class="bulk-select">
+                  <option value="">Don't Change</option>
+                  <option value="pending">Pending</option>
+                  <option value="processing">Processing</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div class="bulk-group">
+                <label class="bulk-label">Supplier Name</label>
+                <input type="text" name="supplierName" class="bulk-input" placeholder="Leave empty">
+              </div>
+              <div class="bulk-group">
+                <label class="bulk-label">Carrier Name</label>
+                <input type="text" name="carrierName" class="bulk-input" placeholder="Leave empty">
+              </div>
+              <div class="bulk-group">
+                <label class="bulk-label">Tracking Number</label>
+                <input type="text" name="trackingNumber" class="bulk-input" placeholder="Leave empty">
+              </div>
+            </div>
+            <div class="bulk-actions-row">
+              <button type="button" class="btn-bulk" onclick="submitBulk()"><i class="fas fa-check"></i> Apply to Selected</button>
+              <button type="button" class="btn-outline-sm" onclick="selectAll()">Select All</button>
+              <button type="button" class="btn-outline-sm" onclick="deselectAll()">Deselect All</button>
+            </div>
+          </form>
         </div>
-      </form>
+        
+        <% if (typeof bulkOrders !== 'undefined' && bulkOrders && bulkOrders.length > 0) { %>
+          <div class="table-wrap" style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:36px;"><input type="checkbox" class="order-checkbox" onchange="toggleAllBulk(this)"></th>
+                  <th>Order #</th><th>Customer</th><th>Total</th><th>Shipping</th><th>Status</th><th>Ship Status</th><th>Supplier</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% bulkOrders.forEach(function(order) { 
+                  var si = (typeof shippingMap !== 'undefined' && shippingMap[order._id.toString()]) || {};
+                %>
+                  <tr>
+                    <td><input type="checkbox" class="order-checkbox bulk-check" name="orderIds" value="<%= order._id %>" form="bulkForm"></td>
+                    <td style="font-weight:600;color:var(--primary);white-space:nowrap;"><%= order.orderNumber %></td>
+                    <td style="font-size:0.8rem;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></td>
+                    <td style="font-weight:600;">$<%= order.total.toFixed(2) %></td>
+                    <td><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></td>
+                    <td><span class="badge badge-<%= order.status %>"><%= order.status %></span></td>
+                    <td><span class="badge badge-<%= si.shippingStatus || 'pending' %>"><%= si.shippingStatus || 'pending' %></span></td>
+                    <td style="font-size:0.78rem;"><%= si.supplierName || '—' %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <div class="empty">
+            <i class="fas fa-box-open"></i>
+            <p>No active orders for bulk update.</p>
+          </div>
+        <% } %>
+      </div>
+      
     </div>
   </div>
 </div>
 
 <script>
+// Tab switching
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+  document.querySelector('.tab-btn[onclick="switchTab(\'' + tab + '\')"]').classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+// Settings tab functions
 function pickMode(type, el) {
   document.querySelectorAll('.mode-card').forEach(function(c) { c.classList.remove('active'); });
   el.classList.add('active');
@@ -322,13 +512,9 @@ function refreshPreview() {
   var txt = document.getElementById('previewText');
   var sub = document.getElementById('previewSubText');
   
-  if (!enabled || type === 'disabled') {
-    txt.textContent = 'Shipping: Not charged';
-    sub.textContent = '';
-  } else if (type === 'free') {
-    txt.textContent = 'Shipping: FREE';
-    sub.textContent = '';
-  } else {
+  if (!enabled || type === 'disabled') { txt.textContent = 'Shipping: Not charged'; sub.textContent = ''; }
+  else if (type === 'free') { txt.textContent = 'Shipping: FREE'; sub.textContent = ''; }
+  else {
     var p = [];
     if (perOrder > 0) p.push('$' + perOrder.toFixed(2) + ' base');
     if (perItem > 0) p.push('$' + perItem.toFixed(2) + '/item');
@@ -336,10 +522,21 @@ function refreshPreview() {
     txt.textContent = 'Shipping: ' + (p.join(' + ') || '$0.00');
     sub.textContent = (freeEnabled && freeMin > 0) ? 'Free over $' + freeMin.toFixed(2) : '';
   }
-  
   document.getElementById('thresholdVal').textContent = freeMin.toFixed(2);
 }
 
+// Bulk tab functions
+function selectAll() { document.querySelectorAll('.bulk-check').forEach(function(c) { c.checked = true; }); }
+function deselectAll() { document.querySelectorAll('.bulk-check').forEach(function(c) { c.checked = false; }); }
+function toggleAllBulk(el) { document.querySelectorAll('.bulk-check').forEach(function(c) { c.checked = el.checked; }); }
+function submitBulk() {
+  var checked = document.querySelectorAll('.bulk-check:checked');
+  if (checked.length === 0) { alert('Please select at least one order.'); return; }
+  if (!confirm('Apply updates to ' + checked.length + ' order(s)?')) return;
+  document.getElementById('bulkForm').submit();
+}
+
+// Init
 pickMode('<%= settings.shippingType %>', document.querySelector('.mode-card.active'));
 </script>
 
