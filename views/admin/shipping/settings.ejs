@@ -384,11 +384,11 @@
         <% } %>
       </div>
       
-      <!-- ============ TAB 3: BULK UPDATE ============ -->
+            <!-- ============ TAB 3: BULK UPDATE ============ -->
       <div class="tab-content" id="tab-bulk">
         <div class="bulk-info">
           <i class="fas fa-info-circle"></i>
-          <span>Select orders below, fill in the fields you want to update, and click apply. Only filled fields will be updated on selected orders.</span>
+          <span>Select orders below and apply tracking/supplier updates in bulk. Only filled fields will be updated. This does NOT change what the customer paid.</span>
         </div>
         
         <div class="bulk-form-card">
@@ -396,18 +396,16 @@
           <form action="/admin/shipping/bulk" method="POST" id="bulkForm">
             <div class="bulk-grid">
               <div class="bulk-group">
-                <label class="bulk-label">Shipping Type</label>
-                <select name="shippingType" class="bulk-select">
-                  <option value="">Don't Change</option>
-                  <option value="flat_rate">Flat Rate</option>
-                  <option value="free">Free Shipping</option>
-                  <option value="disabled">No Shipping</option>
-                  <option value="custom">Custom Amount</option>
-                </select>
+                <label class="bulk-label">Supplier Name</label>
+                <input type="text" name="supplierName" class="bulk-input" placeholder="Leave empty to skip">
               </div>
               <div class="bulk-group">
-                <label class="bulk-label">Custom Shipping Cost ($)</label>
-                <input type="number" name="customShippingCost" class="bulk-input" min="0" step="0.01" placeholder="Leave empty">
+                <label class="bulk-label">Carrier Name</label>
+                <input type="text" name="carrierName" class="bulk-input" placeholder="Leave empty to skip">
+              </div>
+              <div class="bulk-group">
+                <label class="bulk-label">Tracking Number</label>
+                <input type="text" name="trackingNumber" class="bulk-input" placeholder="Leave empty to skip">
               </div>
               <div class="bulk-group">
                 <label class="bulk-label">Shipping Status</label>
@@ -419,18 +417,6 @@
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
-              </div>
-              <div class="bulk-group">
-                <label class="bulk-label">Supplier Name</label>
-                <input type="text" name="supplierName" class="bulk-input" placeholder="Leave empty">
-              </div>
-              <div class="bulk-group">
-                <label class="bulk-label">Carrier Name</label>
-                <input type="text" name="carrierName" class="bulk-input" placeholder="Leave empty">
-              </div>
-              <div class="bulk-group">
-                <label class="bulk-label">Tracking Number</label>
-                <input type="text" name="trackingNumber" class="bulk-input" placeholder="Leave empty">
               </div>
             </div>
             <div class="bulk-actions-row">
@@ -447,22 +433,22 @@
               <thead>
                 <tr>
                   <th style="width:36px;"><input type="checkbox" class="order-checkbox" onchange="toggleAllBulk(this)"></th>
-                  <th>Order #</th><th>Customer</th><th>Total</th><th>Shipping</th><th>Status</th><th>Ship Status</th><th>Supplier</th>
+                  <th>Order #</th><th>Customer</th><th>Total</th><th>Status</th><th>Ship Status</th><th>Supplier</th><th>Tracking</th>
                 </tr>
               </thead>
               <tbody>
                 <% bulkOrders.forEach(function(order) { 
-                  var si = (typeof shippingMap !== 'undefined' && shippingMap[order._id.toString()]) || {};
+                  var si = (typeof bulkShippingMap !== 'undefined' && bulkShippingMap[order._id.toString()]) || {};
                 %>
                   <tr>
                     <td><input type="checkbox" class="order-checkbox bulk-check" name="orderIds" value="<%= order._id %>" form="bulkForm"></td>
                     <td style="font-weight:600;color:var(--primary);white-space:nowrap;"><%= order.orderNumber %></td>
                     <td style="font-size:0.8rem;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></td>
                     <td style="font-weight:600;">$<%= order.total.toFixed(2) %></td>
-                    <td><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></td>
                     <td><span class="badge badge-<%= order.status %>"><%= order.status %></span></td>
                     <td><span class="badge badge-<%= si.shippingStatus || 'pending' %>"><%= si.shippingStatus || 'pending' %></span></td>
                     <td style="font-size:0.78rem;"><%= si.supplierName || '—' %></td>
+                    <td style="font-size:0.78rem;"><%= si.trackingNumber || '—' %></td>
                   </tr>
                 <% }) %>
               </tbody>

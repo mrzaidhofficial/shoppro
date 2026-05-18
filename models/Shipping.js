@@ -25,17 +25,18 @@ var orderShippingSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    customShippingCost: { type: Number, default: null },
-    shippingType: { 
-        type: String, 
-        enum: ['flat_rate', 'free', 'disabled', 'custom'],
-        default: null
-    },
+    // Tracking & Supplier Info
     trackingNumber: { type: String, default: '' },
     trackingUrl: { type: String, default: '' },
     carrierName: { type: String, default: '' },
     supplierName: { type: String, default: '' },
     supplierOrderId: { type: String, default: '' },
+    
+    // Cost Tracking (internal - what you paid)
+    supplierProductCost: { type: Number, default: 0 },
+    supplierShippingCost: { type: Number, default: 0 },
+    
+    // Status
     shippingNotes: { type: String, default: '' },
     shippingStatus: {
         type: String,

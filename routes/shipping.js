@@ -30,12 +30,11 @@ async function getShippingSettings() {
     return settings;
 }
 
-// Main shipping page with tabs - loads all data
+// Main shipping page with tabs
 router.get('/settings', isAdmin, async function(req, res) {
     try {
         var settings = await getShippingSettings();
         
-        // Orders data for the orders tab
         var page = parseInt(req.query.page) || 1;
         var limit = 20;
         var skip = (page - 1) * limit;
@@ -55,7 +54,6 @@ router.get('/settings', isAdmin, async function(req, res) {
         var shippingMap = {};
         shippingInfos.forEach(function(si) { shippingMap[si.order.toString()] = si; });
         
-        // Bulk orders data
         var bulkOrders = await Order.find({ status: { $in: ['processing', 'shipped'] } })
             .populate('user', 'firstName lastName email')
             .sort({ createdAt: -1 })
@@ -108,10 +106,9 @@ router.post('/settings', isAdmin, async function(req, res) {
     }
 });
 
-// Order Shipping List (redirects to settings page with orders tab active via query)
+// Order Shipping List (redirects to tabbed page)
 router.get('/orders', isAdmin, async function(req, res) {
-    // Redirect to the tabbed settings page
-    res.redirect('/admin/shipping/settings?tab=orders&' + (req.query.status ? 'status=' + req.query.status : ''));
+    res.redirect('/admin/shipping/settings');
 });
 
 // Edit shipping for a specific order
@@ -139,29 +136,29 @@ router.post('/orders/:id', isAdmin, async function(req, res) {
     try {
         var order = await Order.findById(req.params.id);
         if (!order) { req.flash('error', 'Order not found'); return res.redirect('/admin/shipping/settings'); }
+        
         var orderShipping = await OrderShipping.findOne({ order: req.params.id });
         if (!orderShipping) { orderShipping = new OrderShipping({ order: req.params.id }); }
-        orderShipping.shippingType = req.body.shippingType || orderShipping.shippingType;
-        if (req.body.customShippingCost !== '' && req.body.customShippingCost !== undefined) {
-            orderShipping.customShippingCost = parseFloat(req.body.customShippingCost);
-        } else { orderShipping.customShippingCost = null; }
+        
+        // Tracking & Supplier Info
         orderShipping.trackingNumber = req.body.trackingNumber || '';
         orderShipping.trackingUrl = req.body.trackingUrl || '';
         orderShipping.carrierName = req.body.carrierName || '';
         orderShipping.supplierName = req.body.supplierName || '';
         orderShipping.supplierOrderId = req.body.supplierOrderId || '';
+        
+        // Cost Tracking
+        orderShipping.supplierProductCost = parseFloat(req.body.supplierProductCost) || 0;
+        orderShipping.supplierShippingCost = parseFloat(req.body.supplierShippingCost) || 0;
+        
+        // Status
         orderShipping.shippingNotes = req.body.shippingNotes || '';
         orderShipping.shippingStatus = req.body.shippingStatus || 'pending';
         if (req.body.shippedDate) { orderShipping.shippedDate = new Date(req.body.shippedDate); }
         if (req.body.deliveredDate) { orderShipping.deliveredDate = new Date(req.body.deliveredDate); }
+        
         await orderShipping.save();
-        if (orderShipping.customShippingCost !== null && orderShipping.customShippingCost !== undefined) {
-            var newTotal = order.subtotal + orderShipping.customShippingCost + (order.tax || 0) - (order.couponDiscount || 0);
-            order.shippingCost = orderShipping.customShippingCost;
-            order.total = Math.round(newTotal * 100) / 100;
-            if (order.total < 0) order.total = 0;
-            await order.save();
-        }
+        
         req.flash('success', 'Shipping details updated for Order #' + order.orderNumber);
         res.redirect('/admin/shipping/orders/' + req.params.id);
     } catch (err) {
@@ -173,7 +170,7 @@ router.post('/orders/:id', isAdmin, async function(req, res) {
 
 // Bulk update
 router.get('/bulk', isAdmin, async function(req, res) {
-    res.redirect('/admin/shipping/settings?tab=bulk');
+    res.redirect('/admin/shipping/settings');
 });
 
 router.post('/bulk', isAdmin, async function(req, res) {
@@ -186,10 +183,6 @@ router.post('/bulk', isAdmin, async function(req, res) {
             var orderId = orderIds[i];
             var orderShipping = await OrderShipping.findOne({ order: orderId });
             if (!orderShipping) { orderShipping = new OrderShipping({ order: orderId }); }
-            if (req.body.shippingType && req.body.shippingType !== '') { orderShipping.shippingType = req.body.shippingType; }
-            if (req.body.customShippingCost !== '' && req.body.customShippingCost !== undefined && req.body.customShippingCost !== null && req.body.customShippingCost !== '') {
-                orderShipping.customShippingCost = parseFloat(req.body.customShippingCost);
-            }
             if (req.body.trackingNumber && req.body.trackingNumber !== '') { orderShipping.trackingNumber = req.body.trackingNumber; }
             if (req.body.carrierName && req.body.carrierName !== '') { orderShipping.carrierName = req.body.carrierName; }
             if (req.body.supplierName && req.body.supplierName !== '') { orderShipping.supplierName = req.body.supplierName; }
@@ -198,7 +191,7 @@ router.post('/bulk', isAdmin, async function(req, res) {
             updateCount++;
         }
         req.flash('success', 'Bulk shipping updated for ' + updateCount + ' order(s)');
-        res.redirect('/admin/shipping/settings?tab=bulk');
+        res.redirect('/admin/shipping/settings');
     } catch (err) {
         console.error('Error processing bulk shipping:', err);
         req.flash('error', 'Error processing bulk shipping update');
