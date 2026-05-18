@@ -57,122 +57,138 @@
   .status-delivered { background: var(--success-bg); color: var(--success); }
   .status-cancelled { background: var(--error-bg); color: var(--error); }
   
-  /* ========== PROFIT SECTION - REDESIGNED ========== */
-  .profit-section { 
-    background: var(--white); 
-    border: 1px solid #A7F3D0; 
-    border-radius: var(--radius-xl); 
-    overflow: hidden; 
-    box-shadow: 0 4px 24px rgba(5, 150, 105, 0.08);
-  }
-  
-  .profit-top { 
-    background: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%); 
-    padding: 28px 32px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    gap: 20px;
-    position: relative;
+  /* ========== PROFIT SECTION ========== */
+  .profit-wrapper {
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-xl);
     overflow: hidden;
-  }
-  .profit-top::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 300px;
-    height: 300px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 50%;
-  }
-  .profit-top::after {
-    content: '';
-    position: absolute;
-    bottom: -60%;
-    left: -10%;
-    width: 250px;
-    height: 250px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 50%;
+    box-shadow: var(--shadow-sm);
   }
   
-  .profit-top-left { position: relative; z-index: 1; }
-  .profit-label-small { font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
-  .profit-main-amount { font-family: var(--font-display); font-size: 2.8rem; font-weight: 700; color: white; line-height: 1; letter-spacing: -1px; }
-  .profit-main-formula { font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 6px; }
+  .profit-header-section {
+    padding: 28px 32px;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
   
-  .profit-top-right { 
-    position: relative; 
-    z-index: 1; 
-    display: flex; 
-    align-items: center; 
-    gap: 10px;
-    background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(10px);
-    padding: 10px 18px;
+  .profit-header-left { }
+  .profit-eyebrow {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+  .profit-big-number {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+    letter-spacing: -1.5px;
+  }
+  .profit-big-number.positive { color: #4ADE80; }
+  .profit-big-number.negative { color: #F87171; }
+  
+  .profit-header-right {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+  }
+  .profit-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 16px;
     border-radius: var(--radius-full);
-    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.9);
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
   }
-  .profit-trend-icon { 
-    width: 36px; 
-    height: 36px; 
-    border-radius: 50%; 
-    background: rgba(255,255,255,0.2); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    color: white; 
-    font-size: 0.9rem; 
+  .profit-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
   }
-  .profit-trend-text { font-size: 0.78rem; font-weight: 600; color: white; }
-  
-  .profit-bottom { 
-    display: grid; 
-    grid-template-columns: repeat(5, 1fr); 
-    gap: 0; 
-    background: #F0FDF4;
-    border-top: 1px solid #A7F3D0;
+  .profit-status-dot.green { background: #4ADE80; box-shadow: 0 0 8px #4ADE80; }
+  .profit-status-dot.red { background: #F87171; box-shadow: 0 0 8px #F87171; }
+  .profit-formula-text {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.4);
   }
   
-  .profit-metric { 
-    padding: 20px 16px; 
-    text-align: center; 
+  .profit-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    background: #F8FAFC;
+    border-top: 1px solid var(--gray-200);
+  }
+  
+  .profit-metric-box {
+    padding: 20px 16px;
+    text-align: center;
     position: relative;
-    transition: background 0.2s;
+    transition: background 0.15s;
   }
-  .profit-metric:hover { background: #DCFCE7; }
-  .profit-metric:not(:last-child)::after {
+  .profit-metric-box:hover {
+    background: var(--white);
+  }
+  .profit-metric-box:not(:last-child)::after {
     content: '';
     position: absolute;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
     width: 1px;
-    height: 40px;
-    background: #BBF7D0;
+    height: 44px;
+    background: var(--gray-200);
   }
   
-  .profit-metric-icon { 
-    width: 32px; 
-    height: 32px; 
-    border-radius: 50%; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    margin: 0 auto 8px; 
-    font-size: 0.75rem; 
+  .metric-icon-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    font-size: 0.8rem;
+    transition: transform 0.2s;
   }
-  .profit-metric-icon.revenue { background: #DBEAFE; color: #2563EB; }
-  .profit-metric-icon.items { background: #FEF3C7; color: #D97706; }
-  .profit-metric-icon.cost { background: #FEE2E2; color: #DC2626; }
-  .profit-metric-icon.coupon { background: #EDE9FE; color: #7C3AED; }
-  .profit-metric-icon.shipping { background: #CCFBF1; color: #0D9488; }
+  .profit-metric-box:hover .metric-icon-circle {
+    transform: scale(1.1);
+  }
+  .metric-icon-circle.blue { background: #EFF6FF; color: #3B82F6; }
+  .metric-icon-circle.amber { background: #FFFBEB; color: #D97706; }
+  .metric-icon-circle.red { background: #FEF2F2; color: #EF4444; }
+  .metric-icon-circle.purple { background: #F5F3FF; color: #7C3AED; }
+  .metric-icon-circle.teal { background: #F0FDFA; color: #0D9488; }
   
-  .profit-metric-value { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--gray-900); margin-bottom: 2px; }
-  .profit-metric-value.negative { color: #DC2626; }
-  .profit-metric-value.positive { color: #059669; }
-  .profit-metric-label { font-size: 0.66rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .metric-value {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 3px;
+  }
+  .metric-value.danger { color: #EF4444; }
+  .metric-value.success { color: #059669; }
+  .metric-label {
+    font-size: 0.66rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
   
   .form-actions { display: flex; gap: 12px; margin-top: 20px; padding-top: 18px; border-top: var(--border); }
   .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: 11px 26px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-full); font-size: 0.86rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,102,255,0.2); }
@@ -190,18 +206,17 @@
     .detail-grid { grid-template-columns: 1fr; }
     .detail-card.span-2 { grid-column: 1; }
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
-    .profit-top { flex-direction: column; text-align: center; padding: 24px 20px; }
-    .profit-main-amount { font-size: 2.2rem; }
-    .profit-bottom { grid-template-columns: repeat(3, 1fr); }
-    .profit-metric:nth-child(3)::after { display: none; }
-    .profit-metric:nth-child(4)::after, .profit-metric:nth-child(5)::after { display: block; }
+    .profit-header-section { flex-direction: column; align-items: flex-start; padding: 24px 20px; }
+    .profit-header-right { align-items: flex-start; }
+    .profit-big-number { font-size: 2.2rem; }
+    .profit-metrics-row { grid-template-columns: repeat(3, 1fr); }
+    .profit-metric-box:nth-child(3)::after { display: none; }
   }
   
   @media (max-width: 500px) {
-    .profit-bottom { grid-template-columns: repeat(2, 1fr); }
-    .profit-metric:nth-child(2)::after { display: none; }
-    .profit-metric:nth-child(4)::after { display: none; }
-    .profit-metric:nth-child(3)::after, .profit-metric:nth-child(5)::after { display: block; }
+    .profit-metrics-row { grid-template-columns: repeat(2, 1fr); }
+    .profit-metric-box:nth-child(2)::after { display: none; }
+    .profit-metric-box:nth-child(4)::after { display: none; }
   }
 </style>
 
@@ -231,7 +246,6 @@
         </div>
       </div>
       
-      <!-- Quick Info Cards -->
       <div class="info-cards">
         <div class="info-card">
           <div class="info-card-label">Customer</div>
@@ -254,7 +268,6 @@
       <form action="/admin/shipping/orders/<%= order._id %>" method="POST">
         <div class="detail-grid">
           
-          <!-- Order Items -->
           <div class="detail-card span-2">
             <div class="card-head">
               <div class="card-head-icon blue"><i class="fas fa-shopping-bag"></i></div>
@@ -279,10 +292,10 @@
             </div>
           </div>
           
-          <!-- Order Net Profit - REDESIGNED -->
-          <div class="detail-card span-2 profit-section">
+          <!-- Order Net Profit -->
+          <div class="detail-card span-2 profit-wrapper">
             <%
-              var revenue = order.subtotal || 0;
+              var revenue = order.total || 0;
               var productCost = 0;
               if (order.items && order.items.length > 0) {
                 order.items.forEach(function(item) {
@@ -290,46 +303,49 @@
                 });
               }
               var couponDiscount = order.couponDiscount || 0;
-              var netProfit = revenue - productCost - couponDiscount;
+              var shippingCost = order.shippingCost || 0;
+              var netProfit = revenue - productCost;
             %>
-            <div class="profit-top">
-              <div class="profit-top-left">
-                <div class="profit-label-small">Order Net Profit</div>
-                <div class="profit-main-amount" style="color: white;"><%= netProfit >= 0 ? '$' : '-$' %><%= Math.abs(netProfit).toFixed(2) %></div>
-                <div class="profit-main-formula">Revenue − Costs − Coupons</div>
-              </div>
-              <div class="profit-top-right">
-                <div class="profit-trend-icon">
-                  <i class="fas <%= netProfit >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' %>"></i>
+            <div class="profit-header-section">
+              <div class="profit-header-left">
+                <div class="profit-eyebrow">Order Net Profit</div>
+                <div class="profit-big-number <%= netProfit >= 0 ? 'positive' : 'negative' %>">
+                  <%= netProfit >= 0 ? '$' : '-$' %><%= Math.abs(netProfit).toFixed(2) %>
                 </div>
-                <span class="profit-trend-text"><%= netProfit >= 0 ? 'Profitable' : 'Loss' %></span>
+              </div>
+              <div class="profit-header-right">
+                <div class="profit-status-pill">
+                  <span class="profit-status-dot <%= netProfit >= 0 ? 'green' : 'red' %>"></span>
+                  <%= netProfit >= 0 ? 'Profitable Order' : 'Loss on Order' %>
+                </div>
+                <span class="profit-formula-text">Customer Paid − Product Costs</span>
               </div>
             </div>
-            <div class="profit-bottom">
-              <div class="profit-metric">
-                <div class="profit-metric-icon revenue"><i class="fas fa-shopping-cart"></i></div>
-                <div class="profit-metric-value">$<%= revenue.toFixed(2) %></div>
-                <div class="profit-metric-label">Revenue</div>
+            <div class="profit-metrics-row">
+              <div class="profit-metric-box">
+                <div class="metric-icon-circle blue"><i class="fas fa-shopping-cart"></i></div>
+                <div class="metric-value">$<%= revenue.toFixed(2) %></div>
+                <div class="metric-label">Revenue</div>
               </div>
-              <div class="profit-metric">
-                <div class="profit-metric-icon items"><i class="fas fa-cubes"></i></div>
-                <div class="profit-metric-value"><%= order.items ? order.items.length : 0 %></div>
-                <div class="profit-metric-label">Items</div>
+              <div class="profit-metric-box">
+                <div class="metric-icon-circle amber"><i class="fas fa-cubes"></i></div>
+                <div class="metric-value"><%= order.items ? order.items.length : 0 %></div>
+                <div class="metric-label">Items</div>
               </div>
-              <div class="profit-metric">
-                <div class="profit-metric-icon cost"><i class="fas fa-receipt"></i></div>
-                <div class="profit-metric-value negative">$<%= productCost.toFixed(2) %></div>
-                <div class="profit-metric-label">Product Cost</div>
+              <div class="profit-metric-box">
+                <div class="metric-icon-circle red"><i class="fas fa-arrow-trend-down"></i></div>
+                <div class="metric-value danger">−$<%= productCost.toFixed(2) %></div>
+                <div class="metric-label">Product Cost</div>
               </div>
-              <div class="profit-metric">
-                <div class="profit-metric-icon coupon"><i class="fas fa-tag"></i></div>
-                <div class="profit-metric-value <%= couponDiscount > 0 ? 'negative' : '' %>"><%= couponDiscount > 0 ? '-$' + couponDiscount.toFixed(2) : '$0.00' %></div>
-                <div class="profit-metric-label">Coupon</div>
+              <div class="profit-metric-box">
+                <div class="metric-icon-circle purple"><i class="fas fa-tag"></i></div>
+                <div class="metric-value<%= couponDiscount > 0 ? ' danger' : '' %>"><%= couponDiscount > 0 ? '−$' + couponDiscount.toFixed(2) : '$0.00' %></div>
+                <div class="metric-label">Coupon</div>
               </div>
-              <div class="profit-metric">
-                <div class="profit-metric-icon shipping"><i class="fas fa-truck"></i></div>
-                <div class="profit-metric-value positive"><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></div>
-                <div class="profit-metric-label">Shipping</div>
+              <div class="profit-metric-box">
+                <div class="metric-icon-circle teal"><i class="fas fa-truck"></i></div>
+                <div class="metric-value success"><%= shippingCost === 0 ? 'FREE' : '$' + shippingCost.toFixed(2) %></div>
+                <div class="metric-label">Shipping</div>
               </div>
             </div>
           </div>
