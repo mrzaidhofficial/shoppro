@@ -18,6 +18,8 @@
   .shipping-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   .shipping-card { background: var(--white); border: var(--border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-xs); transition: var(--transition); }
   .shipping-card:hover { box-shadow: var(--shadow-md); }
+  .shipping-card.full-width { grid-column: 1 / -1; }
+  
   .card-header { padding: 20px 24px; border-bottom: var(--border); display: flex; align-items: center; gap: 12px; }
   .card-icon { width: 44px; height: 44px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
   .card-icon.primary { background: var(--primary-light); color: var(--primary); }
@@ -26,17 +28,31 @@
   .card-icon.info { background: #DBEAFE; color: #2563EB; }
   .card-title { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--gray-900); }
   .card-subtitle { font-size: 0.75rem; color: var(--gray-500); margin-top: 2px; }
-  .card-body { padding: 20px 24px; }
+  .card-body { padding: 24px; }
   
-  .form-group { margin-bottom: 18px; }
+  .form-group { margin-bottom: 20px; }
   .form-group:last-child { margin-bottom: 0; }
-  .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
-  .form-label .label-hint { font-weight: 400; color: var(--gray-400); font-size: 0.72rem; margin-left: 4px; }
-  .form-input, .form-select { width: 100%; padding: 11px 16px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 0.88rem; font-family: var(--font-primary); color: var(--gray-700); background: var(--gray-50); outline: none; transition: var(--transition-fast); }
+  .form-label { display: flex; align-items: center; justify-content: space-between; font-size: 0.84rem; font-weight: 600; color: var(--gray-700); margin-bottom: 8px; }
+  .form-label-text { }
+  .form-label-hint { font-size: 0.7rem; font-weight: 400; color: var(--gray-400); }
+  .form-input, .form-select { width: 100%; padding: 12px 16px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 0.9rem; font-family: var(--font-primary); color: var(--gray-700); background: var(--gray-50); outline: none; transition: var(--transition-fast); }
   .form-input:focus, .form-select:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 4px rgba(0,102,255,0.06); }
-  .form-input-sm { width: 140px; }
-  .form-row { display: flex; gap: 12px; align-items: end; }
-  .form-row .form-group { flex: 1; }
+  
+  .rate-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .rate-row:last-child { margin-bottom: 0; }
+  .rate-item { background: var(--gray-50); border: var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+  .rate-item-label { font-size: 0.78rem; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+  .rate-item-description { font-size: 0.72rem; color: var(--gray-400); margin-bottom: 12px; line-height: 1.4; }
+  .input-with-prefix { position: relative; }
+  .input-with-prefix .prefix { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--gray-400); font-size: 0.9rem; pointer-events: none; z-index: 1; }
+  .input-with-prefix input { padding-left: 34px; }
+  
+  .rate-total-preview { background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%); border: 1px solid #BFDBFE; border-radius: var(--radius-lg); padding: 16px 20px; margin-top: 8px; display: flex; align-items: center; gap: 16px; }
+  .rate-total-icon { width: 42px; height: 42px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+  .rate-total-info { flex: 1; }
+  .rate-total-label { font-size: 0.75rem; color: var(--gray-600); margin-bottom: 2px; }
+  .rate-total-value { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: #1E40AF; }
+  .rate-total-sub { font-size: 0.72rem; color: var(--gray-500); margin-top: 2px; }
   
   .toggle-switch { position: relative; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
   .toggle-switch input { display: none; }
@@ -44,15 +60,13 @@
   .toggle-slider:before { content: ''; position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: var(--transition-fast); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
   .toggle-switch input:checked + .toggle-slider { background: var(--primary); }
   .toggle-switch input:checked + .toggle-slider:before { left: 25px; }
-  .toggle-label { font-size: 0.88rem; font-weight: 500; color: var(--gray-700); }
-  .toggle-desc { font-size: 0.72rem; color: var(--gray-400); margin-top: 2px; }
   
-  .radio-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 8px; }
-  .radio-card { border: 2px solid var(--gray-200); border-radius: var(--radius-lg); padding: 16px; cursor: pointer; transition: var(--transition-fast); text-align: center; position: relative; }
+  .radio-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .radio-card { border: 2px solid var(--gray-200); border-radius: var(--radius-lg); padding: 18px 16px; cursor: pointer; transition: var(--transition-fast); text-align: center; position: relative; }
   .radio-card:hover { border-color: var(--primary); background: var(--gray-50); }
   .radio-card.selected { border-color: var(--primary); background: var(--primary-light); }
   .radio-card input { display: none; }
-  .radio-card-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .radio-card-icon { font-size: 1.6rem; margin-bottom: 8px; display: block; }
   .radio-card-icon.flat { color: #D97706; }
   .radio-card-icon.free { color: var(--success); }
   .radio-card-icon.off { color: var(--gray-400); }
@@ -60,21 +74,13 @@
   .radio-card-title { font-weight: 600; font-size: 0.85rem; color: var(--gray-900); margin-bottom: 4px; }
   .radio-card-desc { font-size: 0.7rem; color: var(--gray-500); line-height: 1.4; }
   
-  .input-with-prefix { position: relative; }
-  .input-with-prefix .prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-weight: 600; color: var(--gray-500); font-size: 0.88rem; pointer-events: none; }
-  .input-with-prefix input { padding-left: 32px; }
-  
-  .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 600; }
-  .status-badge.enabled { background: var(--success-bg); color: var(--success); }
-  .status-badge.disabled { background: var(--error-bg); color: var(--error); }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .status-dot.green { background: var(--success); }
-  .status-dot.red { background: var(--error); }
-  
   .preview-box { background: var(--gray-50); border: 2px dashed var(--gray-300); border-radius: var(--radius-lg); padding: 20px; margin-top: 16px; text-align: center; }
   .preview-label { font-size: 0.72rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
   .preview-value { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--gray-900); }
   .preview-sub { font-size: 0.78rem; color: var(--gray-400); margin-top: 4px; }
+  
+  .info-banner { background: var(--gray-50); border-radius: var(--radius-lg); padding: 14px 18px; font-size: 0.78rem; color: var(--gray-600); display: flex; align-items: center; gap: 10px; }
+  .info-banner i { color: var(--primary); font-size: 1rem; flex-shrink: 0; }
   
   .btn-submit { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; background: var(--primary-gradient); color: var(--white); border: none; border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: var(--transition); box-shadow: 0 4px 16px rgba(0,102,255,0.3); }
   .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,102,255,0.4); }
@@ -82,8 +88,6 @@
   .btn-outline-sm:hover { background: var(--primary); color: white; }
   
   .form-actions { display: flex; gap: 12px; margin-top: 28px; padding-top: 24px; border-top: var(--border); align-items: center; }
-  .save-message { font-size: 0.82rem; color: var(--success); display: flex; align-items: center; gap: 6px; margin-left: auto; opacity: 0; transition: opacity 0.3s ease; }
-  .save-message.show { opacity: 1; }
   
   @media (max-width: 900px) {
     .admin-layout { grid-template-columns: 1fr; }
@@ -93,8 +97,7 @@
     .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--primary); }
     .shipping-layout { grid-template-columns: 1fr; }
     .radio-cards { grid-template-columns: 1fr; }
-    .form-row { flex-direction: column; }
-    .form-input-sm { width: 100%; }
+    .rate-row { grid-template-columns: 1fr; }
   }
 </style>
 
@@ -119,7 +122,7 @@
       <div class="admin-page-header">
         <div>
           <h1 class="admin-page-title">Shipping Settings</h1>
-          <p class="admin-page-subtitle">Configure how shipping costs are calculated and displayed to customers</p>
+          <p class="admin-page-subtitle">Configure shipping costs and how they appear to customers</p>
         </div>
         <div style="display:flex;gap:10px;">
           <a href="/admin/shipping/orders" class="btn-outline-sm"><i class="fas fa-list"></i> Order Shipping</a>
@@ -137,7 +140,7 @@
               <div class="card-icon primary"><i class="fas fa-shipping-fast"></i></div>
               <div>
                 <div class="card-title">Shipping Mode</div>
-                <div class="card-subtitle">Choose how shipping is handled</div>
+                <div class="card-subtitle">Choose how shipping charges are calculated</div>
               </div>
               <div style="margin-left:auto;">
                 <label class="toggle-switch">
@@ -150,38 +153,38 @@
               <div class="radio-cards" id="shippingTypeCards">
                 <label class="radio-card <%= settings.shippingType === 'flat_rate' ? 'selected' : '' %>" onclick="selectShippingType('flat_rate', this)">
                   <input type="radio" name="shippingType" value="flat_rate" <%= settings.shippingType === 'flat_rate' ? 'checked' : '' %>>
-                  <div class="radio-card-icon flat"><i class="fas fa-calculator"></i></div>
+                  <span class="radio-card-icon flat"><i class="fas fa-calculator"></i></span>
                   <div class="radio-card-title">Flat Rate</div>
-                  <div class="radio-card-desc">Charge a fixed rate per item or per order</div>
+                  <div class="radio-card-desc">Fixed rate per item and/or per order</div>
                 </label>
                 <label class="radio-card <%= settings.shippingType === 'free' ? 'selected' : '' %>" onclick="selectShippingType('free', this)">
                   <input type="radio" name="shippingType" value="free" <%= settings.shippingType === 'free' ? 'checked' : '' %>>
-                  <div class="radio-card-icon free"><i class="fas fa-gift"></i></div>
-                  <div class="radio-card-title">Free Shipping</div>
-                  <div class="radio-card-desc">No shipping charges on any orders</div>
+                  <span class="radio-card-icon free"><i class="fas fa-gift"></i></span>
+                  <div class="radio-card-title">Always Free</div>
+                  <div class="radio-card-desc">No shipping charges ever</div>
                 </label>
                 <label class="radio-card <%= settings.shippingType === 'disabled' ? 'selected' : '' %>" onclick="selectShippingType('disabled', this)">
                   <input type="radio" name="shippingType" value="disabled" <%= settings.shippingType === 'disabled' ? 'checked' : '' %>>
-                  <div class="radio-card-icon off"><i class="fas fa-ban"></i></div>
-                  <div class="radio-card-title">Disable Shipping</div>
-                  <div class="radio-card-desc">Remove shipping costs completely</div>
+                  <span class="radio-card-icon off"><i class="fas fa-ban"></i></span>
+                  <div class="radio-card-title">Disable</div>
+                  <div class="radio-card-desc">Remove shipping entirely</div>
                 </label>
               </div>
               
               <div class="preview-box" id="shippingPreview">
-                <div class="preview-label">Current Shipping Cost Display</div>
+                <div class="preview-label">How shipping will appear to customers</div>
                 <div class="preview-value" id="previewValue">
                   <% if (!settings.shippingEnabled || settings.shippingType === 'disabled') { %>
                     No shipping charges
                   <% } else if (settings.shippingType === 'free') { %>
                     FREE Shipping
                   <% } else { %>
-                    $<%= settings.flatRatePerOrder.toFixed(2) %> + $<%= settings.flatRatePerItem.toFixed(2) %>/item
+                    $<%= settings.flatRatePerOrder.toFixed(2) %> base + $<%= settings.flatRatePerItem.toFixed(2) %> per item
                   <% } %>
                 </div>
                 <div class="preview-sub" id="previewSub">
-                  <% if (settings.shippingEnabled && settings.freeShippingEnabled && settings.freeShippingMinAmount > 0) { %>
-                    Free shipping on orders over $<%= settings.freeShippingMinAmount.toFixed(2) %>
+                  <% if (settings.shippingEnabled && settings.freeShippingEnabled && settings.freeShippingMinAmount > 0 && settings.shippingType === 'flat_rate') { %>
+                    Orders over $<%= settings.freeShippingMinAmount.toFixed(2) %> ship FREE
                   <% } else { %>
                     &nbsp;
                   <% } %>
@@ -193,36 +196,64 @@
           <!-- Card 2: Rate Configuration -->
           <div class="shipping-card" id="rateConfigCard">
             <div class="card-header">
-              <div class="card-icon warning"><i class="fas fa-dollar-sign"></i></div>
+              <div class="card-icon warning"><i class="fas fa-sliders-h"></i></div>
               <div>
                 <div class="card-title">Rate Configuration</div>
-                <div class="card-subtitle">Set your shipping rates</div>
+                <div class="card-subtitle">Set exactly how much to charge for shipping</div>
               </div>
             </div>
             <div class="card-body">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">Per Order Base Rate <span class="label-hint">(added once per order)</span></label>
-                  <div class="input-with-prefix">
-                    <span class="prefix">$</span>
-                    <input type="number" name="flatRatePerOrder" class="form-input" value="<%= settings.flatRatePerOrder %>" min="0" step="0.01" onchange="updatePreview()">
-                  </div>
+              
+              <!-- Per Order Base Rate -->
+              <div class="rate-item" style="margin-bottom:16px;">
+                <div class="rate-item-label">
+                  <i class="fas fa-box"></i> Per Order Base Rate
                 </div>
-                <div class="form-group">
-                  <label class="form-label">Per Item Rate <span class="label-hint">(× quantity in cart)</span></label>
-                  <div class="input-with-prefix">
-                    <span class="prefix">$</span>
-                    <input type="number" name="flatRatePerItem" class="form-input" value="<%= settings.flatRatePerItem %>" min="0" step="0.01" onchange="updatePreview()">
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Handling Fee <span class="label-hint">(additional fixed fee)</span></label>
+                <div class="rate-item-description">A fixed amount added once to every order regardless of how many items are purchased.</div>
                 <div class="input-with-prefix">
                   <span class="prefix">$</span>
-                  <input type="number" name="handlingFee" class="form-input form-input-sm" value="<%= settings.handlingFee %>" min="0" step="0.01" onchange="updatePreview()">
+                  <input type="number" name="flatRatePerOrder" class="form-input" value="<%= settings.flatRatePerOrder %>" min="0" step="0.01" onchange="updatePreview()" style="font-size:1.05rem;font-weight:600;">
                 </div>
               </div>
+              
+              <!-- Per Item Rate -->
+              <div class="rate-item" style="margin-bottom:16px;">
+                <div class="rate-item-label">
+                  <i class="fas fa-cubes"></i> Per Item Rate
+                </div>
+                <div class="rate-item-description">Charged for each individual item in the cart. Example: 3 items × this rate = total per-item charge.</div>
+                <div class="input-with-prefix">
+                  <span class="prefix">$</span>
+                  <input type="number" name="flatRatePerItem" class="form-input" value="<%= settings.flatRatePerItem %>" min="0" step="0.01" onchange="updatePreview()" style="font-size:1.05rem;font-weight:600;">
+                </div>
+              </div>
+              
+              <!-- Handling Fee -->
+              <div class="rate-item">
+                <div class="rate-item-label">
+                  <i class="fas fa-hand-holding"></i> Handling Fee
+                </div>
+                <div class="rate-item-description">Additional processing/packaging fee added on top of shipping. Set to $0 to disable.</div>
+                <div class="input-with-prefix">
+                  <span class="prefix">$</span>
+                  <input type="number" name="handlingFee" class="form-input" value="<%= settings.handlingFee %>" min="0" step="0.01" onchange="updatePreview()" style="font-size:1.05rem;font-weight:600;">
+                </div>
+              </div>
+              
+              <!-- Live Calculation Preview -->
+              <div class="rate-total-preview" id="rateCalculationPreview">
+                <div class="rate-total-icon"><i class="fas fa-equals"></i></div>
+                <div class="rate-total-info">
+                  <div class="rate-total-label">Example: Order with 3 items</div>
+                  <div class="rate-total-value" id="rateExampleTotal">$<%= (settings.flatRatePerOrder + (settings.flatRatePerItem * 3) + settings.handlingFee).toFixed(2) %></div>
+                  <div class="rate-total-sub">
+                    Base $<%= settings.flatRatePerOrder.toFixed(2) %> + 
+                    (3 × $<%= settings.flatRatePerItem.toFixed(2) %>) + 
+                    Handling $<%= settings.handlingFee.toFixed(2) %>
+                  </div>
+                </div>
+              </div>
+              
             </div>
           </div>
           
@@ -232,7 +263,7 @@
               <div class="card-icon success"><i class="fas fa-gift"></i></div>
               <div>
                 <div class="card-title">Free Shipping Threshold</div>
-                <div class="card-subtitle">Automatically apply free shipping above a certain amount</div>
+                <div class="card-subtitle">Automatically apply free shipping above a cart total</div>
               </div>
               <div style="margin-left:auto;">
                 <label class="toggle-switch">
@@ -243,14 +274,18 @@
             </div>
             <div class="card-body" id="freeShippingSection">
               <div class="form-group">
-                <label class="form-label">Minimum Order Amount to Qualify</label>
+                <div class="form-label">
+                  <span class="form-label-text">Minimum Cart Subtotal to Qualify</span>
+                  <span class="form-label-hint">Before tax & shipping</span>
+                </div>
                 <div class="input-with-prefix">
                   <span class="prefix">$</span>
-                  <input type="number" name="freeShippingMinAmount" class="form-input form-input-sm" value="<%= settings.freeShippingMinAmount %>" min="0" step="0.01" onchange="updatePreview()">
+                  <input type="number" name="freeShippingMinAmount" id="freeShippingMinAmount" class="form-input" value="<%= settings.freeShippingMinAmount %>" min="0" step="0.01" onchange="updatePreview()" style="font-size:1.05rem;font-weight:600;">
                 </div>
               </div>
-              <div style="font-size:0.78rem;color:var(--gray-500);margin-top:8px;padding:12px;background:var(--gray-50);border-radius:var(--radius);">
-                <i class="fas fa-info-circle"></i> When enabled, orders with subtotal ≥ $<span id="thresholdDisplay"><%= settings.freeShippingMinAmount.toFixed(2) %></span> will automatically get free shipping
+              <div class="info-banner">
+                <i class="fas fa-info-circle"></i>
+                <span>When a customer's cart subtotal reaches <strong>$<span id="thresholdDisplay"><%= settings.freeShippingMinAmount.toFixed(2) %></span></strong> or more, shipping becomes FREE automatically — even if flat rates are set above.</span>
               </div>
             </div>
           </div>
@@ -261,17 +296,23 @@
               <div class="card-icon info"><i class="fas fa-eye"></i></div>
               <div>
                 <div class="card-title">Display Settings</div>
-                <div class="card-subtitle">What customers see during checkout</div>
+                <div class="card-subtitle">What customers see at checkout</div>
               </div>
             </div>
             <div class="card-body">
               <div class="form-group">
-                <label class="form-label">Estimated Delivery Text</label>
+                <div class="form-label">
+                  <span class="form-label-text">Estimated Delivery Time</span>
+                  <span class="form-label-hint">Shown on cart & checkout</span>
+                </div>
                 <input type="text" name="estimatedDelivery" class="form-input" value="<%= settings.estimatedDelivery %>" placeholder="e.g. 7-21 business days">
               </div>
               <div class="form-group">
-                <label class="form-label">Internal Supplier Note <span class="label-hint">(only visible to you)</span></label>
-                <input type="text" name="supplierInfo" class="form-input" value="<%= settings.supplierInfo || '' %>" placeholder="e.g. Main dropshipping supplier - AliExpress">
+                <div class="form-label">
+                  <span class="form-label-text">Supplier Reference Note</span>
+                  <span class="form-label-hint">Internal use only, not visible to customers</span>
+                </div>
+                <input type="text" name="supplierInfo" class="form-input" value="<%= settings.supplierInfo || '' %>" placeholder="e.g. Dropshipping via AliExpress Supplier #42">
               </div>
             </div>
           </div>
@@ -280,7 +321,7 @@
         
         <div class="form-actions">
           <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Save All Settings</button>
-          <span class="save-message" id="saveMessage"><i class="fas fa-check-circle"></i> Settings saved successfully!</span>
+          <span style="font-size:0.82rem;color:var(--gray-500);">Changes take effect immediately on the storefront.</span>
         </div>
       </form>
     </div>
@@ -296,7 +337,7 @@ function selectShippingType(type, element) {
   
   var rateCard = document.getElementById('rateConfigCard');
   if (type === 'free' || type === 'disabled') {
-    rateCard.style.opacity = '0.5';
+    rateCard.style.opacity = '0.45';
     rateCard.style.pointerEvents = 'none';
   } else {
     rateCard.style.opacity = '1';
@@ -309,9 +350,11 @@ function updatePreview() {
   var type = document.querySelector('input[name="shippingType"]:checked').value;
   var perOrder = parseFloat(document.querySelector('input[name="flatRatePerOrder"]').value) || 0;
   var perItem = parseFloat(document.querySelector('input[name="flatRatePerItem"]').value) || 0;
-  var freeMin = parseFloat(document.querySelector('input[name="freeShippingMinAmount"]').value) || 0;
+  var handling = parseFloat(document.querySelector('input[name="handlingFee"]').value) || 0;
+  var freeMin = parseFloat(document.getElementById('freeShippingMinAmount').value) || 0;
   var freeEnabled = document.getElementById('freeShippingEnabled').checked;
   
+  // Update main preview
   var previewValue = document.getElementById('previewValue');
   var previewSub = document.getElementById('previewSub');
   
@@ -322,18 +365,30 @@ function updatePreview() {
     previewValue.textContent = 'FREE Shipping';
     previewSub.innerHTML = '&nbsp;';
   } else {
-    var text = '';
-    if (perOrder > 0) text += '$' + perOrder.toFixed(2) + ' base';
-    if (perItem > 0) text += (text ? ' + ' : '') + '$' + perItem.toFixed(2) + '/item';
-    previewValue.textContent = text || '$0.00';
+    var parts = [];
+    if (perOrder > 0) parts.push('$' + perOrder.toFixed(2) + ' base');
+    if (perItem > 0) parts.push('$' + perItem.toFixed(2) + ' per item');
+    if (handling > 0) parts.push('$' + handling.toFixed(2) + ' handling');
+    previewValue.textContent = parts.length > 0 ? parts.join(' + ') : '$0.00';
     
     if (freeEnabled && freeMin > 0) {
-      previewSub.textContent = 'Free shipping on orders over $' + freeMin.toFixed(2);
+      previewSub.textContent = 'Orders over $' + freeMin.toFixed(2) + ' ship FREE';
     } else {
       previewSub.innerHTML = '&nbsp;';
     }
   }
   
+  // Update rate calculation example
+  var exampleTotal = perOrder + (perItem * 3) + handling;
+  document.getElementById('rateExampleTotal').textContent = '$' + exampleTotal.toFixed(2);
+  
+  // Find the rate total sub text and update it
+  var subEl = document.querySelector('.rate-total-sub');
+  if (subEl) {
+    subEl.innerHTML = 'Base $' + perOrder.toFixed(2) + ' + (3 × $' + perItem.toFixed(2) + ') + Handling $' + handling.toFixed(2);
+  }
+  
+  // Update threshold display
   document.getElementById('thresholdDisplay').textContent = freeMin.toFixed(2);
 }
 
@@ -350,18 +405,9 @@ function toggleFreeShipping() {
   updatePreview();
 }
 
-// Initialize
+// Initialize on page load
 selectShippingType('<%= settings.shippingType %>', document.querySelector('.radio-card.selected'));
 toggleFreeShipping();
-
-// Show save message on form submit
-document.getElementById('shippingForm').addEventListener('submit', function() {
-  setTimeout(function() {
-    var msg = document.getElementById('saveMessage');
-    if (msg) msg.classList.add('show');
-    setTimeout(function() { if (msg) msg.classList.remove('show'); }, 3000);
-  }, 100);
-});
 </script>
 
 <%- include('../../partials/footer') %>
