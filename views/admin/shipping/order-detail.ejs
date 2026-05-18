@@ -292,19 +292,25 @@
             </div>
           </div>
           
-          <!-- Order Net Profit -->
+          <!-- Order Net Profit - CORRECTED FORMULA -->
           <div class="detail-card span-2 profit-wrapper">
             <%
-              var revenue = order.total || 0;
+              // Revenue = Order Subtotal (product prices only, before shipping and coupons)
+              var revenue = order.subtotal || 0;
+              
+              // Product Cost = sum of (item cost × quantity) from product database
               var productCost = 0;
               if (order.items && order.items.length > 0) {
                 order.items.forEach(function(item) {
                   productCost += (item.cost || 0) * item.quantity;
                 });
               }
+              
               var couponDiscount = order.couponDiscount || 0;
               var shippingCost = order.shippingCost || 0;
-              var netProfit = revenue - productCost;
+              
+              // Net Profit = Revenue - Product Cost - Coupon Discount
+              var netProfit = revenue - productCost - couponDiscount;
             %>
             <div class="profit-header-section">
               <div class="profit-header-left">
@@ -318,7 +324,7 @@
                   <span class="profit-status-dot <%= netProfit >= 0 ? 'green' : 'red' %>"></span>
                   <%= netProfit >= 0 ? 'Profitable Order' : 'Loss on Order' %>
                 </div>
-                <span class="profit-formula-text">Customer Paid − Product Costs</span>
+                <span class="profit-formula-text">Revenue − Product Cost − Coupon</span>
               </div>
             </div>
             <div class="profit-metrics-row">
