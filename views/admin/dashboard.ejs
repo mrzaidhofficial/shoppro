@@ -56,7 +56,6 @@
     margin-bottom: 28px;
   }
   
-  /* Stats Grid - 3 columns */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -97,7 +96,6 @@
     margin-top: 4px;
   }
   
-  /* Financial Cards */
   .financial-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -166,7 +164,6 @@
   .financial-card.sales .fc-badge { background: #BFDBFE; color: #1E40AF; }
   .financial-card.profit .fc-badge { background: #A7F3D0; color: #065F46; }
   
-  /* Info Cards */
   .info-cards-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -213,7 +210,6 @@
     background: var(--gray-200);
   }
   
-  /* Conversion */
   .conversion-bar {
     width: 100%;
     height: 6px;
@@ -360,6 +356,7 @@
       <a href="/admin/products" class="admin-nav-item"><i class="fas fa-box"></i> Products</a>
       <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
       <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
+      <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
       <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
     </aside>
@@ -382,7 +379,6 @@
         </a>
       </div>
       
-      <!-- Basic Stats -->
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon products"><i class="fas fa-box"></i></div>
@@ -401,7 +397,6 @@
         </div>
       </div>
       
-      <!-- Financial Cards -->
       <div class="financial-grid">
         <div class="financial-card sales">
           <div class="fc-badge">Gross Sales</div>
@@ -419,7 +414,6 @@
         </div>
       </div>
       
-      <!-- Shipping & Coupon Stats -->
       <div class="info-cards-grid">
         <div class="info-card">
           <h3><i class="fas fa-shipping-fast" style="color:#2563EB;margin-right:8px;"></i> Shipping Overview</h3>
@@ -451,7 +445,6 @@
         </div>
       </div>
       
-      <!-- Conversion Rate -->
       <div class="analytics-card" style="margin-bottom:28px;">
         <h3>Conversion Rate</h3>
         <div style="display:flex;align-items:center;gap:24px;">

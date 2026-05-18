@@ -1,0 +1,207 @@
+<%- include('../../partials/header') %>
+
+<style>
+  .admin-layout { display: grid; grid-template-columns: 250px 1fr; gap: 32px; padding: 40px 0; min-height: 70vh; }
+  .admin-sidebar { background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 24px 0; height: fit-content; position: sticky; top: 100px; box-shadow: var(--shadow-xs); }
+  .admin-sidebar-header { padding: 0 24px 20px; border-bottom: var(--border); margin-bottom: 12px; }
+  .admin-sidebar-header h3 { font-family: var(--font-display); font-size: 1.1rem; color: var(--gray-900); margin-bottom: 4px; }
+  .admin-sidebar-header span { font-size: 0.78rem; color: var(--gray-500); }
+  .admin-nav-item { display: flex; align-items: center; gap: 12px; padding: 13px 24px; color: var(--gray-600); font-weight: 500; font-size: 0.9rem; transition: var(--transition-fast); border-left: 3px solid transparent; text-decoration: none; }
+  .admin-nav-item:hover { background: var(--primary-light); color: var(--primary); }
+  .admin-nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+  .admin-nav-item i { width: 20px; text-align: center; }
+  .admin-content { min-width: 0; }
+  .admin-page-title { font-family: var(--font-display); font-size: 1.8rem; color: var(--gray-900); margin-bottom: 28px; }
+  
+  .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .settings-card { background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 32px; box-shadow: var(--shadow-xs); }
+  .settings-card.full-width { grid-column: 1 / -1; }
+  .settings-card-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--gray-900); margin-bottom: 24px; padding-bottom: 14px; border-bottom: var(--border); display: flex; align-items: center; gap: 10px; }
+  .settings-card-title i { color: var(--primary); font-size: 1.1rem; }
+  
+  .form-group { margin-bottom: 20px; }
+  .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--gray-700); margin-bottom: 7px; }
+  .form-input, .form-select { width: 100%; padding: 14px 18px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 0.92rem; font-family: var(--font-primary); color: var(--gray-700); background: var(--gray-50); outline: none; transition: var(--transition-fast); }
+  .form-input:focus, .form-select:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 4px rgba(0,102,255,0.06); }
+  .form-hint { font-size: 0.75rem; color: var(--gray-400); margin-top: 5px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  
+  .checkbox-group { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 14px 18px; background: var(--gray-50); border-radius: var(--radius); }
+  .checkbox-group input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+  .checkbox-group label { font-size: 0.9rem; color: var(--gray-700); cursor: pointer; font-weight: 500; }
+  
+  .radio-group { margin-bottom: 20px; }
+  .radio-option { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: var(--radius); margin-bottom: 10px; cursor: pointer; transition: var(--transition-fast); }
+  .radio-option:hover { border-color: var(--primary); background: var(--primary-light); }
+  .radio-option input[type="radio"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+  .radio-option.selected { border-color: var(--primary); background: var(--primary-light); }
+  .radio-option label { cursor: pointer; flex: 1; }
+  .radio-title { font-weight: 600; color: var(--gray-900); font-size: 0.9rem; }
+  .radio-desc { font-size: 0.78rem; color: var(--gray-500); margin-top: 2px; }
+  
+  .info-box { background: var(--primary-light); border: 1px solid var(--primary); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 24px; }
+  .info-box p { color: var(--primary); font-size: 0.88rem; margin: 0; }
+  .info-box i { margin-right: 8px; }
+  
+  .btn-submit { display: inline-flex; align-items: center; gap: 8px; padding: 14px 36px; background: var(--primary-gradient); color: var(--white); border: none; border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: var(--transition); box-shadow: 0 4px 16px rgba(0,102,255,0.3); }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,102,255,0.4); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: var(--white); color: var(--primary); border: 2px solid var(--primary); border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; text-decoration: none; transition: var(--transition); }
+  .btn-secondary:hover { background: var(--primary-light); }
+  .form-actions { display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: var(--border); }
+  
+  @media (max-width: 900px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .admin-sidebar { position: static; display: flex; overflow-x: auto; padding: 12px; gap: 4px; }
+    .admin-sidebar-header { display: none; }
+    .admin-nav-item { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 10px 16px; font-size: 0.8rem; }
+    .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--primary); }
+    .settings-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="container">
+  <div class="admin-layout">
+    
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <h3>Admin Panel</h3>
+        <span><i class="fas fa-circle" style="font-size:0.4rem;color:var(--accent);"></i> Logged in as <strong><%= user.firstName %></strong></span>
+      </div>
+      <a href="/admin/dashboard" class="admin-nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="/admin/products" class="admin-nav-item"><i class="fas fa-box"></i> Products</a>
+      <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
+      <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
+      <a href="/admin/shipping/settings" class="admin-nav-item active"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+      <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+    </aside>
+    
+    <div class="admin-content">
+      <h1 class="admin-page-title">Shipping Settings</h1>
+      
+      <div class="info-box">
+        <p><i class="fas fa-info-circle"></i> <strong>Dropshipping Mode:</strong> Your suppliers handle all shipping. Use these settings to control what shipping costs appear on your website.</p>
+      </div>
+      
+      <form action="/admin/shipping/settings" method="POST">
+        <div class="settings-grid">
+          
+          <!-- Shipping Type -->
+          <div class="settings-card">
+            <h3 class="settings-card-title"><i class="fas fa-shipping-fast"></i> Shipping Type</h3>
+            
+            <div class="checkbox-group">
+              <input type="checkbox" id="shippingEnabled" name="shippingEnabled" <%= settings.shippingEnabled ? 'checked' : '' %>>
+              <label for="shippingEnabled"><strong>Enable Shipping Charges</strong></label>
+            </div>
+            
+            <div class="radio-group">
+              <div class="radio-option <%= settings.shippingType === 'flat_rate' ? 'selected' : '' %>" onclick="this.querySelector('input').checked = true; updateRadioStyles();">
+                <input type="radio" name="shippingType" value="flat_rate" <%= settings.shippingType === 'flat_rate' ? 'checked' : '' %>>
+                <label>
+                  <span class="radio-title">Flat Rate Shipping</span>
+                  <span class="radio-desc">Charge a fixed rate per item or per order</span>
+                </label>
+              </div>
+              
+              <div class="radio-option <%= settings.shippingType === 'free' ? 'selected' : '' %>" onclick="this.querySelector('input').checked = true; updateRadioStyles();">
+                <input type="radio" name="shippingType" value="free" <%= settings.shippingType === 'free' ? 'checked' : '' %>>
+                <label>
+                  <span class="radio-title">Free Shipping</span>
+                  <span class="radio-desc">No shipping charges on any orders</span>
+                </label>
+              </div>
+              
+              <div class="radio-option <%= settings.shippingType === 'disabled' ? 'selected' : '' %>" onclick="this.querySelector('input').checked = true; updateRadioStyles();">
+                <input type="radio" name="shippingType" value="disabled" <%= settings.shippingType === 'disabled' ? 'checked' : '' %>>
+                <label>
+                  <span class="radio-title">Disable Shipping</span>
+                  <span class="radio-desc">Remove shipping costs completely</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Rate Settings -->
+          <div class="settings-card">
+            <h3 class="settings-card-title"><i class="fas fa-dollar-sign"></i> Rate Settings</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Flat Rate Per Item ($)</label>
+                <input type="number" name="flatRatePerItem" class="form-input" value="<%= settings.flatRatePerItem %>" min="0" step="0.01">
+                <span class="form-hint">Shipping cost for each product in cart</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Flat Rate Per Order ($)</label>
+                <input type="number" name="flatRatePerOrder" class="form-input" value="<%= settings.flatRatePerOrder %>" min="0" step="0.01">
+                <span class="form-hint">Base shipping cost per order</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Handling Fee ($)</label>
+              <input type="number" name="handlingFee" class="form-input" value="<%= settings.handlingFee %>" min="0" step="0.01">
+              <span class="form-hint">Additional handling fee added to shipping</span>
+            </div>
+          </div>
+          
+          <!-- Free Shipping Threshold -->
+          <div class="settings-card">
+            <h3 class="settings-card-title"><i class="fas fa-gift"></i> Free Shipping Threshold</h3>
+            
+            <div class="checkbox-group">
+              <input type="checkbox" id="freeShippingEnabled" name="freeShippingEnabled" <%= settings.freeShippingEnabled ? 'checked' : '' %> onchange="document.getElementById('freeShippingMinRow').style.display = this.checked ? 'block' : 'none';">
+              <label for="freeShippingEnabled"><strong>Enable Free Shipping Threshold</strong></label>
+            </div>
+            
+            <div class="form-group" id="freeShippingMinRow" style="display:<%= settings.freeShippingEnabled ? 'block' : 'none' %>;">
+              <label class="form-label">Minimum Order Amount for Free Shipping ($)</label>
+              <input type="number" name="freeShippingMinAmount" class="form-input" value="<%= settings.freeShippingMinAmount %>" min="0" step="0.01">
+              <span class="form-hint">Orders above this amount get free shipping</span>
+            </div>
+          </div>
+          
+          <!-- Display Settings -->
+          <div class="settings-card">
+            <h3 class="settings-card-title"><i class="fas fa-clock"></i> Display Settings</h3>
+            
+            <div class="form-group">
+              <label class="form-label">Estimated Delivery Text</label>
+              <input type="text" name="estimatedDelivery" class="form-input" value="<%= settings.estimatedDelivery %>" placeholder="e.g. 7-21 business days">
+              <span class="form-hint">Shown to customers during checkout</span>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Supplier Info (Internal Note)</label>
+              <input type="text" name="supplierInfo" class="form-input" value="<%= settings.supplierInfo || '' %>" placeholder="e.g. Main Supplier - AliExpress">
+              <span class="form-hint">Private note for your reference only</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Save Settings</button>
+          <a href="/admin/shipping/orders" class="btn-secondary"><i class="fas fa-list"></i> Manage Order Shipping</a>
+          <a href="/admin/shipping/bulk" class="btn-secondary"><i class="fas fa-layer-group"></i> Bulk Update</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateRadioStyles() {
+  document.querySelectorAll('.radio-option').forEach(function(option) {
+    if (option.querySelector('input').checked) {
+      option.classList.add('selected');
+    } else {
+      option.classList.remove('selected');
+    }
+  });
+}
+updateRadioStyles();
+</script>
+
+<%- include('../../partials/footer') %>

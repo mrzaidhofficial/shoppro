@@ -96,6 +96,7 @@ async function start() {
     app.use('/cart', require('./routes/cart'));
     app.use('/auth', require('./routes/auth'));
     app.use('/admin', require('./routes/admin'));
+    app.use('/admin/shipping', require('./routes/shipping'));
 
     app.use(function(req, res) {
       res.status(404).render('error', { message: 'Page not found' });

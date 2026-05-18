@@ -1,0 +1,249 @@
+<%- include('../../partials/header') %>
+
+<style>
+  .admin-layout { display: grid; grid-template-columns: 250px 1fr; gap: 32px; padding: 40px 0; min-height: 70vh; }
+  .admin-sidebar { background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 24px 0; height: fit-content; position: sticky; top: 100px; box-shadow: var(--shadow-xs); }
+  .admin-sidebar-header { padding: 0 24px 20px; border-bottom: var(--border); margin-bottom: 12px; }
+  .admin-sidebar-header h3 { font-family: var(--font-display); font-size: 1.1rem; color: var(--gray-900); margin-bottom: 4px; }
+  .admin-sidebar-header span { font-size: 0.78rem; color: var(--gray-500); }
+  .admin-nav-item { display: flex; align-items: center; gap: 12px; padding: 13px 24px; color: var(--gray-600); font-weight: 500; font-size: 0.9rem; transition: var(--transition-fast); border-left: 3px solid transparent; text-decoration: none; }
+  .admin-nav-item:hover { background: var(--primary-light); color: var(--primary); }
+  .admin-nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+  .admin-nav-item i { width: 20px; text-align: center; }
+  .admin-content { min-width: 0; }
+  .admin-page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+  .admin-page-title { font-family: var(--font-display); font-size: 1.5rem; color: var(--gray-900); }
+  
+  .order-info-card { background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 28px; box-shadow: var(--shadow-xs); margin-bottom: 24px; }
+  .order-info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .order-info-item { }
+  .order-info-label { font-size: 0.72rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .order-info-value { font-weight: 600; color: var(--gray-900); font-size: 0.95rem; }
+  
+  .form-card { background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 32px; box-shadow: var(--shadow-xs); }
+  .form-section { margin-bottom: 28px; padding-bottom: 24px; border-bottom: var(--border); }
+  .form-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .form-section-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+  .form-section-title i { color: var(--primary); }
+  
+  .form-group { margin-bottom: 18px; }
+  .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
+  .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 16px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 0.9rem; font-family: var(--font-primary); color: var(--gray-700); background: var(--gray-50); outline: none; transition: var(--transition-fast); }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 4px rgba(0,102,255,0.06); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  
+  .badge { display: inline-block; padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 600; text-transform: capitalize; }
+  .badge-processing { background: #FEF3C7; color: #D97706; }
+  .badge-shipped { background: #DBEAFE; color: #2563EB; }
+  .badge-delivered { background: var(--success-bg); color: var(--success); }
+  .badge-cancelled { background: var(--error-bg); color: var(--error); }
+  .badge-pending { background: var(--gray-100); color: var(--gray-600); }
+  
+  .btn-submit { display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px; background: var(--primary-gradient); color: var(--white); border: none; border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: var(--transition); box-shadow: 0 4px 16px rgba(0,102,255,0.3); }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,102,255,0.4); }
+  .btn-cancel { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: var(--white); color: var(--gray-600); border: 2px solid var(--gray-200); border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 600; font-family: var(--font-primary); text-decoration: none; transition: var(--transition); }
+  .btn-cancel:hover { background: var(--gray-50); }
+  .form-actions { display: flex; gap: 12px; margin-top: 10px; }
+  
+  .items-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  .items-table th { text-align: left; padding: 10px 12px; background: var(--gray-50); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--gray-500); border-bottom: var(--border); }
+  .items-table td { padding: 10px 12px; font-size: 0.85rem; border-bottom: 1px solid var(--gray-100); }
+  
+  @media (max-width: 900px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .admin-sidebar { position: static; display: flex; overflow-x: auto; padding: 12px; gap: 4px; }
+    .admin-sidebar-header { display: none; }
+    .admin-nav-item { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 10px 16px; font-size: 0.8rem; }
+    .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--primary); }
+    .order-info-grid { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="container">
+  <div class="admin-layout">
+    
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <h3>Admin Panel</h3>
+        <span><i class="fas fa-circle" style="font-size:0.4rem;color:var(--accent);"></i> Logged in as <strong><%= user.firstName %></strong></span>
+      </div>
+      <a href="/admin/dashboard" class="admin-nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="/admin/products" class="admin-nav-item"><i class="fas fa-box"></i> Products</a>
+      <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
+      <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
+      <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/shipping/orders" class="admin-nav-item active"><i class="fas fa-boxes"></i> Order Shipping</a>
+      <a href="/admin/shipping/bulk" class="admin-nav-item"><i class="fas fa-layer-group"></i> Bulk Update</a>
+      <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+      <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+    </aside>
+    
+    <div class="admin-content">
+      <div class="admin-page-header">
+        <h1 class="admin-page-title">Shipping Details - Order #<%= order.orderNumber %></h1>
+        <span class="badge badge-<%= order.status %>"><%= order.status %></span>
+      </div>
+      
+      <!-- Order Info Summary -->
+      <div class="order-info-card">
+        <div class="order-info-grid">
+          <div class="order-info-item">
+            <div class="order-info-label">Customer</div>
+            <div class="order-info-value"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></div>
+          </div>
+          <div class="order-info-item">
+            <div class="order-info-label">Email</div>
+            <div class="order-info-value" style="font-size:0.85rem;"><%= order.user ? order.user.email : 'N/A' %></div>
+          </div>
+          <div class="order-info-item">
+            <div class="order-info-label">Order Date</div>
+            <div class="order-info-value"><%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></div>
+          </div>
+          <div class="order-info-item">
+            <div class="order-info-label">Order Total</div>
+            <div class="order-info-value" style="color:var(--primary);">$<%= order.total.toFixed(2) %></div>
+          </div>
+          <div class="order-info-item">
+            <div class="order-info-label">Subtotal</div>
+            <div class="order-info-value">$<%= order.subtotal.toFixed(2) %></div>
+          </div>
+          <div class="order-info-item">
+            <div class="order-info-label">Current Shipping</div>
+            <div class="order-info-value"><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></div>
+          </div>
+          <div class="order-info-item">
+            <div class="order-info-label">Payment Method</div>
+            <div class="order-info-value" style="text-transform:capitalize;"><%= order.paymentInfo.method.replace('_', ' ') %></div>
+          </div>
+          <div class="order-info-item">
+            <div class="order-info-label">Shipping Address</div>
+            <div class="order-info-value" style="font-size:0.82rem;">
+              <%= order.shippingAddress && order.shippingAddress.street ? order.shippingAddress.street + ', ' + order.shippingAddress.city : 'N/A' %>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Order Items -->
+      <div class="form-card" style="margin-bottom:24px;">
+        <h3 class="form-section-title"><i class="fas fa-shopping-bag"></i> Order Items</h3>
+        <table class="items-table">
+          <thead>
+            <tr><th>Product</th><th>Quantity</th><th>Price</th><th>Subtotal</th></tr>
+          </thead>
+          <tbody>
+            <% order.items.forEach(function(item) { %>
+              <tr>
+                <td style="font-weight:500;"><%= item.name %></td>
+                <td><%= item.quantity %></td>
+                <td>$<%= item.price.toFixed(2) %></td>
+                <td style="font-weight:600;">$<%= item.subtotal.toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Shipping Edit Form -->
+      <div class="form-card">
+        <form action="/admin/shipping/orders/<%= order._id %>" method="POST">
+          
+          <!-- Shipping Cost Override -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fas fa-dollar-sign"></i> Shipping Cost Override</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Shipping Type Override</label>
+                <select name="shippingType" class="form-select">
+                  <option value="">Use Global Settings</option>
+                  <option value="flat_rate" <%= orderShipping.shippingType === 'flat_rate' ? 'selected' : '' %>>Flat Rate</option>
+                  <option value="free" <%= orderShipping.shippingType === 'free' ? 'selected' : '' %>>Free Shipping</option>
+                  <option value="disabled" <%= orderShipping.shippingType === 'disabled' ? 'selected' : '' %>>No Shipping</option>
+                  <option value="custom" <%= orderShipping.shippingType === 'custom' ? 'selected' : '' %>>Custom Amount</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Custom Shipping Cost ($)</label>
+                <input type="number" name="customShippingCost" class="form-input" value="<%= orderShipping.customShippingCost || '' %>" min="0" step="0.01" placeholder="Leave empty for default">
+              </div>
+            </div>
+          </div>
+          
+          <!-- Supplier & Tracking Info -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fas fa-dolly"></i> Supplier & Tracking Information</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Supplier Name</label>
+                <input type="text" name="supplierName" class="form-input" value="<%= orderShipping.supplierName || '' %>" placeholder="e.g. AliExpress Supplier ABC">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Supplier Order ID</label>
+                <input type="text" name="supplierOrderId" class="form-input" value="<%= orderShipping.supplierOrderId || '' %>" placeholder="Supplier's order reference number">
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Carrier Name</label>
+                <input type="text" name="carrierName" class="form-input" value="<%= orderShipping.carrierName || '' %>" placeholder="e.g. USPS, FedEx, DHL, China Post">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tracking Number</label>
+                <input type="text" name="trackingNumber" class="form-input" value="<%= orderShipping.trackingNumber || '' %>" placeholder="Enter tracking number">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Tracking URL</label>
+              <input type="text" name="trackingUrl" class="form-input" value="<%= orderShipping.trackingUrl || '' %>" placeholder="e.g. https://track.17track.net/en#nums=TRACKINGNUMBER">
+            </div>
+          </div>
+          
+          <!-- Shipping Status -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fas fa-clock"></i> Shipping Status</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Shipping Status</label>
+                <select name="shippingStatus" class="form-select">
+                  <option value="pending" <%= orderShipping.shippingStatus === 'pending' ? 'selected' : '' %>>Pending</option>
+                  <option value="processing" <%= orderShipping.shippingStatus === 'processing' ? 'selected' : '' %>>Processing</option>
+                  <option value="shipped" <%= orderShipping.shippingStatus === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                  <option value="delivered" <%= orderShipping.shippingStatus === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                  <option value="cancelled" <%= orderShipping.shippingStatus === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Shipped Date</label>
+                <input type="date" name="shippedDate" class="form-input" value="<%= orderShipping.shippedDate ? orderShipping.shippedDate.toISOString().split('T')[0] : '' %>">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Delivered Date</label>
+                <input type="date" name="deliveredDate" class="form-input" value="<%= orderShipping.deliveredDate ? orderShipping.deliveredDate.toISOString().split('T')[0] : '' %>">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Shipping Notes</label>
+                <textarea name="shippingNotes" class="form-textarea" placeholder="Internal notes about this order's shipping..."><%= orderShipping.shippingNotes || '' %></textarea>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Save Shipping Details</button>
+            <a href="/admin/shipping/orders" class="btn-cancel">Back to Orders</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

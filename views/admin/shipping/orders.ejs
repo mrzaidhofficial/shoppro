@@ -1,0 +1,160 @@
+<%- include('../../partials/header') %>
+
+<style>
+  .admin-layout { display: grid; grid-template-columns: 250px 1fr; gap: 32px; padding: 40px 0; min-height: 70vh; }
+  .admin-sidebar { background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 24px 0; height: fit-content; position: sticky; top: 100px; box-shadow: var(--shadow-xs); }
+  .admin-sidebar-header { padding: 0 24px 20px; border-bottom: var(--border); margin-bottom: 12px; }
+  .admin-sidebar-header h3 { font-family: var(--font-display); font-size: 1.1rem; color: var(--gray-900); margin-bottom: 4px; }
+  .admin-sidebar-header span { font-size: 0.78rem; color: var(--gray-500); }
+  .admin-nav-item { display: flex; align-items: center; gap: 12px; padding: 13px 24px; color: var(--gray-600); font-weight: 500; font-size: 0.9rem; transition: var(--transition-fast); border-left: 3px solid transparent; text-decoration: none; }
+  .admin-nav-item:hover { background: var(--primary-light); color: var(--primary); }
+  .admin-nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+  .admin-nav-item i { width: 20px; text-align: center; }
+  .admin-content { min-width: 0; }
+  .admin-page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+  .admin-page-title { font-family: var(--font-display); font-size: 1.8rem; color: var(--gray-900); }
+  .btn-admin-primary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--primary-gradient); color: var(--white) !important; border: none; border-radius: var(--radius-full); font-size: 0.85rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: var(--transition); box-shadow: 0 4px 16px rgba(0,102,255,0.3); }
+  .btn-admin-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,102,255,0.4); }
+  
+  .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+  .filter-select { padding: 10px 14px; border: 2px solid var(--gray-200); border-radius: var(--radius-full); font-size: 0.85rem; font-family: var(--font-primary); background: var(--white); color: var(--gray-700); outline: none; }
+  .filter-btn { padding: 10px 18px; background: var(--primary); color: white; border: none; border-radius: var(--radius-full); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: var(--font-primary); }
+  
+  .table-wrapper { background: var(--white); border: var(--border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-xs); }
+  .admin-table { width: 100%; border-collapse: collapse; }
+  .admin-table th { text-align: left; padding: 14px 16px; background: var(--gray-50); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-500); border-bottom: var(--border); white-space: nowrap; }
+  .admin-table td { padding: 12px 16px; font-size: 0.85rem; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+  .admin-table tr:last-child td { border-bottom: none; }
+  .admin-table tr:hover td { background: var(--gray-50); }
+  
+  .badge { display: inline-block; padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.68rem; font-weight: 600; }
+  .badge-processing { background: #FEF3C7; color: #D97706; }
+  .badge-shipped { background: #DBEAFE; color: #2563EB; }
+  .badge-delivered { background: var(--success-bg); color: var(--success); }
+  .badge-cancelled { background: var(--error-bg); color: var(--error); }
+  .badge-pending { background: var(--gray-100); color: var(--gray-600); }
+  
+  .btn-sm { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; font-size: 0.75rem; border-radius: var(--radius-full); font-weight: 600; text-decoration: none; cursor: pointer; border: none; font-family: var(--font-primary); background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); transition: var(--transition-fast); }
+  .btn-sm:hover { background: var(--primary); color: white; }
+  
+  .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 24px; }
+  .page-link { padding: 8px 14px; border: 2px solid var(--gray-200); border-radius: var(--radius-full); font-weight: 600; color: var(--gray-700); text-decoration: none; font-size: 0.85rem; transition: var(--transition-fast); }
+  .page-link:hover { border-color: var(--primary); color: var(--primary); }
+  .page-link.active { background: var(--primary-gradient); color: white; border-color: var(--primary); }
+  
+  .empty-state { text-align: center; padding: 60px 20px; }
+  .empty-state i { font-size: 3rem; color: var(--gray-300); margin-bottom: 12px; display: block; }
+  .empty-state p { color: var(--gray-500); }
+  
+  @media (max-width: 900px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .admin-sidebar { position: static; display: flex; overflow-x: auto; padding: 12px; gap: 4px; }
+    .admin-sidebar-header { display: none; }
+    .admin-nav-item { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 10px 16px; font-size: 0.8rem; }
+    .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--primary); }
+  }
+</style>
+
+<div class="container">
+  <div class="admin-layout">
+    
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <h3>Admin Panel</h3>
+        <span><i class="fas fa-circle" style="font-size:0.4rem;color:var(--accent);"></i> Logged in as <strong><%= user.firstName %></strong></span>
+      </div>
+      <a href="/admin/dashboard" class="admin-nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="/admin/products" class="admin-nav-item"><i class="fas fa-box"></i> Products</a>
+      <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
+      <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
+      <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/shipping/orders" class="admin-nav-item active"><i class="fas fa-boxes"></i> Order Shipping</a>
+      <a href="/admin/shipping/bulk" class="admin-nav-item"><i class="fas fa-layer-group"></i> Bulk Update</a>
+      <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+      <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+    </aside>
+    
+    <div class="admin-content">
+      <div class="admin-page-header">
+        <h1 class="admin-page-title">Order Shipping Management</h1>
+        <div style="display:flex;gap:10px;">
+          <a href="/admin/shipping/settings" class="btn-admin-primary"><i class="fas fa-cog"></i> Settings</a>
+          <a href="/admin/shipping/bulk" class="btn-admin-primary"><i class="fas fa-layer-group"></i> Bulk Update</a>
+        </div>
+      </div>
+      
+      <form class="filter-bar" method="GET" action="/admin/shipping/orders">
+        <select name="status" class="filter-select">
+          <option value="all" <%= currentStatus === 'all' ? 'selected' : '' %>>All Order Status</option>
+          <option value="processing" <%= currentStatus === 'processing' ? 'selected' : '' %>>Processing</option>
+          <option value="shipped" <%= currentStatus === 'shipped' ? 'selected' : '' %>>Shipped</option>
+          <option value="delivered" <%= currentStatus === 'delivered' ? 'selected' : '' %>>Delivered</option>
+          <option value="cancelled" <%= currentStatus === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+        </select>
+        <button type="submit" class="filter-btn">Filter</button>
+        <% if (currentStatus !== 'all') { %>
+          <a href="/admin/shipping/orders" class="btn-sm" style="border-color:var(--gray-300);">Clear</a>
+        <% } %>
+      </form>
+      
+      <% if (orders && orders.length > 0) { %>
+        <div class="table-wrapper" style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Shipping Cost</th>
+                <th>Order Status</th>
+                <th>Ship Status</th>
+                <th>Supplier</th>
+                <th>Tracking</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% orders.forEach(function(order) { 
+                var shipInfo = shippingMap[order._id.toString()] || {};
+              %>
+                <tr>
+                  <td style="font-weight:600;color:var(--primary);white-space:nowrap;"><%= order.orderNumber %></td>
+                  <td>
+                    <div style="font-weight:500;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></div>
+                    <div style="font-size:0.72rem;color:var(--gray-400);"><%= order.user ? order.user.email : '' %></div>
+                  </td>
+                  <td><%= order.items ? order.items.length : 0 %></td>
+                  <td style="font-weight:600;">$<%= order.total.toFixed(2) %></td>
+                  <td style="font-weight:600;"><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></td>
+                  <td><span class="badge badge-<%= order.status %>"><%= order.status %></span></td>
+                  <td><span class="badge badge-<%= shipInfo.shippingStatus || 'pending' %>"><%= shipInfo.shippingStatus || 'pending' %></span></td>
+                  <td style="font-size:0.8rem;"><%= shipInfo.supplierName || '—' %></td>
+                  <td style="font-size:0.8rem;"><%= shipInfo.trackingNumber || '—' %></td>
+                  <td>
+                    <a href="/admin/shipping/orders/<%= order._id %>" class="btn-sm">Edit Shipping</a>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        
+        <% if (totalPages > 1) { %>
+          <div class="pagination">
+            <% for (var p = 1; p <= totalPages; p++) { %>
+              <a href="/admin/shipping/orders?page=<%= p %><%= currentStatus !== 'all' ? '&status=' + currentStatus : '' %>" class="page-link <%= p === currentPage ? 'active' : '' %>"><%= p %></a>
+            <% } %>
+          </div>
+        <% } %>
+      <% } else { %>
+        <div class="empty-state">
+          <i class="fas fa-box-open"></i>
+          <p>No orders found.</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>
