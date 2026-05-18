@@ -75,6 +75,7 @@
   .profit-detail-label { font-size: 0.8rem; color: #047857; }
   .profit-detail-value { font-weight: 600; font-size: 0.88rem; color: #065F46; }
   .profit-detail-value.discount { color: #DC2626; }
+  .profit-detail-value.cost { color: #B45309; }
   
   .form-actions { display: flex; gap: 12px; margin-top: 20px; padding-top: 18px; border-top: var(--border); }
   .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: 11px 26px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-full); font-size: 0.86rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,102,255,0.2); }
@@ -176,21 +177,22 @@
           <div class="detail-card span-2 profit-card">
             <div class="profit-inner">
               <%
-                var productProfit = 0;
+                var revenue = order.subtotal || 0;
+                var productCost = 0;
                 if (order.items && order.items.length > 0) {
                   order.items.forEach(function(item) {
-                    productProfit += (item.price - (item.cost || 0)) * item.quantity;
+                    productCost += (item.cost || 0) * item.quantity;
                   });
                 }
                 var couponDiscount = order.couponDiscount || 0;
-                var netProfit = productProfit - couponDiscount;
+                var netProfit = revenue - productCost - couponDiscount;
               %>
               <div class="profit-header">
                 <div class="profit-title-group">
                   <div class="profit-icon"><i class="fas fa-chart-line"></i></div>
                   <div>
                     <div class="profit-title">Order Net Profit</div>
-                    <div class="profit-subtitle">Calculated from product costs</div>
+                    <div class="profit-subtitle">Revenue — Costs — Coupons</div>
                   </div>
                 </div>
                 <div class="profit-amount">
@@ -200,12 +202,16 @@
               </div>
               <div class="profit-details">
                 <div class="profit-detail-item">
-                  <span class="profit-detail-label">Product Profit</span>
-                  <span class="profit-detail-value">$<%= productProfit.toFixed(2) %></span>
+                  <span class="profit-detail-label">Revenue</span>
+                  <span class="profit-detail-value">$<%= revenue.toFixed(2) %></span>
                 </div>
                 <div class="profit-detail-item">
                   <span class="profit-detail-label">Items in Order</span>
                   <span class="profit-detail-value"><%= order.items ? order.items.length : 0 %></span>
+                </div>
+                <div class="profit-detail-item">
+                  <span class="profit-detail-label">Product Cost</span>
+                  <span class="profit-detail-value cost">$<%= productCost.toFixed(2) %></span>
                 </div>
                 <div class="profit-detail-item">
                   <span class="profit-detail-label">Coupon Discount</span>
@@ -215,6 +221,7 @@
                   <span class="profit-detail-label">Shipping Collected</span>
                   <span class="profit-detail-value"><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></span>
                 </div>
+                <div class="profit-detail-item"></div>
               </div>
             </div>
           </div>
