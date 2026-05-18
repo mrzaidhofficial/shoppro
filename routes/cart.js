@@ -3,30 +3,84 @@ var router = express.Router();
 var Product = require('../models/Product');
 var Order = require('../models/Order');
 var Coupon = require('../models/Coupon');
+var { ShippingSettings, OrderShipping } = require('../models/Shipping');
 var emailService = require('../services/emailService');
 var invoiceService = require('../services/invoiceService');
 var paypalService = require('../services/paypalService');
 
-function calculateShipping(cartItems, products) {
-  var shipping = 0;
-  for (var i = 0; i < cartItems.length; i++) {
-    var product = products.find(function(p) { return p._id.toString() === cartItems[i].productId; });
-    if (!product || !product.freeShipping) {
-      shipping += 5.99;
+// Get current shipping settings
+async function getShippingSettings() {
+    var settings = await ShippingSettings.findOne();
+    if (!settings) {
+        settings = new ShippingSettings({
+            shippingEnabled: true,
+            shippingType: 'flat_rate',
+            flatRatePerItem: 5.99,
+            flatRatePerOrder: 0,
+            freeShippingEnabled: false,
+            freeShippingMinAmount: 100,
+            handlingFee: 0,
+            estimatedDelivery: '7-21 business days'
+        });
+        await settings.save();
     }
-  }
-  return Math.round(shipping * 100) / 100;
+    return settings;
+}
+
+// Calculate shipping based on settings
+async function calculateShipping(cartItems) {
+    var settings = await getShippingSettings();
+    
+    // If shipping is disabled or type is disabled, return 0
+    if (!settings.shippingEnabled || settings.shippingType === 'disabled') {
+        return 0;
+    }
+    
+    // If shipping type is free, return 0
+    if (settings.shippingType === 'free') {
+        return 0;
+    }
+    
+    // Calculate subtotal
+    var subtotal = 0;
+    var itemCount = 0;
+    cartItems.forEach(function(item) {
+        subtotal += item.price * item.quantity;
+        itemCount += item.quantity;
+    });
+    
+    // Check free shipping threshold
+    if (settings.freeShippingEnabled && subtotal >= settings.freeShippingMinAmount) {
+        return 0;
+    }
+    
+    // Flat rate calculation
+    var shipping = settings.flatRatePerOrder + (settings.flatRatePerItem * itemCount) + settings.handlingFee;
+    
+    // Check product-level free shipping
+    var productIds = cartItems.map(function(item) { return item.productId; });
+    var products = await Product.find({ _id: { $in: productIds } });
+    
+    var allFreeShipping = products.length > 0 && products.every(function(p) { return p.freeShipping; });
+    if (allFreeShipping) {
+        shipping = 0;
+    }
+    
+    return Math.round(shipping * 100) / 100;
 }
 
 // View cart
-router.get('/', function(req, res) {
+router.get('/', async function(req, res) {
     var cart = req.session.cart || [];
     var subtotal = 0;
     var cartItems = cart.map(function(item) {
         subtotal += item.price * item.quantity;
         return item;
     });
-    var shipping = req.session.cartShipping || 0;
+    
+    var shipping = await calculateShipping(cart);
+    req.session.cartShipping = shipping;
+    
     var total = Math.round((subtotal + shipping) * 100) / 100;
     
     var couponDiscount = 0;
@@ -45,6 +99,8 @@ router.get('/', function(req, res) {
         total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
     }
     
+    var settings = await getShippingSettings();
+    
     res.render('cart', {
         title: 'Shopping Cart',
         cartItems: cartItems,
@@ -52,7 +108,8 @@ router.get('/', function(req, res) {
         shipping: shipping.toFixed(2),
         total: total.toFixed(2),
         couponDiscount: couponDiscount.toFixed(2),
-        appliedCoupon: appliedCoupon
+        appliedCoupon: appliedCoupon,
+        settings: settings
     });
 });
 
@@ -90,9 +147,7 @@ router.post('/add/:id', async function(req, res) {
         if (existingItem) { existingItem.quantity += parseInt(req.body.quantity) || 1; }
         else { req.session.cart.push({ productId: product._id.toString(), name: product.name, price: product.price, image: product.images && product.images[0] ? product.images[0] : '/images/placeholder.jpg', quantity: parseInt(req.body.quantity) || 1 }); }
         
-        var productIds = req.session.cart.map(function(item) { return item.productId; });
-        var products = await Product.find({ _id: { $in: productIds } });
-        req.session.cartShipping = calculateShipping(req.session.cart, products);
+        req.session.cartShipping = await calculateShipping(req.session.cart);
         
         if (!req.session.recentlyViewed) req.session.recentlyViewed = [];
         req.session.recentlyViewed = req.session.recentlyViewed.filter(function(id) { return id !== req.params.id; });
@@ -111,18 +166,14 @@ router.post('/update/:id', async function(req, res) {
         if (quantity <= 0) { req.session.cart = req.session.cart.filter(function(item) { return item.productId !== req.params.id; }); }
         else { cartItem.quantity = quantity; }
     }
-    var productIds = req.session.cart.map(function(item) { return item.productId; });
-    var products = await Product.find({ _id: { $in: productIds } });
-    req.session.cartShipping = calculateShipping(req.session.cart, products);
+    req.session.cartShipping = await calculateShipping(req.session.cart);
     req.session.save(function(err) { if (err) console.error('Session save error:', err); res.redirect('/cart'); });
 });
 
 // Remove from cart
 router.post('/remove/:id', async function(req, res) {
     req.session.cart = req.session.cart.filter(function(item) { return item.productId !== req.params.id; });
-    var productIds = (req.session.cart || []).map(function(item) { return item.productId; });
-    var products = await Product.find({ _id: { $in: productIds } });
-    req.session.cartShipping = calculateShipping(req.session.cart || [], products);
+    req.session.cartShipping = await calculateShipping(req.session.cart || []);
     req.flash('success', 'Item removed from cart');
     req.session.save(function(err) { if (err) console.error('Session save error:', err); res.redirect('/cart'); });
 });
@@ -173,7 +224,10 @@ router.get('/checkout', async function(req, res) {
     if (cart.length === 0) { req.flash('error', 'Your cart is empty'); return res.redirect('/cart'); }
     var subtotal = 0;
     var cartItems = cart.map(function(item) { subtotal += item.price * item.quantity; return item; });
-    var shipping = req.session.cartShipping || 0;
+    
+    var shipping = await calculateShipping(cart);
+    req.session.cartShipping = shipping;
+    
     var couponDiscount = 0; var appliedCoupon = null;
     if (req.session.coupon) {
         appliedCoupon = req.session.coupon;
@@ -182,7 +236,20 @@ router.get('/checkout', async function(req, res) {
         if (couponDiscount > subtotal) couponDiscount = subtotal;
     }
     var total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
-    res.render('checkout', { title: 'Checkout', cartItems: cartItems, subtotal: subtotal.toFixed(2), shipping: shipping.toFixed(2), total: total.toFixed(2), couponDiscount: couponDiscount.toFixed(2), appliedCoupon: appliedCoupon, paypalConfigured: paypalService.isConfigured() });
+    
+    var settings = await getShippingSettings();
+    
+    res.render('checkout', { 
+        title: 'Checkout', 
+        cartItems: cartItems, 
+        subtotal: subtotal.toFixed(2), 
+        shipping: shipping.toFixed(2), 
+        total: total.toFixed(2), 
+        couponDiscount: couponDiscount.toFixed(2), 
+        appliedCoupon: appliedCoupon, 
+        paypalConfigured: paypalService.isConfigured(),
+        settings: settings
+    });
 });
 
 // PayPal Create Order
@@ -194,7 +261,7 @@ router.post('/paypal/create-order', async function(req, res) {
         var subtotal = 0;
         var items = cart.map(function(item) { subtotal += item.price * item.quantity; return { name: item.name, quantity: item.quantity, price: item.price }; });
         subtotal = Math.round(subtotal * 100) / 100;
-        var shipping = req.session.cartShipping || 0;
+        var shipping = await calculateShipping(cart);
         var discount = 0;
         if (req.session.coupon) {
             var coupon = req.session.coupon;
@@ -239,7 +306,7 @@ router.post('/paypal/capture-payment', async function(req, res) {
     } catch (err) { console.error('PayPal capture error:', err.message); res.status(500).json({ error: 'Payment failed' }); }
 });
 
-// Mock checkout
+// Mock checkout (fallback for non-PayPal)
 router.post('/checkout', async function(req, res) {
     try {
         if (!req.session.user) return res.status(401).json({ error: 'Please sign in' });
@@ -255,7 +322,7 @@ router.post('/checkout', async function(req, res) {
             product.stock -= item.quantity; await product.save();
         }
         subtotal = Math.round(subtotal * 100) / 100;
-        var shipping = req.session.cartShipping || 0;
+        var shipping = await calculateShipping(cart);
         var couponDiscount = 0; var appliedCouponId = null;
         if (req.session.coupon) {
             var coupon = req.session.coupon;
