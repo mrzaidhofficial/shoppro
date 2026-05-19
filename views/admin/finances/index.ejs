@@ -22,16 +22,27 @@
   .summary-icon { width: 36px; height: 36px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; margin-bottom: 10px; }
   .summary-icon.blue { background: #EFF6FF; color: #3B82F6; }
   .summary-icon.red { background: #FEF2F2; color: #EF4444; }
-  .summary-icon.teal { background: #F0FDFA; color: #0D9488; }
+  .summary-icon.orange { background: #FFF7ED; color: #F97316; }
   .summary-icon.purple { background: #F5F3FF; color: #7C3AED; }
   .summary-icon.green { background: #ECFDF5; color: #059669; }
   [data-theme="dark"] .summary-icon.blue { background: rgba(59,130,246,0.2); color: #60A5FA; }
   [data-theme="dark"] .summary-icon.red { background: rgba(239,68,68,0.2); color: #F87171; }
-  [data-theme="dark"] .summary-icon.teal { background: rgba(13,148,136,0.2); color: #2DD4BF; }
+  [data-theme="dark"] .summary-icon.orange { background: rgba(249,115,22,0.2); color: #FB923C; }
   [data-theme="dark"] .summary-icon.purple { background: rgba(124,58,237,0.2); color: #A78BFA; }
   [data-theme="dark"] .summary-icon.green { background: rgba(5,150,105,0.2); color: #34D399; }
   .summary-value { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
   .summary-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+  
+  .summary-card.revenue .summary-value { color: #2563EB; }
+  .summary-card.costs .summary-value { color: #DC2626; }
+  .summary-card.shipping .summary-value { color: #EA580C; }
+  .summary-card.coupons .summary-value { color: #7C3AED; }
+  .summary-card.profit .summary-value { color: #059669; }
+  [data-theme="dark"] .summary-card.revenue .summary-value { color: #60A5FA; }
+  [data-theme="dark"] .summary-card.costs .summary-value { color: #F87171; }
+  [data-theme="dark"] .summary-card.shipping .summary-value { color: #FB923C; }
+  [data-theme="dark"] .summary-card.coupons .summary-value { color: #A78BFA; }
+  [data-theme="dark"] .summary-card.profit .summary-value { color: #4ADE80; }
   
   .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 12px 16px; }
   .filter-input, .filter-select { padding: 9px 14px; border: 2px solid var(--border-color); border-radius: var(--radius); font-size: 0.82rem; font-family: var(--font-primary); background: var(--bg-input); color: var(--text-body); outline: none; }
@@ -43,40 +54,36 @@
   .table-wrap { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-xs); }
   .finance-table { width: 100%; border-collapse: collapse; }
   .finance-table th { 
-    text-align: left; 
-    padding: 12px 10px; 
-    background: var(--bg-card-alt); 
-    font-size: 0.66rem; 
-    font-weight: 700; 
-    text-transform: uppercase; 
-    letter-spacing: 0.7px; 
-    color: var(--text-muted); 
-    border-bottom: 2px solid var(--border-color); 
-    white-space: nowrap; 
+    text-align: left; padding: 12px 10px; background: var(--bg-card-alt); 
+    font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; 
+    color: var(--text-muted); border-bottom: 2px solid var(--border-color); white-space: nowrap; 
   }
   .finance-table td { 
-    padding: 12px 10px; 
-    font-size: 0.81rem; 
-    color: var(--text-body); 
-    border-bottom: 1px solid var(--border-color); 
-    vertical-align: middle; 
-    background: var(--bg-card);
+    padding: 12px 10px; font-size: 0.81rem; color: var(--text-body); 
+    border-bottom: 1px solid var(--border-color); vertical-align: middle; background: var(--bg-card);
   }
   .finance-table tr:last-child td { border-bottom: none; }
-  .finance-table tr:hover td { 
-    background: var(--bg-hover) !important;
-  }
+  .finance-table tr:hover td { background: var(--bg-hover) !important; }
   
   .order-link { color: var(--primary); font-weight: 600; text-decoration: none; font-family: var(--font-display); font-size: 0.82rem; }
   .order-link:hover { text-decoration: underline; }
   .cust-name { font-weight: 500; color: var(--text-primary); font-size: 0.82rem; }
   .cust-email { font-size: 0.68rem; color: var(--text-muted); }
   .prod-name { font-weight: 500; color: var(--text-primary); }
-  .amount { font-weight: 600; font-family: var(--font-display); color: var(--text-primary); }
-  .amount.pos { color: #059669; }
-  .amount.neg { color: #EF4444; }
-  [data-theme="dark"] .amount.pos { color: #34D399; }
-  [data-theme="dark"] .amount.neg { color: #F87171; }
+  
+  .amount { font-weight: 600; font-family: var(--font-display); }
+  .amount.revenue-color { color: #2563EB; }
+  .amount.cost-color { color: #DC2626; }
+  .amount.shipping-color { color: #EA580C; }
+  .amount.coupon-color { color: #7C3AED; }
+  .amount.profit-color { color: #059669; }
+  .amount.neutral { color: var(--text-primary); }
+  [data-theme="dark"] .amount.revenue-color { color: #60A5FA; }
+  [data-theme="dark"] .amount.cost-color { color: #F87171; }
+  [data-theme="dark"] .amount.shipping-color { color: #FB923C; }
+  [data-theme="dark"] .amount.coupon-color { color: #A78BFA; }
+  [data-theme="dark"] .amount.profit-color { color: #4ADE80; }
+  [data-theme="dark"] .amount.neutral { color: #F1F5F9; }
   
   .badge { display: inline-block; padding: 3px 9px; border-radius: var(--radius-full); font-size: 0.64rem; font-weight: 600; text-transform: capitalize; }
   .badge-processing { background: #FEF3C7; color: #D97706; }
@@ -136,29 +143,29 @@
       </div>
       
       <div class="summary-grid">
-        <div class="summary-card">
+        <div class="summary-card revenue">
           <div class="summary-icon blue"><i class="fas fa-shopping-cart"></i></div>
           <div class="summary-value">$<%= totalRevenue.toFixed(2) %></div>
           <div class="summary-label">Total Revenue</div>
         </div>
-        <div class="summary-card">
+        <div class="summary-card costs">
           <div class="summary-icon red"><i class="fas fa-receipt"></i></div>
           <div class="summary-value">−$<%= totalProductCost.toFixed(2) %></div>
           <div class="summary-label">Product Costs</div>
         </div>
-        <div class="summary-card">
-          <div class="summary-icon teal"><i class="fas fa-truck"></i></div>
+        <div class="summary-card shipping">
+          <div class="summary-icon orange"><i class="fas fa-truck"></i></div>
           <div class="summary-value">−$<%= totalShippingCost.toFixed(2) %></div>
           <div class="summary-label">Shipping Costs</div>
         </div>
-        <div class="summary-card">
+        <div class="summary-card coupons">
           <div class="summary-icon purple"><i class="fas fa-tag"></i></div>
           <div class="summary-value">−$<%= totalCoupons.toFixed(2) %></div>
           <div class="summary-label">Coupons</div>
         </div>
-        <div class="summary-card">
+        <div class="summary-card profit">
           <div class="summary-icon green"><i class="fas fa-chart-line"></i></div>
-          <div class="summary-value" style="color:<%= totalNetProfit >= 0 ? '#059669' : '#EF4444' %>;">$<%= totalNetProfit.toFixed(2) %></div>
+          <div class="summary-value">$<%= totalNetProfit.toFixed(2) %></div>
           <div class="summary-label">Net Profit</div>
         </div>
       </div>
@@ -194,6 +201,7 @@
                     var itemRevenue = order.total || 0;
                     var itemShipping = order.shippingCost || 0;
                     var itemCoupon = order.couponDiscount || 0;
+                    var itemProfit = (itemRevenue - ((item.cost || 0) * item.quantity) - (idx === 0 ? itemShipping : 0));
                   %>
                     <tr>
                       <td><a href="/admin/shipping/orders/<%= order._id %>" class="order-link"><%= order.orderNumber %></a></td>
@@ -204,13 +212,13 @@
                       </td>
                       <td><span class="prod-name"><%= item.name %></span></td>
                       <td><%= item.quantity %></td>
-                      <td class="amount">$<%= item.price.toFixed(2) %></td>
-                      <td class="amount neg">$<%= ((item.cost || 0) * item.quantity).toFixed(2) %></td>
-                      <td class="amount neg"><%= idx === 0 ? '$' + itemShipping.toFixed(2) : '—' %></td>
-                      <td class="amount neg"><%= idx === 0 && itemCoupon > 0 ? '−$' + itemCoupon.toFixed(2) : '$0.00' %></td>
-                      <td class="amount pos"><%= idx === 0 ? '$' + itemRevenue.toFixed(2) : '—' %></td>
-                      <td class="amount <%= (itemRevenue - ((item.cost || 0) * item.quantity) - (idx === 0 ? itemShipping : 0)) >= 0 ? 'pos' : 'neg' %>">
-                        <%= idx === 0 ? '$' + (itemRevenue - ((item.cost || 0) * item.quantity) - itemShipping).toFixed(2) : '$' + ((item.price - (item.cost || 0)) * item.quantity).toFixed(2) %>
+                      <td class="amount neutral">$<%= item.price.toFixed(2) %></td>
+                      <td class="amount cost-color">$<%= ((item.cost || 0) * item.quantity).toFixed(2) %></td>
+                      <td class="amount shipping-color"><%= idx === 0 ? '$' + itemShipping.toFixed(2) : '—' %></td>
+                      <td class="amount coupon-color"><%= idx === 0 && itemCoupon > 0 ? '−$' + itemCoupon.toFixed(2) : '$0.00' %></td>
+                      <td class="amount revenue-color"><%= idx === 0 ? '$' + itemRevenue.toFixed(2) : '—' %></td>
+                      <td class="amount <%= itemProfit >= 0 ? 'profit-color' : 'cost-color' %>">
+                        <%= idx === 0 ? '$' + itemProfit.toFixed(2) : '$' + ((item.price - (item.cost || 0)) * item.quantity).toFixed(2) %>
                       </td>
                       <td><span class="badge badge-<%= order.status %>"><%= order.status %></span></td>
                     </tr>
