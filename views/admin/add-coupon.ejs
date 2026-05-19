@@ -30,6 +30,7 @@
       <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
       <a href="/admin/coupons" class="admin-nav-item active"><i class="fas fa-tags"></i> Coupons</a>
       <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
       <a href="/" class="admin-nav-item"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
     </aside>
@@ -51,10 +52,7 @@
             <div class="form-group"><label class="form-label">Usage Limit</label><input type="number" name="usageLimit" class="form-input" placeholder="Unlimited" min="1"></div>
             <div class="form-group"><label class="form-label">Expiry Date</label><input type="date" name="expiryDate" class="form-input"></div>
           </div>
-          <div style="display:flex;gap:12px;margin-top:10px;">
-            <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> Create Coupon</button>
-            <a href="/admin/coupons" class="btn-cancel">Cancel</a>
-          </div>
+          <div style="display:flex;gap:12px;margin-top:10px;"><button type="submit" class="btn-submit"><i class="fas fa-plus"></i> Create Coupon</button><a href="/admin/coupons" class="btn-cancel">Cancel</a></div>
         </form>
       </div>
     </div>

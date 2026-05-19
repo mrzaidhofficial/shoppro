@@ -38,14 +38,12 @@
       <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
       <a href="/admin/coupons" class="admin-nav-item active"><i class="fas fa-tags"></i> Coupons</a>
       <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
       <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
     </aside>
     <div class="admin-content">
-      <div class="admin-page-header">
-        <h1 class="admin-page-title">Coupons</h1>
-        <a href="/admin/coupons/add" class="btn-admin-primary"><i class="fas fa-plus"></i> Add Coupon</a>
-      </div>
+      <div class="admin-page-header"><h1 class="admin-page-title">Coupons</h1><a href="/admin/coupons/add" class="btn-admin-primary"><i class="fas fa-plus"></i> Add Coupon</a></div>
       <% if (coupons && coupons.length > 0) { %>
         <div class="table-wrapper" style="overflow-x:auto;">
           <table class="admin-table">
