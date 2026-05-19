@@ -61,5 +61,32 @@
 </div>
 
 <script src="/js/main.js"></script>
+
+<script>
+// Theme Toggle Functionality
+(function() {
+  var toggle = document.getElementById('themeToggle');
+  var html = document.documentElement;
+  
+  // Set initial icon based on current theme
+  var currentTheme = html.getAttribute('data-theme');
+  if (toggle) {
+    toggle.innerHTML = currentTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+  }
+  
+  // Toggle on click
+  if (toggle) {
+    toggle.addEventListener('click', function() {
+      var current = html.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('shopnest-theme', next);
+      
+      toggle.innerHTML = next === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
+  }
+})();
+</script>
 </body>
 </html>
