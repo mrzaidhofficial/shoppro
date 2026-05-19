@@ -14,51 +14,50 @@ const isAdmin = (req, res, next) => {
     res.redirect('/auth/login');
 };
 
-// Admin Dashboard with Analytics
 router.get('/dashboard', isAdmin, async (req, res) => {
     try {
         const totalProducts = await Product.countDocuments();
         const totalOrders = await Order.countDocuments();
-        
         const customerIds = await Order.distinct('user');
         const totalCustomers = customerIds.length;
         const totalRegisteredUsers = await User.countDocuments({ role: 'customer' });
         const conversionRate = totalRegisteredUsers > 0 ? ((totalCustomers / totalRegisteredUsers) * 100).toFixed(1) : 0;
         
-        // Total Sales = Cost + Profit + Shipping - Coupons (all orders)
+        // Total Sales = sum of all order totals
         const salesResult = await Order.aggregate([
-            { $unwind: '$items' },
-            { $lookup: { from: 'products', localField: 'items.product', foreignField: '_id', as: 'productData' } },
-            { $unwind: { path: '$productData', preserveNullAndEmptyArrays: true } },
-            { $group: {
-                _id: null,
-                totalCost: { $sum: { $multiply: ['$items.quantity', { $ifNull: ['$productData.cost', 0] }] } },
-                totalProfit: { $sum: { $multiply: ['$items.quantity', { $ifNull: ['$productData.profit', 0] }] } },
-                totalShipping: { $sum: '$shippingCost' },
-                totalCoupons: { $sum: { $ifNull: ['$couponDiscount', 0] } }
-            } }
+            { $group: { _id: null, totalSales: { $sum: '$total' } } }
         ]);
-        var totalSales = 0;
-        if (salesResult.length > 0) {
-            totalSales = (salesResult[0].totalCost || 0) + (salesResult[0].totalProfit || 0) + (salesResult[0].totalShipping || 0) - (salesResult[0].totalCoupons || 0);
-        }
+        var totalSales = salesResult.length > 0 ? salesResult[0].totalSales : 0;
         
-        // Net Profit = Product Profit - Coupons (paid orders)
-        const revenueResult = await Order.aggregate([
+        // Net Profit = Revenue (order.total) - Product Cost - Shipping Cost
+        const profitResult = await Order.aggregate([
             { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $unwind: '$items' },
             { $lookup: { from: 'products', localField: 'items.product', foreignField: '_id', as: 'productData' } },
             { $unwind: { path: '$productData', preserveNullAndEmptyArrays: true } },
             { $group: { 
-                _id: null, 
-                totalProfit: { $sum: { $multiply: ['$items.quantity', { $ifNull: ['$productData.profit', 0] }] } },
-                totalCoupons: { $sum: { $ifNull: ['$couponDiscount', 0] } }
+                _id: '$_id',
+                orderTotal: { $first: '$total' },
+                shippingCost: { $first: '$shippingCost' },
+                totalProductCost: { $sum: { $multiply: ['$items.quantity', { $ifNull: ['$productData.cost', 0] }] } }
+            } },
+            { $group: {
+                _id: null,
+                totalRevenue: { $sum: '$orderTotal' },
+                totalShippingCost: { $sum: '$shippingCost' },
+                totalProductCost: { $sum: '$totalProductCost' }
             } }
         ]);
+        
         var totalRevenue = 0;
-        if (revenueResult.length > 0) {
-            totalRevenue = (revenueResult[0].totalProfit || 0) - (revenueResult[0].totalCoupons || 0);
+        var totalProductCost = 0;
+        var totalShippingCost = 0;
+        if (profitResult.length > 0) {
+            totalRevenue = profitResult[0].totalRevenue || 0;
+            totalProductCost = profitResult[0].totalProductCost || 0;
+            totalShippingCost = profitResult[0].totalShippingCost || 0;
         }
+        var netProfit = totalRevenue - totalProductCost - totalShippingCost;
         
         // Shipping Stats
         const shippingStats = await Order.aggregate([
@@ -105,7 +104,7 @@ router.get('/dashboard', isAdmin, async (req, res) => {
             totalRegisteredUsers,
             conversionRate,
             totalSales,
-            totalRevenue,
+            totalRevenue: netProfit,
             totalShippingCollected,
             paidShippingOrders,
             totalCouponsGiven,
@@ -139,11 +138,7 @@ router.post('/products/add', isAdmin, async (req, res) => {
             if (Array.isArray(req.body.images)) images = req.body.images.filter(function(url) { return url.trim() !== ''; });
             else if (typeof req.body.images === 'string' && req.body.images.trim() !== '') images = [req.body.images.trim()];
         }
-        const product = new Product({
-            name: req.body.name, shortDescription: req.body.shortDescription || '', description: req.body.description,
-            price: req.body.price, cost: req.body.cost || 0, category: req.body.category, stock: req.body.stock,
-            featured: req.body.featured === 'on', freeShipping: req.body.freeShipping === 'on', images: images
-        });
+        const product = new Product({ name: req.body.name, shortDescription: req.body.shortDescription || '', description: req.body.description, price: req.body.price, cost: req.body.cost || 0, category: req.body.category, stock: req.body.stock, featured: req.body.featured === 'on', freeShipping: req.body.freeShipping === 'on', images: images });
         await product.save();
         req.flash('success', 'Product added successfully');
         res.redirect('/admin/products');
@@ -162,11 +157,7 @@ router.post('/products/edit/:id', isAdmin, async (req, res) => {
             if (Array.isArray(req.body.images)) images = req.body.images.filter(function(url) { return url.trim() !== ''; });
             else if (typeof req.body.images === 'string' && req.body.images.trim() !== '') images = [req.body.images.trim()];
         }
-        await Product.findByIdAndUpdate(req.params.id, {
-            name: req.body.name, shortDescription: req.body.shortDescription || '', description: req.body.description,
-            price: req.body.price, cost: req.body.cost || 0, category: req.body.category, stock: req.body.stock,
-            featured: req.body.featured === 'on', freeShipping: req.body.freeShipping === 'on', images: images
-        });
+        await Product.findByIdAndUpdate(req.params.id, { name: req.body.name, shortDescription: req.body.shortDescription || '', description: req.body.description, price: req.body.price, cost: req.body.cost || 0, category: req.body.category, stock: req.body.stock, featured: req.body.featured === 'on', freeShipping: req.body.freeShipping === 'on', images: images });
         var updatedProduct = await Product.findById(req.params.id);
         if (updatedProduct.cost && updatedProduct.price) { updatedProduct.profit = updatedProduct.price - updatedProduct.cost; await updatedProduct.save(); }
         req.flash('success', 'Product updated successfully');
@@ -212,7 +203,7 @@ router.post('/orders/bulk-update', isAdmin, async (req, res) => {
     } catch (error) { req.flash('error', 'Error updating orders'); res.redirect('/admin/orders'); }
 });
 
-// Coupons Management
+// Coupons
 router.get('/coupons', isAdmin, async (req, res) => {
     const coupons = await Coupon.find().sort({ createdAt: -1 });
     res.render('admin/coupons', { title: 'Manage Coupons', coupons });

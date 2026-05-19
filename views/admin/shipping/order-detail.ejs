@@ -30,7 +30,6 @@
   .card-head { padding: 16px 20px; border-bottom: var(--border); display: flex; align-items: center; gap: 10px; background: var(--gray-50); }
   .card-head-icon { width: 34px; height: 34px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 0.88rem; }
   .card-head-icon.blue { background: var(--primary-light); color: var(--primary); }
-  .card-head-icon.green { background: var(--success-bg); color: var(--success); }
   .card-head-icon.amber { background: #FEF3C7; color: #D97706; }
   .card-head-title { font-weight: 700; color: var(--gray-900); font-size: 0.9rem; }
   .card-body { padding: 20px; }
@@ -58,137 +57,35 @@
   .status-cancelled { background: var(--error-bg); color: var(--error); }
   
   /* ========== PROFIT SECTION ========== */
-  .profit-wrapper {
-    background: var(--white);
-    border: var(--border);
-    border-radius: var(--radius-xl);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-  }
-  
-  .profit-header-section {
-    padding: 28px 32px;
-    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-  }
-  
+  .profit-wrapper { background: var(--white); border: var(--border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .profit-header-section { padding: 28px 32px; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
   .profit-header-left { }
-  .profit-eyebrow {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 6px;
-  }
-  .profit-big-number {
-    font-family: var(--font-display);
-    font-size: 3rem;
-    font-weight: 700;
-    color: white;
-    line-height: 1;
-    letter-spacing: -1.5px;
-  }
+  .profit-eyebrow { font-size: 0.65rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+  .profit-big-number { font-family: var(--font-display); font-size: 3rem; font-weight: 700; line-height: 1; letter-spacing: -1.5px; }
   .profit-big-number.positive { color: #4ADE80; }
   .profit-big-number.negative { color: #F87171; }
-  
-  .profit-header-right {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: flex-end;
-  }
-  .profit-status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 16px;
-    border-radius: var(--radius-full);
-    font-size: 0.75rem;
-    font-weight: 600;
-    background: rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.9);
-    border: 1px solid rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-  }
-  .profit-status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-  }
+  .profit-header-right { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+  .profit-status-pill { display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(10px); }
+  .profit-status-dot { width: 7px; height: 7px; border-radius: 50%; }
   .profit-status-dot.green { background: #4ADE80; box-shadow: 0 0 8px #4ADE80; }
   .profit-status-dot.red { background: #F87171; box-shadow: 0 0 8px #F87171; }
-  .profit-formula-text {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.4);
-  }
+  .profit-formula-text { font-size: 0.7rem; color: rgba(255,255,255,0.4); }
   
-  .profit-metrics-row {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    background: #F8FAFC;
-    border-top: 1px solid var(--gray-200);
-  }
-  
-  .profit-metric-box {
-    padding: 20px 16px;
-    text-align: center;
-    position: relative;
-    transition: background 0.15s;
-  }
-  .profit-metric-box:hover {
-    background: var(--white);
-  }
-  .profit-metric-box:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1px;
-    height: 44px;
-    background: var(--gray-200);
-  }
-  
-  .metric-icon-circle {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 10px;
-    font-size: 0.8rem;
-    transition: transform 0.2s;
-  }
-  .profit-metric-box:hover .metric-icon-circle {
-    transform: scale(1.1);
-  }
+  .profit-metrics-row { display: grid; grid-template-columns: repeat(5, 1fr); background: #F8FAFC; border-top: 1px solid var(--gray-200); }
+  .profit-metric-box { padding: 20px 16px; text-align: center; position: relative; transition: background 0.15s; }
+  .profit-metric-box:hover { background: var(--white); }
+  .profit-metric-box:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 44px; background: var(--gray-200); }
+  .metric-icon-circle { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 0.8rem; transition: transform 0.2s; }
+  .profit-metric-box:hover .metric-icon-circle { transform: scale(1.1); }
   .metric-icon-circle.blue { background: #EFF6FF; color: #3B82F6; }
   .metric-icon-circle.amber { background: #FFFBEB; color: #D97706; }
   .metric-icon-circle.red { background: #FEF2F2; color: #EF4444; }
   .metric-icon-circle.purple { background: #F5F3FF; color: #7C3AED; }
   .metric-icon-circle.teal { background: #F0FDFA; color: #0D9488; }
-  
-  .metric-value {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--gray-900);
-    margin-bottom: 3px;
-  }
+  .metric-value { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 3px; }
   .metric-value.danger { color: #EF4444; }
   .metric-value.success { color: #059669; }
-  .metric-label {
-    font-size: 0.66rem;
-    font-weight: 600;
-    color: var(--gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+  .metric-label { font-size: 0.66rem; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; }
   
   .form-actions { display: flex; gap: 12px; margin-top: 20px; padding-top: 18px; border-top: var(--border); }
   .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: 11px 26px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-full); font-size: 0.86rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,102,255,0.2); }
@@ -212,11 +109,9 @@
     .profit-metrics-row { grid-template-columns: repeat(3, 1fr); }
     .profit-metric-box:nth-child(3)::after { display: none; }
   }
-  
   @media (max-width: 500px) {
     .profit-metrics-row { grid-template-columns: repeat(2, 1fr); }
-    .profit-metric-box:nth-child(2)::after { display: none; }
-    .profit-metric-box:nth-child(4)::after { display: none; }
+    .profit-metric-box:nth-child(2)::after, .profit-metric-box:nth-child(4)::after { display: none; }
   }
 </style>
 
@@ -247,45 +142,23 @@
       </div>
       
       <div class="info-cards">
-        <div class="info-card">
-          <div class="info-card-label">Customer</div>
-          <div class="info-card-value"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Order Date</div>
-          <div class="info-card-value"><%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Order Total</div>
-          <div class="info-card-value price">$<%= order.total.toFixed(2) %></div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Shipping Charged</div>
-          <div class="info-card-value"><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></div>
-        </div>
+        <div class="info-card"><div class="info-card-label">Customer</div><div class="info-card-value"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></div></div>
+        <div class="info-card"><div class="info-card-label">Order Date</div><div class="info-card-value"><%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div></div>
+        <div class="info-card"><div class="info-card-label">Order Total</div><div class="info-card-value price">$<%= order.total.toFixed(2) %></div></div>
+        <div class="info-card"><div class="info-card-label">Shipping Charged</div><div class="info-card-value"><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></div></div>
       </div>
       
       <form action="/admin/shipping/orders/<%= order._id %>" method="POST">
         <div class="detail-grid">
           
           <div class="detail-card span-2">
-            <div class="card-head">
-              <div class="card-head-icon blue"><i class="fas fa-shopping-bag"></i></div>
-              <div class="card-head-title">Order Items</div>
-            </div>
+            <div class="card-head"><div class="card-head-icon blue"><i class="fas fa-shopping-bag"></i></div><div class="card-head-title">Order Items</div></div>
             <div class="card-body" style="padding:0;">
               <table class="items-table">
-                <thead>
-                  <tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
-                </thead>
+                <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead>
                 <tbody>
                   <% order.items.forEach(function(item) { %>
-                    <tr>
-                      <td style="font-weight:500;"><%= item.name %></td>
-                      <td><%= item.quantity %></td>
-                      <td>$<%= item.price.toFixed(2) %></td>
-                      <td style="font-weight:600;">$<%= item.subtotal.toFixed(2) %></td>
-                    </tr>
+                    <tr><td style="font-weight:500;"><%= item.name %></td><td><%= item.quantity %></td><td>$<%= item.price.toFixed(2) %></td><td style="font-weight:600;">$<%= item.subtotal.toFixed(2) %></td></tr>
                   <% }) %>
                 </tbody>
               </table>
@@ -295,7 +168,7 @@
           <!-- Order Net Profit -->
           <div class="detail-card span-2 profit-wrapper">
             <%
-              // Revenue = Order Total (Product Price + Shipping - Coupons) = what customer actually paid
+              // Revenue = Order Total = Product Price + Shipping - Coupons (what customer actually paid)
               var revenue = order.total || 0;
               
               // Product Cost = sum of (item cost × quantity) from product database
@@ -309,93 +182,48 @@
               var couponDiscount = order.couponDiscount || 0;
               var shippingCost = order.shippingCost || 0;
               
-              // Net Profit = Revenue (total paid) - Product Cost
-              var netProfit = revenue - productCost;
+              // Net Profit = Revenue - Product Cost - Shipping Cost
+              // (Shipping is collected from customer but not profit - it covers shipping expenses)
+              var netProfit = revenue - productCost - shippingCost;
             %>
             <div class="profit-header-section">
               <div class="profit-header-left">
                 <div class="profit-eyebrow">Order Net Profit</div>
-                <div class="profit-big-number <%= netProfit >= 0 ? 'positive' : 'negative' %>">
-                  <%= netProfit >= 0 ? '$' : '-$' %><%= Math.abs(netProfit).toFixed(2) %>
-                </div>
+                <div class="profit-big-number <%= netProfit >= 0 ? 'positive' : 'negative' %>"><%= netProfit >= 0 ? '$' : '-$' %><%= Math.abs(netProfit).toFixed(2) %></div>
               </div>
               <div class="profit-header-right">
-                <div class="profit-status-pill">
-                  <span class="profit-status-dot <%= netProfit >= 0 ? 'green' : 'red' %>"></span>
-                  <%= netProfit >= 0 ? 'Profitable Order' : 'Loss on Order' %>
-                </div>
-                <span class="profit-formula-text">Customer Paid − Product Costs</span>
+                <div class="profit-status-pill"><span class="profit-status-dot <%= netProfit >= 0 ? 'green' : 'red' %>"></span><%= netProfit >= 0 ? 'Profitable Order' : 'Loss on Order' %></div>
+                <span class="profit-formula-text">Revenue − Product Cost − Shipping</span>
               </div>
             </div>
             <div class="profit-metrics-row">
-              <div class="profit-metric-box">
-                <div class="metric-icon-circle blue"><i class="fas fa-shopping-cart"></i></div>
-                <div class="metric-value">$<%= revenue.toFixed(2) %></div>
-                <div class="metric-label">Revenue</div>
-              </div>
-              <div class="profit-metric-box">
-                <div class="metric-icon-circle amber"><i class="fas fa-cubes"></i></div>
-                <div class="metric-value"><%= order.items ? order.items.length : 0 %></div>
-                <div class="metric-label">Items</div>
-              </div>
-              <div class="profit-metric-box">
-                <div class="metric-icon-circle red"><i class="fas fa-arrow-trend-down"></i></div>
-                <div class="metric-value danger">−$<%= productCost.toFixed(2) %></div>
-                <div class="metric-label">Product Cost</div>
-              </div>
-              <div class="profit-metric-box">
-                <div class="metric-icon-circle purple"><i class="fas fa-tag"></i></div>
-                <div class="metric-value<%= couponDiscount > 0 ? ' danger' : '' %>"><%= couponDiscount > 0 ? '−$' + couponDiscount.toFixed(2) : '$0.00' %></div>
-                <div class="metric-label">Coupon</div>
-              </div>
-              <div class="profit-metric-box">
-                <div class="metric-icon-circle teal"><i class="fas fa-truck"></i></div>
-                <div class="metric-value success"><%= shippingCost === 0 ? 'FREE' : '$' + shippingCost.toFixed(2) %></div>
-                <div class="metric-label">Shipping</div>
-              </div>
+              <div class="profit-metric-box"><div class="metric-icon-circle blue"><i class="fas fa-shopping-cart"></i></div><div class="metric-value">$<%= revenue.toFixed(2) %></div><div class="metric-label">Revenue</div></div>
+              <div class="profit-metric-box"><div class="metric-icon-circle amber"><i class="fas fa-cubes"></i></div><div class="metric-value"><%= order.items ? order.items.length : 0 %></div><div class="metric-label">Items</div></div>
+              <div class="profit-metric-box"><div class="metric-icon-circle red"><i class="fas fa-arrow-trend-down"></i></div><div class="metric-value danger">−$<%= productCost.toFixed(2) %></div><div class="metric-label">Product Cost</div></div>
+              <div class="profit-metric-box"><div class="metric-icon-circle purple"><i class="fas fa-tag"></i></div><div class="metric-value<%= couponDiscount > 0 ? ' danger' : '' %>"><%= couponDiscount > 0 ? '−$' + couponDiscount.toFixed(2) : '$0.00' %></div><div class="metric-label">Coupon</div></div>
+              <div class="profit-metric-box"><div class="metric-icon-circle teal"><i class="fas fa-truck"></i></div><div class="metric-value danger"><%= shippingCost === 0 ? 'FREE' : '−$' + shippingCost.toFixed(2) %></div><div class="metric-label">Shipping</div></div>
             </div>
           </div>
           
           <!-- Supplier & Tracking Info -->
           <div class="detail-card span-2">
-            <div class="card-head">
-              <div class="card-head-icon blue"><i class="fas fa-dolly"></i></div>
-              <div class="card-head-title">Supplier & Tracking Information</div>
-            </div>
+            <div class="card-head"><div class="card-head-icon blue"><i class="fas fa-dolly"></i></div><div class="card-head-title">Supplier & Tracking Information</div></div>
             <div class="card-body">
               <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">Supplier Name <span class="hint">— who is fulfilling this order</span></label>
-                  <input type="text" name="supplierName" class="form-input" value="<%= orderShipping.supplierName || '' %>" placeholder="e.g. AliExpress Supplier ABC">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Supplier Order ID <span class="hint">— reference from your supplier</span></label>
-                  <input type="text" name="supplierOrderId" class="form-input" value="<%= orderShipping.supplierOrderId || '' %>" placeholder="e.g. #ALI-2024-98765">
-                </div>
+                <div class="form-group"><label class="form-label">Supplier Name <span class="hint">— who is fulfilling this order</span></label><input type="text" name="supplierName" class="form-input" value="<%= orderShipping.supplierName || '' %>" placeholder="e.g. AliExpress Supplier ABC"></div>
+                <div class="form-group"><label class="form-label">Supplier Order ID <span class="hint">— reference from your supplier</span></label><input type="text" name="supplierOrderId" class="form-input" value="<%= orderShipping.supplierOrderId || '' %>" placeholder="e.g. #ALI-2024-98765"></div>
               </div>
               <div class="form-row-3">
-                <div class="form-group">
-                  <label class="form-label">Carrier</label>
-                  <input type="text" name="carrierName" class="form-input" value="<%= orderShipping.carrierName || '' %>" placeholder="e.g. USPS, DHL, FedEx">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Tracking Number</label>
-                  <input type="text" name="trackingNumber" class="form-input" value="<%= orderShipping.trackingNumber || '' %>" placeholder="Enter tracking number">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Tracking URL</label>
-                  <input type="text" name="trackingUrl" class="form-input" value="<%= orderShipping.trackingUrl || '' %>" placeholder="https://track.17track.net">
-                </div>
+                <div class="form-group"><label class="form-label">Carrier</label><input type="text" name="carrierName" class="form-input" value="<%= orderShipping.carrierName || '' %>" placeholder="e.g. USPS, DHL, FedEx"></div>
+                <div class="form-group"><label class="form-label">Tracking Number</label><input type="text" name="trackingNumber" class="form-input" value="<%= orderShipping.trackingNumber || '' %>" placeholder="Enter tracking number"></div>
+                <div class="form-group"><label class="form-label">Tracking URL</label><input type="text" name="trackingUrl" class="form-input" value="<%= orderShipping.trackingUrl || '' %>" placeholder="https://track.17track.net"></div>
               </div>
             </div>
           </div>
           
           <!-- Shipping Status -->
           <div class="detail-card span-2">
-            <div class="card-head">
-              <div class="card-head-icon amber"><i class="fas fa-clock"></i></div>
-              <div class="card-head-title">Shipping Status</div>
-            </div>
+            <div class="card-head"><div class="card-head-icon amber"><i class="fas fa-clock"></i></div><div class="card-head-title">Shipping Status</div></div>
             <div class="card-body">
               <div class="form-row">
                 <div class="form-group">
@@ -408,20 +236,11 @@
                     <option value="cancelled" <%= orderShipping.shippingStatus === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
                   </select>
                 </div>
-                <div class="form-group">
-                  <label class="form-label">Shipped Date</label>
-                  <input type="date" name="shippedDate" class="form-input" value="<%= orderShipping.shippedDate ? orderShipping.shippedDate.toISOString().split('T')[0] : '' %>">
-                </div>
+                <div class="form-group"><label class="form-label">Shipped Date</label><input type="date" name="shippedDate" class="form-input" value="<%= orderShipping.shippedDate ? orderShipping.shippedDate.toISOString().split('T')[0] : '' %>"></div>
               </div>
               <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">Delivered Date</label>
-                  <input type="date" name="deliveredDate" class="form-input" value="<%= orderShipping.deliveredDate ? orderShipping.deliveredDate.toISOString().split('T')[0] : '' %>">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Internal Notes</label>
-                  <textarea name="shippingNotes" class="form-textarea" placeholder="Notes about this order (not visible to customer)..."><%= orderShipping.shippingNotes || '' %></textarea>
-                </div>
+                <div class="form-group"><label class="form-label">Delivered Date</label><input type="date" name="deliveredDate" class="form-input" value="<%= orderShipping.deliveredDate ? orderShipping.deliveredDate.toISOString().split('T')[0] : '' %>"></div>
+                <div class="form-group"><label class="form-label">Internal Notes</label><textarea name="shippingNotes" class="form-textarea" placeholder="Notes about this order (not visible to customer)..."><%= orderShipping.shippingNotes || '' %></textarea></div>
               </div>
             </div>
           </div>
