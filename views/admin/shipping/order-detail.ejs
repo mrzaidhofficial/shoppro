@@ -30,6 +30,7 @@
   .card-head { padding: 16px 20px; border-bottom: var(--border); display: flex; align-items: center; gap: 10px; background: var(--gray-50); }
   .card-head-icon { width: 34px; height: 34px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 0.88rem; }
   .card-head-icon.blue { background: var(--primary-light); color: var(--primary); }
+  .card-head-icon.green { background: var(--success-bg); color: var(--success); }
   .card-head-icon.amber { background: #FEF3C7; color: #D97706; }
   .card-head-title { font-weight: 700; color: var(--gray-900); font-size: 0.9rem; }
   .card-body { padding: 20px; }
@@ -56,7 +57,6 @@
   .status-delivered { background: var(--success-bg); color: var(--success); }
   .status-cancelled { background: var(--error-bg); color: var(--error); }
   
-  /* ========== PROFIT SECTION ========== */
   .profit-wrapper { background: var(--white); border: var(--border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-sm); }
   .profit-header-section { padding: 28px 32px; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
   .profit-header-left { }
@@ -127,7 +127,8 @@
       <a href="/admin/products" class="admin-nav-item"><i class="fas fa-box"></i> Products</a>
       <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
       <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
-      <a href="/admin/shipping/settings" class="admin-nav-item active"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
       <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
     </aside>
@@ -165,25 +166,17 @@
             </div>
           </div>
           
-          <!-- Order Net Profit -->
           <div class="detail-card span-2 profit-wrapper">
             <%
-              // Revenue = Order Total = Product Price + Shipping - Coupons (what customer actually paid)
               var revenue = order.total || 0;
-              
-              // Product Cost = sum of (item cost × quantity) from product database
               var productCost = 0;
               if (order.items && order.items.length > 0) {
                 order.items.forEach(function(item) {
                   productCost += (item.cost || 0) * item.quantity;
                 });
               }
-              
               var couponDiscount = order.couponDiscount || 0;
               var shippingCost = order.shippingCost || 0;
-              
-              // Net Profit = Revenue - Product Cost - Shipping Cost
-              // (Shipping is collected from customer but not profit - it covers shipping expenses)
               var netProfit = revenue - productCost - shippingCost;
             %>
             <div class="profit-header-section">
@@ -205,7 +198,6 @@
             </div>
           </div>
           
-          <!-- Supplier & Tracking Info -->
           <div class="detail-card span-2">
             <div class="card-head"><div class="card-head-icon blue"><i class="fas fa-dolly"></i></div><div class="card-head-title">Supplier & Tracking Information</div></div>
             <div class="card-body">
@@ -221,7 +213,6 @@
             </div>
           </div>
           
-          <!-- Shipping Status -->
           <div class="detail-card span-2">
             <div class="card-head"><div class="card-head-icon amber"><i class="fas fa-clock"></i></div><div class="card-head-title">Shipping Status</div></div>
             <div class="card-body">
