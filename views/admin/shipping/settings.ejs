@@ -106,6 +106,9 @@
   .data-table tr:last-child td { border-bottom: none; }
   .data-table tr:hover td { background: var(--gray-50); }
   
+  .order-total-blue { font-weight: 600; color: #2563EB; font-family: var(--font-display); }
+  [data-theme="dark"] .order-total-blue { color: #60A5FA; }
+  
   .badge { display: inline-block; padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.66rem; font-weight: 600; text-transform: capitalize; }
   .badge-processing { background: #FEF3C7; color: #D97706; }
   .badge-shipped { background: #DBEAFE; color: #2563EB; }
@@ -349,7 +352,7 @@
                     <td style="font-weight:600;color:var(--primary);white-space:nowrap;"><%= order.orderNumber %></td>
                     <td style="font-size:0.8rem;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></td>
                     <td><%= order.items ? order.items.length : 0 %></td>
-                    <td style="font-weight:600;">$<%= order.total.toFixed(2) %></td>
+                    <td class="order-total-blue">$<%= order.total.toFixed(2) %></td>
                     <td><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></td>
                     <td><span class="badge badge-<%= order.status %>"><%= order.status %></span></td>
                     <td><span class="badge badge-<%= si.shippingStatus || 'pending' %>"><%= si.shippingStatus || 'pending' %></span></td>
@@ -437,7 +440,7 @@
                     <td><input type="checkbox" class="order-checkbox bulk-check" name="orderIds" value="<%= order._id %>" form="bulkForm"></td>
                     <td style="font-weight:600;color:var(--primary);white-space:nowrap;"><%= order.orderNumber %></td>
                     <td style="font-size:0.8rem;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></td>
-                    <td style="font-weight:600;">$<%= order.total.toFixed(2) %></td>
+                    <td class="order-total-blue">$<%= order.total.toFixed(2) %></td>
                     <td><span class="badge badge-<%= order.status %>"><%= order.status %></span></td>
                     <td><span class="badge badge-<%= si.shippingStatus || 'pending' %>"><%= si.shippingStatus || 'pending' %></span></td>
                     <td style="font-size:0.78rem;"><%= si.supplierName || '—' %></td>
