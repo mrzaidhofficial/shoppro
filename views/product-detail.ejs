@@ -8,39 +8,26 @@
   .breadcrumb-nav .separator { margin: 0 4px; color: var(--text-muted); }
   .breadcrumb-nav span { color: var(--text-primary); font-weight: 500; }
   
-  .product-detail-layout { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 44px; 
-    align-items: stretch;
-  }
-  .product-detail-layout > div {
-    display: flex;
-    flex-direction: column;
-  }
+  .product-detail-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; }
   
-  .product-gallery { height: 100%; }
+  .product-gallery { }
   .product-gallery-main { 
-    flex: 1;
+    width: 100%;
     border-radius: var(--radius-xl); 
     overflow: hidden; 
     background: var(--bg-card-alt); 
     box-shadow: var(--shadow-md); 
     border: 1px solid var(--border-color);
+    display: flex;
+    align-items: stretch;
   }
   .product-gallery-main img { 
     width: 100%; 
-    height: 100%; 
     object-fit: cover; 
     display: block; 
   }
   .product-gallery-thumbs { 
-    display: flex; 
-    gap: 10px; 
-    margin-top: 12px; 
-    overflow-x: auto; 
-    padding-bottom: 4px; 
-    flex-shrink: 0; 
+    display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; 
   }
   .product-gallery-thumbs img { 
     width: 72px; height: 72px; border-radius: var(--radius); object-fit: cover; cursor: pointer; 
@@ -204,7 +191,7 @@
   
   @media (max-width: 900px) {
     .product-detail-layout { grid-template-columns: 1fr; gap: 28px; }
-    .product-gallery-main { aspect-ratio: 1; flex: none; }
+    .product-gallery-main { aspect-ratio: 1; }
     .product-info-title { font-size: 1.5rem; }
     .product-info-price { font-size: 1.7rem; }
     .product-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
@@ -239,7 +226,6 @@
       <div class="product-info">
         <span class="product-info-category"><%= product.category %></span>
         <h1 class="product-info-title"><%= product.name %></h1>
-        
         <div class="product-info-rating">
           <div class="stars-row">
             <% for (var i = 1; i <= 5; i++) { %>
@@ -250,7 +236,6 @@
           </div>
           <span class="review-count"><%= product.averageRating.toFixed(1) %> (<%= product.numReviews || product.ratings.length %> reviews)</span>
         </div>
-        
         <div class="product-info-price">$<%= product.price.toFixed(2) %></div>
         <% if (product.shortDescription) { %><p class="product-info-short-desc"><%= product.shortDescription %></p><% } %>
         <p class="product-info-description"><%= product.description %></p>
@@ -347,8 +332,7 @@
         <div class="product-grid">
           <% relatedProducts.forEach(function(relProduct) { %>
             <div class="product-card">
-              <div class="product-card-image">
-                <a href="/products/<%= relProduct._id %>"><img src="<%= relProduct.images && relProduct.images[0] ? relProduct.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= relProduct.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'"></a>
+              <div class="product-card-image"><a href="/products/<%= relProduct._id %>"><img src="<%= relProduct.images && relProduct.images[0] ? relProduct.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= relProduct.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'"></a>
                 <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= relProduct._id %>">Quick View</button></div>
               </div>
               <div class="product-card-body">
@@ -375,8 +359,7 @@
         <div class="product-grid">
           <% recentlyViewed.forEach(function(rvProduct) { %>
             <div class="product-card">
-              <div class="product-card-image">
-                <a href="/products/<%= rvProduct._id %>"><img src="<%= rvProduct.images && rvProduct.images[0] ? rvProduct.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= rvProduct.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'"></a>
+              <div class="product-card-image"><a href="/products/<%= rvProduct._id %>"><img src="<%= rvProduct.images && rvProduct.images[0] ? rvProduct.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= rvProduct.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'"></a>
                 <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= rvProduct._id %>">Quick View</button></div>
               </div>
               <div class="product-card-body">
@@ -416,6 +399,25 @@ function updateStars(rating) {
     else s.classList.remove('active');
   });
 }
+
+// Make image match the height of the product info column
+(function() {
+  function matchImageHeight() {
+    var gallery = document.querySelector('.product-gallery-main');
+    var info = document.querySelector('.product-info');
+    if (gallery && info) {
+      var infoHeight = info.offsetHeight;
+      gallery.style.height = infoHeight + 'px';
+    }
+  }
+  window.addEventListener('load', matchImageHeight);
+  window.addEventListener('resize', matchImageHeight);
+  // Also run after images load
+  var mainImg = document.getElementById('mainImage');
+  if (mainImg) {
+    mainImg.addEventListener('load', matchImageHeight);
+  }
+})();
 </script>
 
 <%- include('partials/footer') %>
