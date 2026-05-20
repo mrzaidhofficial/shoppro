@@ -10,17 +10,21 @@
   
   .product-detail-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: start; }
   
-  .product-gallery { }
+  .product-gallery { 
+    display: flex;
+    flex-direction: column;
+  }
   .product-gallery-main { 
     border-radius: var(--radius-xl); 
     overflow: hidden; 
     background: var(--bg-card-alt); 
-    aspect-ratio: 1; 
     box-shadow: var(--shadow-md); 
     border: 1px solid var(--border-color);
-    height: 100%;
+    flex: 1;
+    display: flex;
+    align-items: stretch;
   }
-  .product-gallery-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .product-gallery-main img { width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 1; }
   .product-gallery-thumbs { display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; }
   .product-gallery-thumbs img { 
     width: 72px; height: 72px; border-radius: var(--radius); object-fit: cover; cursor: pointer; 
@@ -29,11 +33,11 @@
   .product-gallery-thumbs img:hover { border-color: var(--primary); transform: scale(1.05); }
   .product-gallery-thumbs img.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(0,102,255,0.2); }
   
-  .product-info { }
+  .product-info { display: flex; flex-direction: column; }
   .product-info-category { 
     display: inline-block; font-size: 0.7rem; color: var(--primary); text-transform: uppercase; 
     letter-spacing: 1.2px; font-weight: 700; margin-bottom: 10px; background: var(--primary-light); 
-    padding: 5px 14px; border-radius: var(--radius-full); 
+    padding: 5px 14px; border-radius: var(--radius-full); width: fit-content;
   }
   .product-info-title { 
     font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--text-primary); 
@@ -54,7 +58,7 @@
   
   .stock-badge { 
     display: inline-flex; align-items: center; gap: 6px; padding: 7px 15px; border-radius: var(--radius-full); 
-    font-weight: 600; font-size: 0.82rem; margin-bottom: 16px; 
+    font-weight: 600; font-size: 0.82rem; margin-bottom: 16px; width: fit-content;
   }
   .stock-badge.in-stock { background: rgba(16,185,129,0.1); color: #059669; }
   .stock-badge.low-stock { background: rgba(245,158,11,0.1); color: #D97706; }
@@ -68,7 +72,7 @@
   .stock-badge.out-stock .stock-dot { background: #EF4444; }
   @keyframes stockPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
   
-  /* Specs Table - with row lines and middle divider */
+  /* Specs Table - with ALL row lines and grey right column */
   .product-specs { 
     margin-bottom: 20px; background: var(--bg-card-alt); border-radius: var(--radius-lg); 
     overflow: hidden; border: 1px solid var(--border-color); 
@@ -76,12 +80,18 @@
   .product-specs-table { width: 100%; border-collapse: collapse; }
   .product-specs-table tr { border-bottom: 1px solid var(--border-color); }
   .product-specs-table tr:last-child { border-bottom: none; }
-  .product-specs-table td { padding: 12px 16px; font-size: 0.86rem; vertical-align: middle; }
+  .product-specs-table td { 
+    padding: 12px 16px; font-size: 0.86rem; vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .product-specs-table tr:last-child td { border-bottom: none; }
   .product-specs-table td:first-child { 
     font-weight: 600; color: var(--text-primary); width: 35%; background: var(--bg-hover);
     border-right: 1px solid var(--border-color);
   }
-  .product-specs-table td:last-child { color: var(--text-body); background: var(--bg-card-alt); }
+  .product-specs-table td:last-child { 
+    color: var(--text-body); background: var(--bg-card-alt);
+  }
   
   .wishlist-btn-wrap { margin-bottom: 16px; }
   .wishlist-btn { 
@@ -118,7 +128,6 @@
   .btn-add-to-cart:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,102,255,0.35); }
   .btn-add-to-cart:disabled { background: var(--gray-300); cursor: not-allowed; box-shadow: none; transform: none; }
   
-  /* Reviews */
   .reviews-section { margin-top: 48px; border-top: 1px solid var(--border-color); padding-top: 36px; }
   .reviews-title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 24px; }
   .review-form-card { background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
