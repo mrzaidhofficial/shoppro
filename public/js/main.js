@@ -73,16 +73,12 @@
           var addToCartForm = doc.querySelector('form[action*="/cart/add/"]');
           var productLink = '/products/' + productId;
 
-          var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-          
           var html2 = '';
           html2 += '<div class="qv-grid">';
-          // Image column
           html2 += '<div class="qv-image-col">';
           html2 += '<div class="qv-image-wrapper">';
           html2 += '<img src="' + image + '" class="qv-image" onerror="this.src=\'https://picsum.photos/600/600\'">';
           html2 += '</div></div>';
-          // Content column
           html2 += '<div class="qv-content-col">';
           if (category) html2 += '<span class="qv-category">' + category + '</span>';
           html2 += '<h3 class="qv-title">' + name + '</h3>';
@@ -90,7 +86,6 @@
           if (price) html2 += '<div class="qv-price">' + price + '</div>';
           if (description) html2 += '<p class="qv-desc">' + description + '</p>';
           if (specsHTML) html2 += '<div class="qv-specs">' + specsHTML + '</div>';
-          // Buttons
           html2 += '<div class="qv-buttons">';
           html2 += '<a href="' + productLink + '" class="qv-btn-details">Full Details</a>';
           if (addToCartForm) {
@@ -100,7 +95,7 @@
           
           content.innerHTML = html2;
           
-          // Inject comprehensive styles for the quick view
+          // Inject styles - with border lines between columns and grey right column
           var styleEl = document.createElement('style');
           styleEl.textContent = '' +
             '.qv-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch;}' +
@@ -117,9 +112,9 @@
             '.qv-specs table{width:100%;border-collapse:collapse;}' +
             '.qv-specs tr{border-bottom:1px solid var(--border-color);}' +
             '.qv-specs tr:last-child{border-bottom:none;}' +
-            '.qv-specs td{padding:12px 16px;font-size:0.88rem;}' +
-            '.qv-specs td:first-child{font-weight:600;color:var(--text-primary);width:40%;background:var(--bg-hover);}' +
-            '.qv-specs td:last-child{color:var(--text-body);}' +
+            '.qv-specs td{padding:12px 16px;font-size:0.86rem;}' +
+            '.qv-specs td:first-child{font-weight:600;color:var(--text-primary);width:40%;background:var(--bg-hover);border-right:1px solid var(--border-color);}' +
+            '.qv-specs td:last-child{color:var(--text-body);background:var(--bg-card-alt);}' +
             '.qv-buttons{display:flex;gap:10px;margin-top:auto;}' +
             '.qv-btn-details{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border:2px solid var(--primary);border-radius:9999px;font-size:0.85rem;font-weight:600;color:var(--primary);text-decoration:none;height:42px;transition:all 0.2s ease;}' +
             '.qv-btn-details:hover{background:var(--primary);color:white;}' +

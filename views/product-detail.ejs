@@ -10,7 +10,6 @@
   
   .product-detail-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: start; }
   
-  /* Gallery */
   .product-gallery { }
   .product-gallery-main { 
     border-radius: var(--radius-xl); 
@@ -19,90 +18,43 @@
     aspect-ratio: 1; 
     box-shadow: var(--shadow-md); 
     border: 1px solid var(--border-color);
+    height: 100%;
   }
   .product-gallery-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .product-gallery-thumbs { display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; }
   .product-gallery-thumbs img { 
-    width: 72px; 
-    height: 72px; 
-    border-radius: var(--radius); 
-    object-fit: cover; 
-    cursor: pointer; 
-    border: 2px solid var(--border-color); 
-    transition: all 0.2s ease;
-    flex-shrink: 0;
+    width: 72px; height: 72px; border-radius: var(--radius); object-fit: cover; cursor: pointer; 
+    border: 2px solid var(--border-color); transition: all 0.2s ease; flex-shrink: 0;
   }
   .product-gallery-thumbs img:hover { border-color: var(--primary); transform: scale(1.05); }
   .product-gallery-thumbs img.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(0,102,255,0.2); }
   
-  /* Product Info */
   .product-info { }
   .product-info-category { 
-    display: inline-block; 
-    font-size: 0.7rem; 
-    color: var(--primary); 
-    text-transform: uppercase; 
-    letter-spacing: 1.2px; 
-    font-weight: 700; 
-    margin-bottom: 10px; 
-    background: var(--primary-light); 
-    padding: 5px 14px; 
-    border-radius: var(--radius-full); 
+    display: inline-block; font-size: 0.7rem; color: var(--primary); text-transform: uppercase; 
+    letter-spacing: 1.2px; font-weight: 700; margin-bottom: 10px; background: var(--primary-light); 
+    padding: 5px 14px; border-radius: var(--radius-full); 
   }
   .product-info-title { 
-    font-family: var(--font-display); 
-    font-size: 1.8rem; 
-    font-weight: 700; 
-    color: var(--text-primary); 
-    margin-bottom: 12px; 
-    line-height: 1.2; 
-    letter-spacing: -0.4px; 
+    font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--text-primary); 
+    margin-bottom: 12px; line-height: 1.2; letter-spacing: -0.4px; 
   }
-  
-  .product-info-rating { 
-    display: flex; 
-    align-items: center; 
-    gap: 8px; 
-    margin-bottom: 16px; 
-    flex-wrap: wrap;
-  }
+  .product-info-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
   .product-info-rating .stars-row { display: flex; gap: 2px; }
   .product-info-rating .star { font-size: 0.88rem; }
   .product-info-rating .star.filled { color: #F59E0B; }
   .product-info-rating .star.empty { color: var(--gray-300); }
   .product-info-rating .review-count { font-size: 0.82rem; color: var(--text-muted); }
-  
   .product-info-price { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 16px; font-family: var(--font-display); }
-  
   .product-info-short-desc { 
-    color: var(--text-body); 
-    font-size: 0.92rem; 
-    line-height: 1.6; 
-    margin-bottom: 14px; 
-    font-weight: 500; 
-    padding: 12px 16px;
-    background: var(--bg-card-alt);
-    border-radius: var(--radius);
-    border-left: 3px solid var(--primary);
+    color: var(--text-body); font-size: 0.92rem; line-height: 1.6; margin-bottom: 14px; font-weight: 500; 
+    padding: 12px 16px; background: var(--bg-card-alt); border-radius: var(--radius); border-left: 3px solid var(--primary);
   }
+  .product-info-description { color: var(--text-body); line-height: 1.7; margin-bottom: 18px; font-size: 0.9rem; }
   
-  .product-info-description { 
-    color: var(--text-body); 
-    line-height: 1.7; 
-    margin-bottom: 18px; 
-    font-size: 0.9rem; 
-  }
-  
-  /* Stock Badge */
   .stock-badge { 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 6px;
-    padding: 7px 15px; 
-    border-radius: var(--radius-full); 
-    font-weight: 600; 
-    font-size: 0.82rem; 
-    margin-bottom: 16px; 
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 15px; border-radius: var(--radius-full); 
+    font-weight: 600; font-size: 0.82rem; margin-bottom: 16px; 
   }
   .stock-badge.in-stock { background: rgba(16,185,129,0.1); color: #059669; }
   .stock-badge.low-stock { background: rgba(245,158,11,0.1); color: #D97706; }
@@ -116,221 +68,77 @@
   .stock-badge.out-stock .stock-dot { background: #EF4444; }
   @keyframes stockPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
   
-  /* Specs Table */
+  /* Specs Table - with row lines and middle divider */
   .product-specs { 
-    margin-bottom: 20px; 
-    background: var(--bg-card-alt); 
-    border-radius: var(--radius-lg); 
-    overflow: hidden; 
-    border: 1px solid var(--border-color); 
+    margin-bottom: 20px; background: var(--bg-card-alt); border-radius: var(--radius-lg); 
+    overflow: hidden; border: 1px solid var(--border-color); 
   }
   .product-specs-table { width: 100%; border-collapse: collapse; }
   .product-specs-table tr { border-bottom: 1px solid var(--border-color); }
   .product-specs-table tr:last-child { border-bottom: none; }
-  .product-specs-table td { 
-    padding: 12px 16px; 
-    font-size: 0.86rem; 
-    vertical-align: middle;
-  }
+  .product-specs-table td { padding: 12px 16px; font-size: 0.86rem; vertical-align: middle; }
   .product-specs-table td:first-child { 
-    font-weight: 600; 
-    color: var(--text-primary); 
-    width: 35%; 
-    background: var(--bg-hover);
+    font-weight: 600; color: var(--text-primary); width: 35%; background: var(--bg-hover);
     border-right: 1px solid var(--border-color);
   }
-  .product-specs-table td:last-child { 
-    color: var(--text-body); 
-  }
+  .product-specs-table td:last-child { color: var(--text-body); background: var(--bg-card-alt); }
   
-  /* Wishlist Button */
   .wishlist-btn-wrap { margin-bottom: 16px; }
   .wishlist-btn { 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 8px; 
-    padding: 10px 20px; 
-    background: transparent; 
-    border: 2px solid var(--border-color); 
-    border-radius: var(--radius-full); 
-    font-size: 0.84rem; 
-    font-weight: 600; 
-    color: var(--text-secondary); 
-    cursor: pointer; 
-    font-family: var(--font-primary); 
-    text-decoration: none;
-    transition: all 0.2s ease; 
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: transparent; 
+    border: 2px solid var(--border-color); border-radius: var(--radius-full); font-size: 0.84rem; 
+    font-weight: 600; color: var(--text-secondary); cursor: pointer; font-family: var(--font-primary); 
+    text-decoration: none; transition: all 0.2s ease; 
   }
   .wishlist-btn:hover { border-color: #EF4444; color: #EF4444; background: rgba(239,68,68,0.05); }
   .wishlist-btn i { font-size: 0.9rem; }
   
-  /* Quantity & Add to Cart */
   .quantity-selector { 
-    display: flex; 
-    align-items: center; 
-    margin-bottom: 16px; 
-    border: 2px solid var(--border-color); 
-    border-radius: var(--radius-full); 
-    width: fit-content; 
-    overflow: hidden; 
+    display: flex; align-items: center; margin-bottom: 16px; border: 2px solid var(--border-color); 
+    border-radius: var(--radius-full); width: fit-content; overflow: hidden; 
   }
   .qty-btn { 
-    width: 44px; 
-    height: 44px; 
-    border: none; 
-    background: var(--bg-card-alt); 
-    color: var(--text-secondary); 
-    font-size: 1.1rem; 
-    cursor: pointer; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    transition: all 0.15s ease; 
-    font-family: var(--font-primary); 
+    width: 44px; height: 44px; border: none; background: var(--bg-card-alt); color: var(--text-secondary); 
+    font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+    transition: all 0.15s ease; font-family: var(--font-primary); 
   }
   .qty-btn:hover { background: var(--primary-light); color: var(--primary); }
   .qty-input { 
-    width: 55px; 
-    text-align: center; 
-    border: none; 
-    border-left: 1px solid var(--border-color); 
-    border-right: 1px solid var(--border-color); 
-    font-weight: 600; 
-    font-size: 1rem; 
-    font-family: var(--font-primary); 
-    background: var(--bg-card); 
-    color: var(--text-primary); 
-    height: 44px; 
+    width: 55px; text-align: center; border: none; border-left: 1px solid var(--border-color); 
+    border-right: 1px solid var(--border-color); font-weight: 600; font-size: 1rem; 
+    font-family: var(--font-primary); background: var(--bg-card); color: var(--text-primary); height: 44px; 
   }
   
   .btn-add-to-cart { 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center;
-    gap: 8px; 
-    padding: 13px 30px; 
-    background: var(--primary-gradient); 
-    color: #FFFFFF; 
-    border: none; 
-    border-radius: var(--radius-full); 
-    font-size: 0.95rem; 
-    font-weight: 600; 
-    font-family: var(--font-primary); 
-    cursor: pointer; 
-    transition: all 0.25s ease; 
-    box-shadow: 0 4px 16px rgba(0,102,255,0.25);
-    width: 100%;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 30px; 
+    background: var(--primary-gradient); color: #FFFFFF; border: none; border-radius: var(--radius-full); 
+    font-size: 0.95rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; 
+    transition: all 0.25s ease; box-shadow: 0 4px 16px rgba(0,102,255,0.25); width: 100%;
   }
-  .btn-add-to-cart:hover { 
-    transform: translateY(-2px); 
-    box-shadow: 0 8px 28px rgba(0,102,255,0.35); 
-  }
-  .btn-add-to-cart:disabled { 
-    background: var(--gray-300); 
-    cursor: not-allowed; 
-    box-shadow: none; 
-    transform: none; 
-  }
+  .btn-add-to-cart:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,102,255,0.35); }
+  .btn-add-to-cart:disabled { background: var(--gray-300); cursor: not-allowed; box-shadow: none; transform: none; }
   
-  /* Reviews Section */
+  /* Reviews */
   .reviews-section { margin-top: 48px; border-top: 1px solid var(--border-color); padding-top: 36px; }
   .reviews-title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 24px; }
-  
-  .review-form-card { 
-    background: var(--bg-card-alt); 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-xl); 
-    padding: 24px; 
-    margin-bottom: 24px; 
-  }
+  .review-form-card { background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
   .review-form-card h4 { font-weight: 600; color: var(--text-primary); margin-bottom: 14px; font-size: 0.95rem; }
   .star-rating-row { display: flex; gap: 6px; margin-bottom: 14px; }
   .review-star { font-size: 1.5rem; color: var(--gray-300); cursor: pointer; transition: all 0.15s ease; }
   .review-star:hover { transform: scale(1.2); }
   .review-star.active { color: #F59E0B; }
-  .review-textarea { 
-    width: 100%; 
-    padding: 12px 16px; 
-    border: 2px solid var(--border-color); 
-    border-radius: var(--radius); 
-    font-size: 0.88rem; 
-    font-family: var(--font-primary); 
-    color: var(--text-body); 
-    background: var(--bg-input); 
-    outline: none; 
-    resize: vertical; 
-    min-height: 100px; 
-    transition: border-color 0.2s;
-  }
+  .review-textarea { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: var(--radius); font-size: 0.88rem; font-family: var(--font-primary); color: var(--text-body); background: var(--bg-input); outline: none; resize: vertical; min-height: 100px; transition: border-color 0.2s; }
   .review-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,102,255,0.06); }
-  .review-submit-btn { 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 7px; 
-    padding: 11px 24px; 
-    background: var(--primary-gradient); 
-    color: white; 
-    border: none; 
-    border-radius: var(--radius-full); 
-    font-size: 0.85rem; 
-    font-weight: 600; 
-    font-family: var(--font-primary); 
-    cursor: pointer; 
-    margin-top: 12px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 10px rgba(0,102,255,0.2);
-  }
+  .review-submit-btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 24px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-full); font-size: 0.85rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; margin-top: 12px; transition: all 0.2s ease; box-shadow: 0 2px 10px rgba(0,102,255,0.2); }
   .review-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,102,255,0.3); }
-  
-  .signin-prompt { 
-    background: var(--bg-card-alt); 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-xl); 
-    padding: 22px; 
-    text-align: center; 
-    margin-bottom: 24px; 
-  }
+  .signin-prompt { background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 22px; text-align: center; margin-bottom: 24px; }
   .signin-prompt p { color: var(--text-muted); margin-bottom: 10px; font-size: 0.9rem; }
-  .signin-prompt .btn { 
-    display: inline-block; 
-    padding: 9px 22px; 
-    background: var(--primary-gradient); 
-    color: white; 
-    border-radius: var(--radius-full); 
-    font-weight: 600; 
-    text-decoration: none; 
-    font-size: 0.85rem; 
-  }
-  
+  .signin-prompt .btn { display: inline-block; padding: 9px 22px; background: var(--primary-gradient); color: white; border-radius: var(--radius-full); font-weight: 600; text-decoration: none; font-size: 0.85rem; }
   .review-list { display: flex; flex-direction: column; gap: 16px; }
-  .review-item { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-lg); 
-    padding: 20px 22px; 
-    box-shadow: var(--shadow-xs); 
-  }
-  .review-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    flex-wrap: wrap; 
-    gap: 10px; 
-    margin-bottom: 10px; 
-  }
+  .review-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px 22px; box-shadow: var(--shadow-xs); }
+  .review-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
   .review-user { display: flex; align-items: center; gap: 10px; }
-  .review-avatar { 
-    width: 36px; 
-    height: 36px; 
-    border-radius: 50%; 
-    background: var(--primary-gradient); 
-    color: white; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-weight: 700; 
-    font-size: 0.82rem; 
-  }
+  .review-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-gradient); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; }
   .review-username { font-weight: 600; color: var(--text-primary); font-size: 0.88rem; }
   .review-date { font-size: 0.78rem; color: var(--text-muted); }
   .review-stars-row { display: flex; gap: 2px; margin-bottom: 8px; }
@@ -338,60 +146,22 @@
   .review-stars-row .star.filled { color: #F59E0B; }
   .review-stars-row .star.empty { color: var(--gray-300); }
   .review-text-content { color: var(--text-body); font-size: 0.88rem; line-height: 1.6; }
-  
-  .empty-reviews { 
-    text-align: center; 
-    padding: 40px; 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-xl); 
-  }
+  .empty-reviews { text-align: center; padding: 40px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); }
   .empty-reviews i { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 10px; display: block; opacity: 0.3; }
   .empty-reviews p { color: var(--text-muted); }
   
-  /* Related & Recently Viewed */
   .related-section { margin-top: 48px; border-top: 1px solid var(--border-color); padding-top: 36px; }
   .related-title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 24px; }
   
   .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-  .product-card { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-xl); 
-    overflow: hidden; 
-    transition: all 0.3s ease; 
-    box-shadow: var(--shadow-xs); 
-  }
+  .product-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); overflow: hidden; transition: all 0.3s ease; box-shadow: var(--shadow-xs); }
   .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(0,102,255,0.15); }
   .product-card-image { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--bg-card-alt); }
   .product-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
   .product-card:hover .product-card-image img { transform: scale(1.04); }
-  .quick-view-overlay { 
-    position: absolute; 
-    bottom: 0; 
-    left: 0; 
-    right: 0; 
-    padding: 14px; 
-    background: linear-gradient(transparent, rgba(0,0,0,0.7)); 
-    display: flex; 
-    justify-content: center; 
-    opacity: 0; 
-    transform: translateY(6px); 
-    transition: all 0.25s ease; 
-  }
+  .quick-view-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 14px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); display: flex; justify-content: center; opacity: 0; transform: translateY(6px); transition: all 0.25s ease; }
   .product-card:hover .quick-view-overlay { opacity: 1; transform: translateY(0); }
-  .quick-view-btn { 
-    background: #FFFFFF; 
-    border: none; 
-    padding: 9px 22px; 
-    border-radius: var(--radius-full); 
-    font-size: 0.78rem; 
-    font-weight: 600; 
-    cursor: pointer; 
-    color: #0F172A; 
-    font-family: var(--font-primary); 
-    transition: all 0.2s ease; 
-  }
+  .quick-view-btn { background: #FFFFFF; border: none; padding: 9px 22px; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 600; cursor: pointer; color: #0F172A; font-family: var(--font-primary); transition: all 0.2s ease; }
   .quick-view-btn:hover { background: var(--primary); color: #FFFFFF; }
   .product-card-body { padding: 14px 16px 8px; }
   .product-card-category { font-size: 0.68rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-bottom: 4px; }
@@ -419,7 +189,6 @@
     .product-info-price { font-size: 1.7rem; }
     .product-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
   }
-  
   @media (max-width: 500px) {
     .product-grid { grid-template-columns: 1fr; }
   }
@@ -434,7 +203,6 @@
     </nav>
 
     <div class="product-detail-layout">
-      <!-- Gallery -->
       <div class="product-gallery">
         <div class="product-gallery-main">
           <img src="<%= product.images && product.images[0] ? product.images[0] : 'https://picsum.photos/600/600' %>" alt="<%= product.name %>" id="mainImage" onerror="this.src='https://picsum.photos/600/600'">
@@ -448,7 +216,6 @@
         <% } %>
       </div>
       
-      <!-- Product Info -->
       <div class="product-info">
         <span class="product-info-category"><%= product.category %></span>
         <h1 class="product-info-title"><%= product.name %></h1>
@@ -456,38 +223,23 @@
         <div class="product-info-rating">
           <div class="stars-row">
             <% for (var i = 1; i <= 5; i++) { %>
-              <% if (i <= Math.floor(product.averageRating)) { %>
-                <span class="star filled"><i class="fas fa-star"></i></span>
-              <% } else if (i - 0.5 <= product.averageRating) { %>
-                <span class="star filled"><i class="fas fa-star-half-alt"></i></span>
-              <% } else { %>
-                <span class="star empty"><i class="fas fa-star"></i></span>
-              <% } %>
+              <% if (i <= Math.floor(product.averageRating)) { %><span class="star filled"><i class="fas fa-star"></i></span>
+              <% } else if (i - 0.5 <= product.averageRating) { %><span class="star filled"><i class="fas fa-star-half-alt"></i></span>
+              <% } else { %><span class="star empty"><i class="fas fa-star"></i></span><% } %>
             <% } %>
           </div>
           <span class="review-count"><%= product.averageRating.toFixed(1) %> (<%= product.numReviews || product.ratings.length %> reviews)</span>
         </div>
         
         <div class="product-info-price">$<%= product.price.toFixed(2) %></div>
-        
-        <% if (product.shortDescription) { %>
-          <p class="product-info-short-desc"><%= product.shortDescription %></p>
-        <% } %>
-        
+        <% if (product.shortDescription) { %><p class="product-info-short-desc"><%= product.shortDescription %></p><% } %>
         <p class="product-info-description"><%= product.description %></p>
         
-        <!-- Stock Badge -->
-        <% if (product.stock === 0) { %>
-          <div class="stock-badge out-stock"><span class="stock-dot"></span> Out of Stock</div>
-        <% } else if (product.stock <= 5) { %>
-          <div class="stock-badge low-stock"><span class="stock-dot"></span> Only <%= product.stock %> left in stock!</div>
-        <% } else if (product.stock <= 15) { %>
-          <div class="stock-badge low-stock"><span class="stock-dot"></span> <%= product.stock %> units available</div>
-        <% } else { %>
-          <div class="stock-badge in-stock"><span class="stock-dot"></span> In Stock</div>
-        <% } %>
+        <% if (product.stock === 0) { %><div class="stock-badge out-stock"><span class="stock-dot"></span> Out of Stock</div>
+        <% } else if (product.stock <= 5) { %><div class="stock-badge low-stock"><span class="stock-dot"></span> Only <%= product.stock %> left in stock!</div>
+        <% } else if (product.stock <= 15) { %><div class="stock-badge low-stock"><span class="stock-dot"></span> <%= product.stock %> units available</div>
+        <% } else { %><div class="stock-badge in-stock"><span class="stock-dot"></span> In Stock</div><% } %>
         
-        <!-- Specs Table -->
         <div class="product-specs">
           <table class="product-specs-table">
             <% if (product.specifications && product.specifications.size > 0) { %>
@@ -503,7 +255,6 @@
           </table>
         </div>
         
-        <!-- Wishlist -->
         <div class="wishlist-btn-wrap">
           <% if (typeof user !== 'undefined' && user) { %>
             <form action="/cart/wishlist/add/<%= product._id %>" method="POST" style="display:inline;">
@@ -514,7 +265,6 @@
           <% } %>
         </div>
         
-        <!-- Add to Cart -->
         <% if (product.stock > 0) { %>
           <form action="/cart/add/<%= product._id %>" method="POST">
             <div class="quantity-selector">
@@ -530,18 +280,14 @@
       </div>
     </div>
 
-    <!-- Reviews Section -->
     <div class="reviews-section">
       <h2 class="reviews-title">Customer Reviews</h2>
-      
       <% if (typeof user !== 'undefined' && user) { %>
         <div class="review-form-card">
           <h4>Write a Review</h4>
           <form action="/products/<%= product._id %>/review" method="POST">
             <div class="star-rating-row" id="starRating">
-              <% for (var i = 1; i <= 5; i++) { %>
-                <span class="review-star active" data-rating="<%= i %>"><i class="fas fa-star"></i></span>
-              <% } %>
+              <% for (var i = 1; i <= 5; i++) { %><span class="review-star active" data-rating="<%= i %>"><i class="fas fa-star"></i></span><% } %>
             </div>
             <input type="hidden" name="rating" id="ratingInput" value="5" required>
             <textarea name="review" class="review-textarea" placeholder="Share your experience with this product..."></textarea>
@@ -549,10 +295,7 @@
           </form>
         </div>
       <% } else { %>
-        <div class="signin-prompt">
-          <p>Please sign in to leave a review.</p>
-          <a href="/auth/signin" class="btn">Sign In</a>
-        </div>
+        <div class="signin-prompt"><p>Please sign in to leave a review.</p><a href="/auth/signin" class="btn">Sign In</a></div>
       <% } %>
       
       <% if (product.ratings && product.ratings.length > 0) { %>
@@ -567,25 +310,17 @@
                 <span class="review-date"><%= review.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
               </div>
               <div class="review-stars-row">
-                <% for (var i = 1; i <= 5; i++) { %>
-                  <span class="star <%= i <= review.rating ? 'filled' : 'empty' %>"><i class="fas fa-star"></i></span>
-                <% } %>
+                <% for (var i = 1; i <= 5; i++) { %><span class="star <%= i <= review.rating ? 'filled' : 'empty' %>"><i class="fas fa-star"></i></span><% } %>
               </div>
-              <% if (review.review) { %>
-                <p class="review-text-content"><%= review.review %></p>
-              <% } %>
+              <% if (review.review) { %><p class="review-text-content"><%= review.review %></p><% } %>
             </div>
           <% }) %>
         </div>
       <% } else { %>
-        <div class="empty-reviews">
-          <i class="fas fa-comment-dots"></i>
-          <p>No reviews yet. Be the first to review this product!</p>
-        </div>
+        <div class="empty-reviews"><i class="fas fa-comment-dots"></i><p>No reviews yet. Be the first to review this product!</p></div>
       <% } %>
     </div>
 
-    <!-- Related Products -->
     <% if (typeof relatedProducts !== 'undefined' && relatedProducts.length > 0) { %>
       <div class="related-section">
         <h2 class="related-title">Related Products</h2>
@@ -593,29 +328,20 @@
           <% relatedProducts.forEach(function(relProduct) { %>
             <div class="product-card">
               <div class="product-card-image">
-                <a href="/products/<%= relProduct._id %>">
-                  <img src="<%= relProduct.images && relProduct.images[0] ? relProduct.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= relProduct.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'">
-                </a>
-                <div class="quick-view-overlay">
-                  <button class="quick-view-btn" data-id="<%= relProduct._id %>">Quick View</button>
-                </div>
+                <a href="/products/<%= relProduct._id %>"><img src="<%= relProduct.images && relProduct.images[0] ? relProduct.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= relProduct.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'"></a>
+                <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= relProduct._id %>">Quick View</button></div>
               </div>
               <div class="product-card-body">
                 <span class="product-card-category"><%= relProduct.category %></span>
                 <h3 class="product-card-title"><a href="/products/<%= relProduct._id %>"><%= relProduct.name %></a></h3>
                 <div class="product-card-rating">
-                  <% for (var i = 1; i <= 5; i++) { %>
-                    <span class="star <%= i <= Math.floor(relProduct.averageRating) ? 'filled' : 'empty' %>"><i class="fas fa-star"></i></span>
-                  <% } %>
+                  <% for (var i = 1; i <= 5; i++) { %><span class="star <%= i <= Math.floor(relProduct.averageRating) ? 'filled' : 'empty' %>"><i class="fas fa-star"></i></span><% } %>
                 </div>
                 <div class="product-card-price">$<%= relProduct.price.toFixed(2) %></div>
               </div>
               <div class="product-card-footer">
                 <a href="/products/<%= relProduct._id %>" class="btn btn-outline">Details</a>
-                <form action="/cart/add/<%= relProduct._id %>" method="POST">
-                  <input type="hidden" name="quantity" value="1">
-                  <button type="submit">Add to Cart</button>
-                </form>
+                <form action="/cart/add/<%= relProduct._id %>" method="POST"><input type="hidden" name="quantity" value="1"><button type="submit">Add to Cart</button></form>
               </div>
             </div>
           <% }) %>
@@ -623,7 +349,6 @@
       </div>
     <% } %>
 
-    <!-- Recently Viewed -->
     <% if (typeof recentlyViewed !== 'undefined' && recentlyViewed.length > 0) { %>
       <div class="related-section">
         <h2 class="related-title">Recently Viewed</h2>
@@ -631,12 +356,8 @@
           <% recentlyViewed.forEach(function(rvProduct) { %>
             <div class="product-card">
               <div class="product-card-image">
-                <a href="/products/<%= rvProduct._id %>">
-                  <img src="<%= rvProduct.images && rvProduct.images[0] ? rvProduct.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= rvProduct.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'">
-                </a>
-                <div class="quick-view-overlay">
-                  <button class="quick-view-btn" data-id="<%= rvProduct._id %>">Quick View</button>
-                </div>
+                <a href="/products/<%= rvProduct._id %>"><img src="<%= rvProduct.images && rvProduct.images[0] ? rvProduct.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= rvProduct.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'"></a>
+                <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= rvProduct._id %>">Quick View</button></div>
               </div>
               <div class="product-card-body">
                 <span class="product-card-category"><%= rvProduct.category %></span>
@@ -655,16 +376,13 @@
 </section>
 
 <script>
-// Star rating interaction
 document.querySelectorAll('.review-star').forEach(function(star) {
   star.addEventListener('click', function() {
     var rating = parseInt(this.dataset.rating);
     document.getElementById('ratingInput').value = rating;
     updateStars(rating);
   });
-  star.addEventListener('mouseenter', function() {
-    updateStars(parseInt(this.dataset.rating));
-  });
+  star.addEventListener('mouseenter', function() { updateStars(parseInt(this.dataset.rating)); });
 });
 var starContainer = document.getElementById('starRating');
 if (starContainer) {
@@ -674,8 +392,8 @@ if (starContainer) {
 }
 function updateStars(rating) {
   document.querySelectorAll('.review-star').forEach(function(s, index) {
-    if (index < rating) { s.classList.add('active'); }
-    else { s.classList.remove('active'); }
+    if (index < rating) s.classList.add('active');
+    else s.classList.remove('active');
   });
 }
 </script>
