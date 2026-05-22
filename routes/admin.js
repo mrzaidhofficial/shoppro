@@ -14,22 +14,22 @@ const isAdmin = (req, res, next) => {
     res.redirect('/auth/login');
 };
 
+// Admin Dashboard with Analytics
 router.get('/dashboard', isAdmin, async (req, res) => {
     try {
         const totalProducts = await Product.countDocuments();
         const totalOrders = await Order.countDocuments();
+        
         const customerIds = await Order.distinct('user');
         const totalCustomers = customerIds.length;
         const totalRegisteredUsers = await User.countDocuments({ role: 'customer' });
         const conversionRate = totalRegisteredUsers > 0 ? ((totalCustomers / totalRegisteredUsers) * 100).toFixed(1) : 0;
         
-        // Total Sales = sum of all order totals
         const salesResult = await Order.aggregate([
             { $group: { _id: null, totalSales: { $sum: '$total' } } }
         ]);
         var totalSales = salesResult.length > 0 ? salesResult[0].totalSales : 0;
         
-        // Net Profit = Revenue (order.total) - Product Cost - Shipping Cost
         const profitResult = await Order.aggregate([
             { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $unwind: '$items' },
@@ -59,7 +59,6 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         }
         var netProfit = totalRevenue - totalProductCost - totalShippingCost;
         
-        // Shipping Stats
         const shippingStats = await Order.aggregate([
             { $match: { shippingCost: { $gt: 0 } } },
             { $group: { _id: null, totalShipping: { $sum: '$shippingCost' }, orderCount: { $sum: 1 } } }
@@ -67,7 +66,6 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         const totalShippingCollected = shippingStats.length > 0 ? shippingStats[0].totalShipping : 0;
         const paidShippingOrders = shippingStats.length > 0 ? shippingStats[0].orderCount : 0;
         
-        // Coupon Stats
         const couponStats = await Order.aggregate([
             { $match: { couponDiscount: { $gt: 0 } } },
             { $group: { _id: null, totalCoupons: { $sum: '$couponDiscount' }, orderCount: { $sum: 1 } } }
@@ -233,6 +231,62 @@ router.post('/coupons/toggle/:id', isAdmin, async (req, res) => {
         req.flash('success', 'Coupon ' + (coupon.isActive ? 'activated' : 'deactivated'));
     } catch (error) { req.flash('error', 'Error toggling coupon'); }
     res.redirect('/admin/coupons');
+});
+
+// Admin Profile Settings
+router.get('/settings', isAdmin, async (req, res) => {
+    res.render('admin/settings', { title: 'Admin Settings' });
+});
+
+router.post('/settings/update-name', isAdmin, async (req, res) => {
+    try {
+        const { firstName, lastName } = req.body;
+        const user = await User.findById(req.session.user.id);
+        user.firstName = firstName;
+        user.lastName = lastName;
+        await user.save();
+        req.session.user.firstName = firstName;
+        req.session.user.lastName = lastName;
+        req.flash('success', 'Name updated successfully');
+        res.redirect('/admin/settings');
+    } catch (err) {
+        req.flash('error', 'Error updating name');
+        res.redirect('/admin/settings');
+    }
+});
+
+router.post('/settings/update-email', isAdmin, async (req, res) => {
+    try {
+        const { newEmail, password } = req.body;
+        const user = await User.findById(req.session.user.id);
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) { req.flash('error', 'Current password is incorrect'); return res.redirect('/admin/settings'); }
+        const existingUser = await User.findOne({ email: newEmail });
+        if (existingUser && existingUser._id.toString() !== user._id.toString()) {
+            req.flash('error', 'Email already in use');
+            return res.redirect('/admin/settings');
+        }
+        user.email = newEmail;
+        await user.save();
+        req.session.user.email = newEmail;
+        req.flash('success', 'Email updated successfully');
+        res.redirect('/admin/settings');
+    } catch (err) { req.flash('error', 'Error updating email'); res.redirect('/admin/settings'); }
+});
+
+router.post('/settings/update-password', isAdmin, async (req, res) => {
+    try {
+        const { currentPassword, newPassword, confirmPassword } = req.body;
+        const user = await User.findById(req.session.user.id);
+        const isMatch = await user.comparePassword(currentPassword);
+        if (!isMatch) { req.flash('error', 'Current password is incorrect'); return res.redirect('/admin/settings'); }
+        if (newPassword !== confirmPassword) { req.flash('error', 'New passwords do not match'); return res.redirect('/admin/settings'); }
+        if (newPassword.length < 6) { req.flash('error', 'Password must be at least 6 characters'); return res.redirect('/admin/settings'); }
+        user.password = newPassword;
+        await user.save();
+        req.flash('success', 'Password updated successfully');
+        res.redirect('/admin/settings');
+    } catch (err) { req.flash('error', 'Error updating password'); res.redirect('/admin/settings'); }
 });
 
 module.exports = router;

@@ -1,0 +1,183 @@
+<%- include('../partials/header') %>
+
+<style>
+  .admin-layout { display: grid; grid-template-columns: 250px 1fr; gap: 32px; padding: 40px 0; min-height: 70vh; }
+  .admin-sidebar { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 20px 0; height: fit-content; position: sticky; top: 100px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .admin-sidebar-header { padding: 8px 20px 18px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
+  .admin-sidebar-header h3 { font-family: var(--font-display); font-size: 1rem; color: var(--text-primary); margin-bottom: 2px; letter-spacing: -0.3px; }
+  .admin-sidebar-header a { text-decoration: none; font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 2px; transition: color 0.2s; }
+  .admin-sidebar-header a:hover { color: var(--primary); }
+  .admin-nav-item { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: var(--text-secondary); font-weight: 500; font-size: 0.85rem; transition: all 0.2s ease; border-left: 3px solid transparent; text-decoration: none; margin: 2px 8px; border-radius: 0 var(--radius) var(--radius) 0; }
+  .admin-nav-item:hover { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); }
+  .admin-nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+  .admin-nav-item i { width: 18px; text-align: center; font-size: 0.85rem; }
+  .admin-content { min-width: 0; }
+  
+  .page-top { margin-bottom: 28px; }
+  .page-title { font-family: var(--font-display); font-size: 1.7rem; color: var(--text-primary); letter-spacing: -0.5px; }
+  .page-subtitle { font-size: 0.84rem; color: var(--text-muted); margin-top: 2px; }
+  
+  .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .settings-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); overflow: hidden; transition: box-shadow 0.3s ease; }
+  .settings-card:hover { box-shadow: var(--shadow-md); }
+  .settings-card.full-width { grid-column: 1 / -1; }
+  
+  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; background: var(--bg-card-alt); }
+  .card-header-icon { width: 34px; height: 34px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+  .card-header-icon.blue { background: rgba(0,102,255,0.1); color: #3B82F6; }
+  .card-header-icon.amber { background: rgba(245,158,11,0.1); color: #D97706; }
+  .card-header-icon.green { background: rgba(16,185,129,0.1); color: #059669; }
+  [data-theme="dark"] .card-header-icon.blue { background: rgba(59,130,246,0.15); color: #60A5FA; }
+  [data-theme="dark"] .card-header-icon.amber { background: rgba(251,191,36,0.15); color: #FBBF24; }
+  [data-theme="dark"] .card-header-icon.green { background: rgba(52,211,153,0.15); color: #34D399; }
+  .card-header-text { flex: 1; }
+  .card-header-title { font-weight: 700; color: var(--text-primary); font-size: 0.9rem; }
+  .card-header-sub { font-size: 0.7rem; color: var(--text-muted); }
+  .card-body { padding: 20px; }
+  
+  .form-group { margin-bottom: 16px; }
+  .form-group:last-child { margin-bottom: 0; }
+  .form-label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
+  .form-input { width: 100%; padding: 11px 14px; border: 2px solid var(--border-color); border-radius: var(--radius); font-size: 0.88rem; font-family: var(--font-primary); color: var(--text-body); background: var(--bg-input); outline: none; transition: all 0.2s ease; }
+  .form-input:focus { border-color: var(--primary); background: var(--bg-card); box-shadow: 0 0 0 3px rgba(0,102,255,0.06); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  
+  .btn-submit { display: inline-flex; align-items: center; gap: 7px; padding: 10px 22px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-full); font-size: 0.84rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(0,102,255,0.2); }
+  .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,102,255,0.3); }
+  
+  .current-info { background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 18px; }
+  .current-info-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 2px; }
+  .current-info-value { font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
+  
+  @media (max-width: 900px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .admin-sidebar { position: static; display: flex; overflow-x: auto; padding: 12px; gap: 4px; }
+    .admin-sidebar-header { display: none; }
+    .admin-nav-item { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 10px 16px; font-size: 0.8rem; margin: 0; border-radius: 0; }
+    .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--primary); }
+    .settings-grid { grid-template-columns: 1fr; }
+    .settings-card.full-width { grid-column: 1; }
+  }
+</style>
+
+<div class="container">
+  <div class="admin-layout">
+    
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <h3>Admin Panel</h3>
+        <a href="/admin/settings">
+          <i class="fas fa-circle" style="font-size:0.35rem;color:var(--accent);"></i> Logged in as <strong><%= user.firstName %></strong> <i class="fas fa-pen" style="font-size:0.55rem;opacity:0.5;"></i>
+        </a>
+      </div>
+      <a href="/admin/dashboard" class="admin-nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="/admin/products" class="admin-nav-item"><i class="fas fa-box"></i> Products</a>
+      <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
+      <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
+      <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
+      <a href="/admin/settings" class="admin-nav-item active"><i class="fas fa-cog"></i> Settings</a>
+      <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+      <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+    </aside>
+    
+    <div class="admin-content">
+      <div class="page-top">
+        <h1 class="page-title">Admin Settings</h1>
+        <p class="page-subtitle">Manage your admin account credentials</p>
+      </div>
+      
+      <div class="settings-grid">
+        
+        <!-- Update Name -->
+        <div class="settings-card full-width">
+          <div class="card-header">
+            <div class="card-header-icon blue"><i class="fas fa-user"></i></div>
+            <div class="card-header-text">
+              <div class="card-header-title">Profile Name</div>
+              <div class="card-header-sub">Update your display name</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="current-info">
+              <div class="current-info-label">Current Name</div>
+              <div class="current-info-value"><%= user.firstName %> <%= user.lastName %></div>
+            </div>
+            <form action="/admin/settings/update-name" method="POST">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">First Name</label>
+                  <input type="text" name="firstName" class="form-input" value="<%= user.firstName %>" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Last Name</label>
+                  <input type="text" name="lastName" class="form-input" value="<%= user.lastName %>" required>
+                </div>
+              </div>
+              <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Update Name</button>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Update Email -->
+        <div class="settings-card">
+          <div class="card-header">
+            <div class="card-header-icon amber"><i class="fas fa-envelope"></i></div>
+            <div class="card-header-text">
+              <div class="card-header-title">Email Address</div>
+              <div class="card-header-sub">Change your login email</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="current-info">
+              <div class="current-info-label">Current Email</div>
+              <div class="current-info-value"><%= user.email %></div>
+            </div>
+            <form action="/admin/settings/update-email" method="POST">
+              <div class="form-group">
+                <label class="form-label">New Email Address</label>
+                <input type="email" name="newEmail" class="form-input" placeholder="newemail@example.com" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Current Password (to confirm)</label>
+                <input type="password" name="password" class="form-input" placeholder="Enter current password" required>
+              </div>
+              <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Update Email</button>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Update Password -->
+        <div class="settings-card">
+          <div class="card-header">
+            <div class="card-header-icon green"><i class="fas fa-lock"></i></div>
+            <div class="card-header-text">
+              <div class="card-header-title">Password</div>
+              <div class="card-header-sub">Change your login password</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <form action="/admin/settings/update-password" method="POST">
+              <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <input type="password" name="currentPassword" class="form-input" placeholder="Enter current password" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">New Password</label>
+                <input type="password" name="newPassword" class="form-input" placeholder="Min 6 characters" minlength="6" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm New Password</label>
+                <input type="password" name="confirmPassword" class="form-input" placeholder="Re-enter new password" minlength="6" required>
+              </div>
+              <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Update Password</button>
+            </form>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -17,9 +17,17 @@
   .admin-sidebar:hover { box-shadow: var(--shadow-md); }
   .admin-sidebar-header { padding: 8px 20px 18px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
   .admin-sidebar-header h3 { font-family: var(--font-display); font-size: 1rem; color: var(--text-primary); margin-bottom: 2px; letter-spacing: -0.3px; }
-  .admin-sidebar-header span { font-size: 0.72rem; color: var(--text-muted); }
-  .admin-sidebar-header span i { animation: statusPulse 2s ease-in-out infinite; }
-  @keyframes statusPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .admin-sidebar-header a { 
+    text-decoration: none; 
+    font-size: 0.72rem; 
+    color: var(--text-muted); 
+    display: flex; 
+    align-items: center; 
+    gap: 4px; 
+    margin-top: 2px; 
+    transition: color 0.2s; 
+  }
+  .admin-sidebar-header a:hover { color: var(--primary); }
   .admin-nav-item { 
     display: flex; 
     align-items: center; 
@@ -67,15 +75,9 @@
   }
   .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
   .stat-icon { 
-    width: 48px; 
-    height: 48px; 
-    border-radius: var(--radius); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    margin-bottom: 14px; 
-    font-size: 1.3rem; 
-    transition: transform 0.3s ease;
+    width: 48px; height: 48px; border-radius: var(--radius); 
+    display: flex; align-items: center; justify-content: center; 
+    margin-bottom: 14px; font-size: 1.3rem; transition: transform 0.3s ease;
   }
   .stat-card:hover .stat-icon { transform: scale(1.1); }
   .stat-icon.products { background: rgba(0,102,255,0.1); color: #3B82F6; }
@@ -89,12 +91,9 @@
   
   .financial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
   .financial-card { 
-    border-radius: var(--radius-xl); 
-    padding: 32px; 
-    box-shadow: var(--shadow-md); 
-    transition: all 0.3s ease; 
-    position: relative; 
-    overflow: hidden; 
+    border-radius: var(--radius-xl); padding: 32px; 
+    box-shadow: var(--shadow-md); transition: all 0.3s ease; 
+    position: relative; overflow: hidden; 
   }
   .financial-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
   .financial-card.sales { 
@@ -114,15 +113,9 @@
     border: 2px solid #1a4035; 
   }
   .financial-card .fc-icon { 
-    width: 56px; 
-    height: 56px; 
-    border-radius: var(--radius-lg); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 1.5rem; 
-    margin-bottom: 16px; 
-    transition: transform 0.3s ease;
+    width: 56px; height: 56px; border-radius: var(--radius-lg); 
+    display: flex; align-items: center; justify-content: center; 
+    font-size: 1.5rem; margin-bottom: 16px; transition: transform 0.3s ease;
   }
   .financial-card:hover .fc-icon { transform: scale(1.1); }
   .financial-card.sales .fc-icon { background: #DBEAFE; color: #2563EB; }
@@ -141,15 +134,9 @@
   [data-theme="dark"] .financial-card.profit .fc-label { color: #34D399; }
   .financial-card .fc-sub { font-size: 0.78rem; color: var(--text-muted); }
   .financial-card .fc-badge { 
-    position: absolute; 
-    top: 20px; 
-    right: 20px; 
-    padding: 6px 14px; 
-    border-radius: var(--radius-full); 
-    font-size: 0.7rem; 
-    font-weight: 700; 
-    text-transform: uppercase; 
-    letter-spacing: 1px; 
+    position: absolute; top: 20px; right: 20px; 
+    padding: 6px 14px; border-radius: var(--radius-full); 
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; 
   }
   .financial-card.sales .fc-badge { background: #BFDBFE; color: #1E40AF; }
   .financial-card.profit .fc-badge { background: #A7F3D0; color: #065F46; }
@@ -158,21 +145,14 @@
   
   .info-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
   .info-card { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-xl); 
-    padding: 24px; 
-    box-shadow: var(--shadow-xs); 
+    background: var(--bg-card); border: 1px solid var(--border-color); 
+    border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-xs); 
     transition: box-shadow 0.3s ease;
   }
   .info-card:hover { box-shadow: var(--shadow-md); }
   .info-card h3 { 
-    font-family: var(--font-display); 
-    font-size: 1.05rem; 
-    color: var(--text-primary); 
-    margin-bottom: 20px; 
-    padding-bottom: 12px; 
-    border-bottom: 1px solid var(--border-color); 
+    font-family: var(--font-display); font-size: 1.05rem; color: var(--text-primary); 
+    margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); 
   }
   .info-card-stats { display: flex; align-items: center; gap: 20px; }
   .info-card-stat { text-align: center; flex: 1; }
@@ -182,89 +162,54 @@
   
   .conversion-bar { width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; margin-top: 10px; overflow: hidden; }
   .conversion-fill { 
-    height: 100%; 
-    background: linear-gradient(90deg, #4F46E5, #818CF8); 
-    border-radius: 3px; 
-    transition: width 0.5s ease; 
+    height: 100%; background: linear-gradient(90deg, #4F46E5, #818CF8); 
+    border-radius: 3px; transition: width 0.5s ease; 
   }
   .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 36px; }
   .analytics-card { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-xl); 
-    padding: 24px; 
-    box-shadow: var(--shadow-xs); 
+    background: var(--bg-card); border: 1px solid var(--border-color); 
+    border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-xs); 
     transition: box-shadow 0.3s ease;
   }
   .analytics-card:hover { box-shadow: var(--shadow-md); }
   .analytics-card h3 { 
-    font-family: var(--font-display); 
-    font-size: 1.05rem; 
-    color: var(--text-primary); 
-    margin-bottom: 20px; 
-    padding-bottom: 12px; 
-    border-bottom: 1px solid var(--border-color); 
+    font-family: var(--font-display); font-size: 1.05rem; color: var(--text-primary); 
+    margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); 
   }
   .bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding-top: 10px; }
   .bar-item { flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
   .bar { 
-    width: 100%; 
-    max-width: 50px; 
-    background: var(--primary-gradient); 
+    width: 100%; max-width: 50px; background: var(--primary-gradient); 
     border-radius: var(--radius-sm) var(--radius-sm) 0 0; 
-    transition: all 0.3s ease; 
-    min-height: 4px; 
+    transition: all 0.3s ease; min-height: 4px; 
   }
   .bar:hover { opacity: 0.8; transform: scaleY(1.05); }
   .bar-label { font-size: 0.65rem; color: var(--text-muted); margin-top: 8px; white-space: nowrap; }
   .bar-value { font-size: 0.7rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
   
   .recent-orders-table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-xl); 
-    overflow: hidden; 
-    box-shadow: var(--shadow-xs); 
+    width: 100%; border-collapse: collapse; background: var(--bg-card); 
+    border: 1px solid var(--border-color); border-radius: var(--radius-xl); 
+    overflow: hidden; box-shadow: var(--shadow-xs); 
   }
   .recent-orders-table th { 
-    text-align: left; 
-    padding: 14px 18px; 
-    background: var(--bg-card-alt); 
-    font-size: 0.7rem; 
-    font-weight: 700; 
-    text-transform: uppercase; 
-    letter-spacing: 0.8px; 
-    color: var(--text-muted); 
-    border-bottom: 2px solid var(--border-color); 
+    text-align: left; padding: 14px 18px; background: var(--bg-card-alt); 
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase; 
+    letter-spacing: 0.8px; color: var(--text-muted); border-bottom: 2px solid var(--border-color); 
   }
   .recent-orders-table td { 
-    padding: 14px 18px; 
-    font-size: 0.88rem; 
-    color: var(--text-body); 
+    padding: 14px 18px; font-size: 0.88rem; color: var(--text-body); 
     border-bottom: 1px solid var(--border-color); 
   }
   .recent-orders-table tr:last-child td { border-bottom: none; }
   .recent-orders-table tr:hover td { background: var(--bg-hover); }
   
   .badge-status { 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 5px;
-    padding: 4px 11px; 
-    border-radius: var(--radius-full); 
-    font-size: 0.7rem; 
-    font-weight: 600; 
-    text-transform: capitalize; 
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 11px; border-radius: var(--radius-full); 
+    font-size: 0.7rem; font-weight: 600; text-transform: capitalize; 
   }
-  .badge-status::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    display: inline-block;
-  }
+  .badge-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
   .badge-processing { background: rgba(245,158,11,0.1); color: #D97706; }
   .badge-processing::before { background: #D97706; }
   .badge-shipped { background: rgba(37,99,235,0.1); color: #2563EB; }
@@ -284,47 +229,26 @@
   
   .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 36px; }
   .quick-action-card { 
-    background: var(--bg-card); 
-    border: 2px dashed var(--border-color); 
-    border-radius: var(--radius-lg); 
-    padding: 28px; 
-    text-align: center; 
-    transition: all 0.3s ease; 
-    text-decoration: none; 
-    display: block; 
+    background: var(--bg-card); border: 2px dashed var(--border-color); 
+    border-radius: var(--radius-lg); padding: 28px; text-align: center; 
+    transition: all 0.3s ease; text-decoration: none; display: block; 
   }
   .quick-action-card:hover { 
-    border-color: var(--primary); 
-    background: var(--primary-light); 
-    transform: translateY(-3px); 
-    box-shadow: var(--shadow-md); 
-    border-style: solid;
+    border-color: var(--primary); background: var(--primary-light); 
+    transform: translateY(-3px); box-shadow: var(--shadow-md); border-style: solid;
   }
   .quick-action-card i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block; transition: transform 0.3s ease; }
   .quick-action-card:hover i { transform: scale(1.15); }
   .quick-action-card span { font-weight: 600; color: var(--text-secondary); font-size: 0.92rem; }
   
   .top-products-list { display: flex; flex-direction: column; gap: 10px; }
-  .top-product-item { 
-    display: flex; 
-    align-items: center; 
-    gap: 14px; 
-    padding: 10px 0; 
-    border-bottom: 1px solid var(--border-color); 
-  }
+  .top-product-item { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
   .top-product-item:last-child { border-bottom: none; }
   .top-product-rank { 
-    width: 28px; 
-    height: 28px; 
-    border-radius: 50%; 
-    background: var(--primary-light); 
-    color: var(--primary); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-weight: 700; 
-    font-size: 0.8rem; 
-    flex-shrink: 0; 
+    width: 28px; height: 28px; border-radius: 50%; 
+    background: var(--primary-light); color: var(--primary); 
+    display: flex; align-items: center; justify-content: center; 
+    font-weight: 700; font-size: 0.8rem; flex-shrink: 0; 
   }
   .top-product-info { flex: 1; }
   .top-product-name { font-weight: 600; color: var(--text-primary); font-size: 0.88rem; }
@@ -333,13 +257,8 @@
   
   .status-summary { display: flex; gap: 10px; flex-wrap: wrap; }
   .status-pill { 
-    padding: 8px 16px; 
-    border-radius: var(--radius-full); 
-    font-size: 0.8rem; 
-    font-weight: 600; 
-    display: flex; 
-    align-items: center; 
-    gap: 8px; 
+    padding: 8px 16px; border-radius: var(--radius-full); 
+    font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 8px; 
     border: 1px solid transparent;
   }
   .status-pill.processing { background: rgba(245,158,11,0.1); color: #D97706; border-color: rgba(245,158,11,0.2); }
@@ -367,7 +286,9 @@
     <aside class="admin-sidebar">
       <div class="admin-sidebar-header">
         <h3>Admin Panel</h3>
-        <span><i class="fas fa-circle" style="font-size:0.35rem;color:var(--accent);"></i> Logged in as <strong><%= user.firstName %></strong></span>
+        <a href="/admin/settings">
+          <i class="fas fa-circle" style="font-size:0.35rem;color:var(--accent);"></i> Logged in as <strong><%= user.firstName %></strong> <i class="fas fa-pen" style="font-size:0.55rem;opacity:0.5;"></i>
+        </a>
       </div>
       <a href="/admin/dashboard" class="admin-nav-item active"><i class="fas fa-th-large"></i> Dashboard</a>
       <a href="/admin/products" class="admin-nav-item"><i class="fas fa-box"></i> Products</a>
@@ -375,6 +296,7 @@
       <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
       <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
       <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
+      <a href="/admin/settings" class="admin-nav-item"><i class="fas fa-cog"></i> Settings</a>
       <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
     </aside>
