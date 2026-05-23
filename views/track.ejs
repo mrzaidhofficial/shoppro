@@ -8,7 +8,6 @@
     overflow: hidden;
   }
   
-  /* Background decoration */
   .track-bg-decoration {
     position: absolute;
     inset: 0;
@@ -58,7 +57,6 @@
     z-index: 1;
   }
   
-  /* Hero section */
   .track-hero {
     text-align: center;
     margin-bottom: 32px;
@@ -118,7 +116,6 @@
     line-height: 1.6;
   }
   
-  /* Search Card */
   .search-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -178,7 +175,6 @@
   }
   .form-input::placeholder { color: var(--text-muted); }
   
-  /* Track Order Button */
   .btn-track {
     display: inline-flex;
     align-items: center;
@@ -223,7 +219,6 @@
   }
   .btn-track:active { transform: translateY(0); }
   
-  /* Error Alert */
   .error-alert {
     background: var(--error-bg);
     border: 1px solid var(--error);
@@ -248,7 +243,6 @@
   }
   .error-alert i { font-size: 1.1rem; flex-shrink: 0; }
   
-  /* Result Card */
   .result-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -336,7 +330,6 @@
   
   .result-body { padding: 28px 32px; }
   
-  /* Timeline */
   .timeline { 
     position: relative; 
     padding-left: 36px;
@@ -402,7 +395,6 @@
     color: var(--text-muted);
   }
   
-  /* Info Cards Grid */
   .info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -443,11 +435,8 @@
     letter-spacing: 0.5px;
     font-size: 0.95rem;
   }
-  .info-value.carrier {
-    color: #D97706;
-  }
+  .info-value.carrier { color: #D97706; }
   
-  /* Track with Carrier Button */
   .track-carrier-wrap {
     margin-top: 20px;
     display: flex;
@@ -479,7 +468,6 @@
   .track-carrier-btn i { font-size: 0.9rem; transition: transform 0.3s ease; }
   .track-carrier-btn:hover i { transform: translateX(3px); }
   
-  /* Back to Home Button */
   .back-home-wrap {
     display: flex;
     justify-content: center;
@@ -527,9 +515,7 @@
     transform: translateY(-3px);
     box-shadow: 0 12px 32px rgba(0,102,255,0.4);
   }
-  .back-home-btn:hover i {
-    transform: translateX(-5px);
-  }
+  .back-home-btn:hover i { transform: translateX(-5px); }
   .back-home-btn:active {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0,102,255,0.25);
@@ -560,7 +546,7 @@
     <div class="track-hero">
       <div class="track-hero-icon"><i class="fas fa-search-location"></i></div>
       <h1 class="track-hero-title">Track Your Order</h1>
-      <p class="track-hero-subtitle">Enter your order number and email address to check the status of your delivery</p>
+      <p class="track-hero-subtitle">Enter your tracking number and email address to check the status of your delivery</p>
     </div>
     
     <% if (!searched || error) { %>
@@ -575,9 +561,9 @@
         <form action="/track" method="POST">
           <div class="form-group">
             <label class="form-label">
-              <i class="fas fa-hashtag"></i> Order Number
+              <i class="fas fa-hashtag"></i> Tracking Number
             </label>
-            <input type="text" name="orderNumber" class="form-input" placeholder="e.g. ORD-20260523-142530-X7K2" value="<%= typeof order !== 'undefined' && order ? order.orderNumber : '' %>" required>
+            <input type="text" name="orderNumber" class="form-input" placeholder="Enter your tracking number" value="<%= typeof order !== 'undefined' && order ? order.orderNumber : '' %>" required>
           </div>
           <div class="form-group">
             <label class="form-label">
@@ -602,7 +588,7 @@
             <span class="particle"></span><span class="particle"></span>
           </div>
           <div class="result-check-badge"><i class="fas fa-check-circle"></i></div>
-          <div class="result-order-num">Order #<%= order.orderNumber %></div>
+          <div class="result-order-num">Tracking #<%= order.orderNumber %></div>
           <div class="result-order-date">Placed on <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></div>
         </div>
         

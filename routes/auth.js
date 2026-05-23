@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
 var Order = require('../models/Order');
+var { OrderShipping } = require('../models/Shipping');
 
 // Sign In page
 router.get('/signin', function(req, res) {
@@ -41,7 +42,6 @@ router.post('/signin', async function(req, res) {
         
         req.flash('success', 'Welcome back, ' + user.firstName + '!');
         
-        // Save session before redirecting
         req.session.save(function(err) {
             if (err) {
                 return res.redirect('/auth/signin');
@@ -112,6 +112,22 @@ router.get('/profile', async function(req, res) {
         var orders = await Order.find({ user: req.session.user.id })
             .sort({ createdAt: -1 })
             .limit(10);
+        
+        // Get tracking numbers for orders
+        var orderIds = orders.map(function(o) { return o._id; });
+        var shippingInfos = await OrderShipping.find({ order: { $in: orderIds } });
+        var shippingMap = {};
+        shippingInfos.forEach(function(si) { shippingMap[si.order.toString()] = si; });
+        
+        // Add tracking numbers to orders
+        orders = orders.map(function(order) {
+            var o = order.toObject();
+            var si = shippingMap[order._id.toString()];
+            if (si && si.trackingNumber) {
+                o.trackingNumber = si.trackingNumber;
+            }
+            return o;
+        });
         
         res.render('profile', { 
             title: 'My Account',
