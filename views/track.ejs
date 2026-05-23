@@ -175,6 +175,7 @@
   }
   .form-input::placeholder { color: var(--text-muted); }
   
+  /* Track Order Button - Clean Professional */
   .btn-track {
     display: inline-flex;
     align-items: center;
@@ -190,32 +191,13 @@
     font-weight: 600;
     font-family: var(--font-primary);
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 24px rgba(0,102,255,0.3);
-    position: relative;
-    overflow: hidden;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0,102,255,0.25);
   }
-  .btn-track::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255,255,255,0.25);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s ease-out, height 0.6s ease-out;
-  }
-  .btn-track:hover::after {
-    width: 800px;
-    height: 800px;
-  }
-  .btn-track span { position: relative; z-index: 1; }
-  .btn-track i { position: relative; z-index: 1; }
   .btn-track:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 36px rgba(0,102,255,0.4);
+    box-shadow: 0 8px 28px rgba(0,102,255,0.35);
+    opacity: 0.95;
   }
   .btn-track:active { transform: translateY(0); }
   
@@ -468,6 +450,7 @@
   .track-carrier-btn i { font-size: 0.9rem; transition: transform 0.3s ease; }
   .track-carrier-btn:hover i { transform: translateX(3px); }
   
+  /* Back to Home Button - Clean Professional */
   .back-home-wrap {
     display: flex;
     justify-content: center;
@@ -488,37 +471,16 @@
     font-family: var(--font-primary);
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 20px rgba(0,102,255,0.3);
-    position: relative;
-    overflow: hidden;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0,102,255,0.25);
   }
-  .back-home-btn::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255,255,255,0.25);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s ease-out, height 0.6s ease-out;
-  }
-  .back-home-btn:hover::after {
-    width: 800px;
-    height: 800px;
-  }
-  .back-home-btn span { position: relative; z-index: 1; }
-  .back-home-btn i { position: relative; z-index: 1; font-size: 0.95rem; transition: all 0.3s ease; }
   .back-home-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0,102,255,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,102,255,0.35);
+    opacity: 0.95;
   }
-  .back-home-btn:hover i { transform: translateX(-5px); }
   .back-home-btn:active {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,102,255,0.25);
+    transform: translateY(0);
   }
   
   @media (max-width: 500px) {
