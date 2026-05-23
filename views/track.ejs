@@ -170,6 +170,7 @@
   }
   .form-input::placeholder { color: var(--text-muted); }
   
+  /* Track Order Button - Full ripple fill */
   .btn-track {
     display: inline-flex;
     align-items: center;
@@ -197,14 +198,14 @@
     left: 50%;
     width: 0;
     height: 0;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.25);
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
+    transition: width 0.6s ease-out, height 0.6s ease-out;
   }
   .btn-track:hover::after {
-    width: 400px;
-    height: 400px;
+    width: 800px;
+    height: 800px;
   }
   .btn-track span { position: relative; z-index: 1; }
   .btn-track i { position: relative; z-index: 1; }
@@ -470,7 +471,7 @@
   .track-carrier-btn i { font-size: 0.9rem; transition: transform 0.3s ease; }
   .track-carrier-btn:hover i { transform: translateX(3px); }
   
-  /* Back to Home Button - FIXED for both modes */
+  /* Back to Home Button - Same full ripple as Track button */
   .back-home-wrap {
     display: flex;
     justify-content: center;
@@ -479,8 +480,9 @@
   .back-home-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    padding: 14px 30px;
+    padding: 15px 30px;
     background: var(--primary-gradient);
     color: #FFFFFF !important;
     border: none;
@@ -490,7 +492,7 @@
     font-family: var(--font-primary);
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     box-shadow: 0 6px 20px rgba(0,102,255,0.3);
     position: relative;
     overflow: hidden;
@@ -502,14 +504,14 @@
     left: 50%;
     width: 0;
     height: 0;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.25);
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    transition: width 0.5s, height 0.5s;
+    transition: width 0.6s ease-out, height 0.6s ease-out;
   }
   .back-home-btn:hover::after {
-    width: 400px;
-    height: 400px;
+    width: 800px;
+    height: 800px;
   }
   .back-home-btn span { position: relative; z-index: 1; }
   .back-home-btn i { position: relative; z-index: 1; font-size: 0.95rem; transition: all 0.3s ease; }
@@ -601,7 +603,6 @@
         </div>
         
         <div class="result-body">
-          <!-- Timeline -->
           <div class="timeline">
             <%
               var statuses = [
@@ -650,7 +651,6 @@
             <% }) %>
           </div>
           
-          <!-- Info Grid -->
           <div class="info-grid">
             <div class="info-item">
               <div class="info-label">Status</div>
