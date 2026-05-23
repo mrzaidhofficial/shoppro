@@ -35,7 +35,6 @@
     z-index: 1;
   }
   
-  /* Hero */
   .contact-hero {
     text-align: center;
     margin-bottom: 40px;
@@ -83,7 +82,6 @@
     line-height: 1.6;
   }
   
-  /* Two Cards Row */
   .cards-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -113,7 +111,7 @@
     height: 3px;
     border-radius: 3px 3px 0 0;
   }
-  .info-card.email-card::before { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
+  .info-card.email-card::before { background: linear-gradient(135deg, #7C3AED, #A78BFA); }
   .info-card.time-card::before { background: linear-gradient(135deg, #059669, #34D399); }
   .info-card:hover {
     transform: translateY(-2px);
@@ -132,9 +130,9 @@
     transition: transform 0.3s ease;
   }
   .info-card:hover .info-icon-circle { transform: scale(1.08); }
-  .info-icon-circle.blue { background: rgba(59,130,246,0.1); color: #3B82F6; }
+  .info-icon-circle.purple { background: rgba(124,58,237,0.1); color: #7C3AED; }
   .info-icon-circle.green { background: rgba(5,150,105,0.1); color: #059669; }
-  [data-theme="dark"] .info-icon-circle.blue { background: rgba(59,130,246,0.15); color: #60A5FA; }
+  [data-theme="dark"] .info-icon-circle.purple { background: rgba(124,58,237,0.15); color: #A78BFA; }
   [data-theme="dark"] .info-icon-circle.green { background: rgba(52,211,153,0.15); color: #34D399; }
   
   .info-content { flex: 1; min-width: 0; }
@@ -172,7 +170,6 @@
   .info-link:hover { gap: 8px; }
   .info-link i { font-size: 0.7rem; }
   
-  /* Form Card */
   .form-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -310,10 +307,9 @@
       <p class="contact-hero-subtitle">Have a question or need assistance? We're here to help.</p>
     </div>
     
-    <!-- Two Cards Row -->
     <div class="cards-row">
       <div class="info-card email-card">
-        <div class="info-icon-circle blue"><i class="fas fa-envelope"></i></div>
+        <div class="info-icon-circle purple"><i class="fas fa-envelope"></i></div>
         <div class="info-content">
           <div class="info-label">Email Address</div>
           <div class="info-value">shopnest.management@gmail.com</div>
@@ -331,7 +327,6 @@
       </div>
     </div>
     
-    <!-- Message Form -->
     <div class="form-card">
       <div class="form-header">
         <h2 class="form-title">Send a Message</h2>
