@@ -105,6 +105,9 @@
   .profile-menu a.admin-link { color: #059669; }
   [data-theme="dark"] .profile-menu a.admin-link { color: #34D399; }
   .profile-menu a.admin-link:hover { background: rgba(5,150,105,0.1); }
+  .profile-menu a.track-link { color: #2563EB; }
+  [data-theme="dark"] .profile-menu a.track-link { color: #60A5FA; }
+  .profile-menu a.track-link:hover { background: rgba(37,99,235,0.1); }
   .profile-menu a.logout { color: var(--error); }
   .profile-menu a.logout:hover { background: var(--error-bg); }
   
@@ -270,6 +273,7 @@
             <% } %>
             <a href="/cart/wishlist"><i class="fas fa-heart"></i> My Wishlist</a>
             <a href="/cart"><i class="fas fa-shopping-cart"></i> View Cart</a>
+            <a href="/track" class="track-link"><i class="fas fa-search-location"></i> Track Order</a>
             <a href="/auth/logout" class="logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
           </div>
         </div>
