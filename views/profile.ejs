@@ -246,7 +246,7 @@
                     </div>
                     <% if (order.trackingNumber) { %>
                       <div style="display:flex;align-items:center;gap:8px;">
-                        <span style="font-size:0.75rem;color:var(--text-muted);">Tracking:</span>
+                        <span style="font-size:0.75rem;color:var(--text-muted);">Tracking No:</span>
                         <span style="font-size:0.78rem;font-weight:500;color:var(--primary);"><%= order.trackingNumber %></span>
                         <button class="copy-btn" onclick="copyToClipboard('<%= order.trackingNumber %>', this)"><i class="fas fa-copy"></i> Copy</button>
                       </div>
