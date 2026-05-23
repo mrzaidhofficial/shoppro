@@ -4,7 +4,6 @@
  */
 
 var nodemailer = require('nodemailer');
-var emailConfigured = false;
 var transporter = null;
 
 function getTransporter() {
@@ -21,22 +20,11 @@ function getTransporter() {
       }
     });
     
-    // Verify connection
-    transporter.verify(function(error, success) {
-      if (error) {
-        console.log('Email service: Connection failed -', error.message);
-        emailConfigured = false;
-      } else {
-        console.log('Email service: Connected to Gmail SMTP');
-        emailConfigured = true;
-      }
-    });
-    
+    console.log('Email service: Using Gmail SMTP');
     return transporter;
   }
   
   console.log('Email service: EMAIL_USER/EMAIL_PASS not configured. Emails disabled.');
-  emailConfigured = false;
   return null;
 }
 
@@ -125,19 +113,19 @@ function getOrderStatusBadge(status) {
 
 async function sendEmail(to, subject, html) {
   var t = getTransporter();
-  if (!t || !emailConfigured) {
+  if (!t) {
     console.log('Email skipped: Gmail SMTP not configured');
     return false;
   }
   
   try {
-    await t.sendMail({
+    var info = await t.sendMail({
       from: '"ShopNest" <' + process.env.EMAIL_USER + '>',
       to: to,
       subject: subject,
       html: html
     });
-    console.log('Email sent to ' + to);
+    console.log('Email sent to ' + to + ' - Message ID: ' + info.messageId);
     return true;
   } catch (err) {
     console.error('Email send error:', err.message);
