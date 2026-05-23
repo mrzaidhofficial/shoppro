@@ -3,6 +3,7 @@ var router = express.Router();
 var Product = require('../models/Product');
 var Order = require('../models/Order');
 var { OrderShipping } = require('../models/Shipping');
+var emailService = require('../services/emailService');
 
 router.get('/', async function(req, res) {
   try {
@@ -24,6 +25,49 @@ router.get('/about', function(req, res) {
 
 router.get('/contact', function(req, res) {
   res.render('contact', { title: 'Contact' });
+});
+
+// Contact Form Handler
+router.post('/contact', async function(req, res) {
+  try {
+    var name = req.body.name || 'Anonymous';
+    var email = req.body.email || '';
+    var subject = req.body.subject || 'No Subject';
+    var message = req.body.message || '';
+    
+    if (!email || !message) {
+      req.flash('error', 'Please fill in all required fields.');
+      return res.redirect('/contact');
+    }
+    
+    await emailService.sendContactNotification(name, email, subject, message);
+    req.flash('success', 'Your message has been sent! We will get back to you within 24-48 hours.');
+    res.redirect('/contact');
+  } catch (err) {
+    console.error('Contact form error:', err);
+    req.flash('error', 'Error sending message. Please try again or email us directly.');
+    res.redirect('/contact');
+  }
+});
+
+// Newsletter Subscription Handler
+router.post('/newsletter', async function(req, res) {
+  try {
+    var email = req.body.email || '';
+    
+    if (!email) {
+      req.flash('error', 'Please enter your email address.');
+      return res.redirect('/');
+    }
+    
+    await emailService.sendNewsletterNotification(email);
+    req.flash('success', 'Thank you for subscribing! Check your email for your 15% discount code.');
+    res.redirect('/');
+  } catch (err) {
+    console.error('Newsletter error:', err);
+    req.flash('error', 'Error subscribing. Please try again.');
+    res.redirect('/');
+  }
 });
 
 router.get('/shipping-policy', function(req, res) {
@@ -52,7 +96,6 @@ router.get('/search', async function(req, res) {
   }
 });
 
-// Order Tracking Page
 router.get('/track', function(req, res) {
   res.render('track', { 
     title: 'Track Order',
@@ -63,7 +106,6 @@ router.get('/track', function(req, res) {
   });
 });
 
-// Order Tracking Lookup
 router.post('/track', async function(req, res) {
   try {
     var orderNumber = req.body.orderNumber ? req.body.orderNumber.trim() : '';

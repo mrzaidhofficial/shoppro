@@ -231,8 +231,8 @@
       </div>
       <h2 class="newsletter-title">Get 15% Off Your First Order</h2>
       <p class="newsletter-desc">Subscribe to our newsletter and receive exclusive deals, new arrivals alerts, and a welcome discount code straight to your inbox.</p>
-      <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing! Check your email for your 15% discount code.');">
-        <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+      <form class="newsletter-form" action="/newsletter" method="POST">
+        <input type="email" name="email" class="newsletter-input" placeholder="Enter your email address" required>
         <button type="submit" class="newsletter-btn">
           <i class="fas fa-arrow-right"></i> Subscribe
         </button>
