@@ -1,0 +1,463 @@
+<%- include('partials/header') %>
+
+<style>
+  .track-section {
+    padding: 56px 0;
+    min-height: 60vh;
+    background: var(--bg-body);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .track-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .track-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 36px 32px;
+    box-shadow: var(--shadow-md);
+    transition: box-shadow 0.3s ease;
+  }
+  .track-card:hover { box-shadow: var(--shadow-lg); }
+  
+  .track-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .track-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.6rem;
+    color: var(--primary);
+    transition: transform 0.3s ease;
+  }
+  .track-card:hover .track-icon { transform: scale(1.05); }
+  [data-theme="dark"] .track-icon { background: rgba(59,130,246,0.15); color: #60A5FA; }
+  .track-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    letter-spacing: -0.4px;
+  }
+  .track-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+  
+  .track-form { }
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-family: var(--font-primary);
+    color: var(--text-body);
+    background: var(--bg-input);
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .form-input:focus {
+    border-color: var(--primary);
+    background: var(--bg-card);
+    box-shadow: 0 0 0 4px rgba(0,102,255,0.06);
+  }
+  .form-input::placeholder { color: var(--text-muted); }
+  
+  .btn-track {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 24px;
+    background: var(--primary-gradient);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.94rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0,102,255,0.25);
+  }
+  .btn-track:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,102,255,0.35);
+  }
+  
+  .track-error {
+    background: var(--error-bg);
+    border: 1px solid var(--error);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--error);
+    font-size: 0.88rem;
+    font-weight: 500;
+    animation: fadeSlideIn 0.3s ease;
+  }
+  .track-error i { font-size: 1.1rem; flex-shrink: 0; }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  
+  /* Result Card */
+  .result-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    animation: fadeSlideIn 0.4s ease;
+  }
+  
+  .result-header {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    padding: 28px 28px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  [data-theme="dark"] .result-header { background: linear-gradient(135deg, #020617 0%, #0F172A 100%); }
+  .result-header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 50%;
+  }
+  .result-check {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(52,211,153,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 1.5rem;
+    color: #34D399;
+    position: relative;
+    z-index: 1;
+  }
+  .result-order-num {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .result-order-date {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    position: relative;
+    z-index: 1;
+  }
+  
+  .result-body { padding: 24px 28px; }
+  
+  /* Timeline */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--border-color);
+  }
+  
+  .timeline-item {
+    position: relative;
+    padding-bottom: 24px;
+  }
+  .timeline-item:last-child { padding-bottom: 0; }
+  
+  .timeline-dot {
+    position: absolute;
+    left: -32px;
+    top: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    z-index: 1;
+    border: 3px solid var(--bg-card);
+  }
+  .timeline-dot.completed {
+    background: var(--success);
+    color: #FFFFFF;
+  }
+  .timeline-dot.current {
+    background: var(--primary);
+    color: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(0,102,255,0.2);
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+  .timeline-dot.pending {
+    background: var(--gray-300);
+    color: var(--text-muted);
+  }
+  @keyframes dotPulse { 0%,100%{box-shadow:0 0 0 4px rgba(0,102,255,0.2)} 50%{box-shadow:0 0 0 10px rgba(0,102,255,0.05)} }
+  
+  .timeline-content { }
+  .timeline-label {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .timeline-date {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+  }
+  
+  /* Info Grid */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+  }
+  .info-item { }
+  .info-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 3px;
+  }
+  .info-value {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.88rem;
+  }
+  .info-value.tracking {
+    color: var(--primary);
+    font-family: var(--font-display);
+    letter-spacing: 0.5px;
+  }
+  
+  .tracking-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 10px 20px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.84rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .tracking-link:hover {
+    background: var(--primary);
+    color: #FFFFFF;
+  }
+  
+  .back-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 20px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--primary); }
+  
+  @media (max-width: 500px) {
+    .track-card { padding: 24px 20px; }
+    .result-body { padding: 18px 20px; }
+    .result-header { padding: 22px 20px; }
+    .info-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="track-section">
+  <div class="container">
+    <div class="track-container">
+      
+      <% if (!searched || error) { %>
+        <!-- Search Form -->
+        <div class="track-card">
+          <div class="track-header">
+            <div class="track-icon"><i class="fas fa-search-location"></i></div>
+            <h2 class="track-title">Track Your Order</h2>
+            <p class="track-subtitle">Enter your order number and email to check status</p>
+          </div>
+          
+          <% if (error) { %>
+            <div class="track-error">
+              <i class="fas fa-exclamation-circle"></i>
+              <span><%= error %></span>
+            </div>
+          <% } %>
+          
+          <form class="track-form" action="/track" method="POST">
+            <div class="form-group">
+              <label class="form-label">Order Number</label>
+              <input type="text" name="orderNumber" class="form-input" placeholder="e.g. ORD-20260523-142530-X7K2" value="<%= typeof order !== 'undefined' && order ? order.orderNumber : '' %>" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-input" placeholder="you@example.com" required>
+            </div>
+            <button type="submit" class="btn-track">
+              <i class="fas fa-search"></i> Track Order
+            </button>
+          </form>
+        </div>
+      <% } %>
+      
+      <% if (searched && order && !error) { %>
+        <!-- Results -->
+        <div class="result-card">
+          <div class="result-header">
+            <div class="result-check"><i class="fas fa-check-circle"></i></div>
+            <div class="result-order-num">Order #<%= order.orderNumber %></div>
+            <div class="result-order-date">Placed on <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></div>
+          </div>
+          
+          <div class="result-body">
+            <!-- Timeline -->
+            <div class="timeline">
+              <%
+                var statuses = [
+                  { key: 'processing', label: 'Order Confirmed', icon: 'fa-check' },
+                  { key: 'shipped', label: 'Shipped', icon: 'fa-box' },
+                  { key: 'delivered', label: 'Delivered', icon: 'fa-home' }
+                ];
+                if (order.status === 'cancelled') {
+                  statuses = [{ key: 'cancelled', label: 'Cancelled', icon: 'fa-times' }];
+                }
+                var currentFound = false;
+              %>
+              <% statuses.forEach(function(s) { 
+                var isCompleted = false;
+                var isCurrent = false;
+                if (order.status === 'cancelled') {
+                  isCompleted = true;
+                } else if (order.status === 'delivered') {
+                  isCompleted = true;
+                } else if (order.status === 'shipped' && (s.key === 'processing' || s.key === 'shipped')) {
+                  isCompleted = true;
+                  if (s.key === 'shipped') isCurrent = true;
+                } else if (order.status === 'processing' && s.key === 'processing') {
+                  isCurrent = true;
+                }
+                var dotClass = isCurrent ? 'current' : (isCompleted ? 'completed' : 'pending');
+              %>
+                <div class="timeline-item">
+                  <div class="timeline-dot <%= dotClass %>">
+                    <i class="fas <%= s.icon %>"></i>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-label"><%= s.label %></div>
+                    <% if (s.key === 'processing' && order.createdAt) { %>
+                      <div class="timeline-date"><%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div>
+                    <% } else if (s.key === 'shipped' && orderShipping.shippedDate) { %>
+                      <div class="timeline-date"><%= orderShipping.shippedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div>
+                    <% } else if (s.key === 'delivered' && orderShipping.deliveredDate) { %>
+                      <div class="timeline-date"><%= orderShipping.deliveredDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div>
+                    <% } %>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+            
+            <!-- Info Grid -->
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">Status</div>
+                <div class="info-value" style="text-transform:capitalize;"><%= order.status %></div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Items</div>
+                <div class="info-value"><%= order.items ? order.items.length : 0 %> item(s)</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Shipping Method</div>
+                <div class="info-value"><%= order.shippingCost === 0 ? 'FREE Shipping' : 'Standard Shipping' %></div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Estimated Delivery</div>
+                <div class="info-value">7-21 business days</div>
+              </div>
+              <% if (orderShipping.trackingNumber) { %>
+                <div class="info-item" style="grid-column: 1 / -1;">
+                  <div class="info-label">Tracking Number</div>
+                  <div class="info-value tracking"><%= orderShipping.trackingNumber %></div>
+                </div>
+                <% if (orderShipping.carrierName) { %>
+                  <div class="info-item">
+                    <div class="info-label">Carrier</div>
+                    <div class="info-value"><%= orderShipping.carrierName %></div>
+                  </div>
+                <% } %>
+              <% } %>
+            </div>
+            
+            <% if (orderShipping.trackingUrl) { %>
+              <a href="<%= orderShipping.trackingUrl %>" target="_blank" rel="noopener" class="tracking-link">
+                <i class="fas fa-external-link-alt"></i> Track with Carrier
+              </a>
+            <% } else if (orderShipping.trackingNumber) { %>
+              <a href="https://track.17track.net/en#nums=<%= orderShipping.trackingNumber %>" target="_blank" rel="noopener" class="tracking-link">
+                <i class="fas fa-external-link-alt"></i> Track with 17Track
+              </a>
+            <% } %>
+          </div>
+        </div>
+      <% } %>
+      
+      <a href="/" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Home
+      </a>
+      
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
