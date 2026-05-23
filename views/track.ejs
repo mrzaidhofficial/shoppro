@@ -175,7 +175,7 @@
   }
   .form-input::placeholder { color: var(--text-muted); }
   
-  /* Track Order Button - Clean Professional */
+  /* Track Order Button */
   .btn-track {
     display: inline-flex;
     align-items: center;
@@ -191,13 +191,12 @@
     font-weight: 600;
     font-family: var(--font-primary);
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 4px 16px rgba(0,102,255,0.25);
   }
   .btn-track:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 28px rgba(0,102,255,0.35);
-    opacity: 0.95;
   }
   .btn-track:active { transform: translateY(0); }
   
@@ -438,7 +437,7 @@
     font-weight: 600;
     font-size: 0.86rem;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     cursor: pointer;
   }
   .track-carrier-btn:hover {
@@ -447,10 +446,9 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0,102,255,0.25);
   }
-  .track-carrier-btn i { font-size: 0.9rem; transition: transform 0.3s ease; }
-  .track-carrier-btn:hover i { transform: translateX(3px); }
+  .track-carrier-btn i { font-size: 0.9rem; }
   
-  /* Back to Home Button - Clean Professional */
+  /* Back to Home Button */
   .back-home-wrap {
     display: flex;
     justify-content: center;
@@ -471,17 +469,14 @@
     font-family: var(--font-primary);
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 4px 16px rgba(0,102,255,0.25);
   }
   .back-home-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 28px rgba(0,102,255,0.35);
-    opacity: 0.95;
   }
-  .back-home-btn:active {
-    transform: translateY(0);
-  }
+  .back-home-btn:active { transform: translateY(0); }
   
   @media (max-width: 500px) {
     .search-card { padding: 24px 18px; }
@@ -558,12 +553,12 @@
           <div class="timeline">
             <%
               var statuses = [
-                { key: 'processing', label: 'Order Confirmed', icon: 'fa-check', desc: 'Your order has been received' },
-                { key: 'shipped', label: 'Shipped', icon: 'fa-box', desc: 'Package is on the way' },
-                { key: 'delivered', label: 'Delivered', icon: 'fa-home', desc: 'Package has arrived' }
+                { key: 'processing', label: 'Order Confirmed', icon: 'fa-check' },
+                { key: 'shipped', label: 'Shipped', icon: 'fa-box' },
+                { key: 'delivered', label: 'Delivered', icon: 'fa-home' }
               ];
               if (order.status === 'cancelled') {
-                statuses = [{ key: 'cancelled', label: 'Cancelled', icon: 'fa-times', desc: 'Order was cancelled' }];
+                statuses = [{ key: 'cancelled', label: 'Cancelled', icon: 'fa-times' }];
               }
             %>
             <% statuses.forEach(function(s) { 
