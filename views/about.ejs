@@ -1,6 +1,154 @@
 <%- include('partials/header') %>
-<div class="container" style="padding:60px 0;">
-<h1>About ShopNest</h1>
-<p>Your cozy curated marketplace for premium products.</p>
+
+<style>
+  .page-hero {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    padding: 70px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  [data-theme="dark"] .page-hero { background: linear-gradient(135deg, #020617 0%, #0F172A 100%); }
+  .page-hero::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: rgba(0,102,255,0.05);
+    border-radius: 50%;
+  }
+  .page-hero-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    background: rgba(0,102,255,0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 1;
+  }
+  .page-hero-title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .page-content {
+    padding: 56px 0;
+    background: var(--bg-body);
+  }
+  .content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .about-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 36px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+    transition: box-shadow 0.3s ease;
+  }
+  .about-card:hover { box-shadow: var(--shadow-md); }
+  .about-card h2 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .about-card h2 i { color: var(--primary); font-size: 1.2rem; }
+  .about-card p {
+    color: var(--text-body);
+    font-size: 0.92rem;
+    line-height: 1.8;
+  }
+  
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .stat-box {
+    text-align: center;
+    padding: 24px 16px;
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    transition: all 0.2s ease;
+  }
+  .stat-box:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--primary); }
+  .stat-number {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+  .stat-label { font-size: 0.82rem; color: var(--text-muted); font-weight: 500; }
+  
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: 1fr; }
+    .about-card { padding: 24px; }
+  }
+</style>
+
+<div class="page-hero">
+  <div class="page-hero-icon"><i class="fas fa-store"></i></div>
+  <h1 class="page-hero-title">About ShopNest</h1>
 </div>
+
+<div class="page-content">
+  <div class="container">
+    <div class="content-wrapper">
+      
+      <div class="about-card">
+        <h2><i class="fas fa-heart"></i> Our Story</h2>
+        <p>ShopNest was born from a simple idea — everyone deserves access to quality products at fair prices, delivered with care. What started as a small curated marketplace has grown into a trusted destination for thousands of happy customers worldwide. We believe shopping should be an experience, not just a transaction. That's why we handpick every product, partner with reliable suppliers, and ensure every order is handled with the attention it deserves.</p>
+      </div>
+      
+      <div class="about-card">
+        <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
+        <p>To provide a seamless, enjoyable shopping experience by offering premium products across multiple categories — Electronics, Clothing, Home & Garden, Accessories, Sports, and Books — all in one cozy marketplace. We're committed to quality, affordability, and exceptional customer service that makes you feel right at home.</p>
+      </div>
+      
+      <div class="about-card">
+        <h2><i class="fas fa-shield-alt"></i> Why Shop With Us</h2>
+        <p>Every product in our store is carefully selected for quality and value. We work directly with trusted suppliers to bring you the best prices without compromising on quality. Our secure checkout, fast processing, and dedicated support team ensure your shopping experience is smooth from start to finish.</p>
+        
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-number">10K+</div>
+            <div class="stat-label">Happy Customers</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">1K+</div>
+            <div class="stat-label">Products Available</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Customer Support</div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
 <%- include('partials/footer') %>

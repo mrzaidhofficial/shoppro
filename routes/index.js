@@ -26,6 +26,18 @@ router.get('/contact', function(req, res) {
   res.render('contact', { title: 'Contact' });
 });
 
+router.get('/shipping-policy', function(req, res) {
+  res.render('shipping-policy', { title: 'Shipping Policy' });
+});
+
+router.get('/returns', function(req, res) {
+  res.render('returns', { title: 'Returns & Exchanges' });
+});
+
+router.get('/faq', function(req, res) {
+  res.render('faq', { title: 'FAQ' });
+});
+
 router.get('/search', async function(req, res) {
   try {
     var q = req.query.q || '';
@@ -62,7 +74,7 @@ router.post('/track', async function(req, res) {
         title: 'Track Order',
         order: null,
         orderShipping: null,
-        error: 'Please enter both order number and email address.',
+        error: 'Please enter both tracking number and email address.',
         searched: true
       });
     }
@@ -75,12 +87,11 @@ router.post('/track', async function(req, res) {
         title: 'Track Order',
         order: null,
         orderShipping: null,
-        error: 'Order not found. Please check your order number and try again.',
+        error: 'Order not found. Please check your tracking number and try again.',
         searched: true
       });
     }
     
-    // Verify email matches
     if (order.user && order.user.email !== email) {
       return res.render('track', {
         title: 'Track Order',
