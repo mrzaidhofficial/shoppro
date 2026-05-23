@@ -1,83 +1,167 @@
 <%- include('partials/header') %>
 
 <style>
-  .track-section {
-    padding: 56px 0;
-    min-height: 60vh;
+  .track-page {
+    min-height: 75vh;
     background: var(--bg-body);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Background decoration */
+  .track-bg-decoration {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .track-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.03;
+  }
+  .track-bg-circle.c1 {
+    width: 500px;
+    height: 500px;
+    background: var(--primary);
+    top: -200px;
+    right: -150px;
+    animation: bgFloat 15s ease-in-out infinite;
+  }
+  .track-bg-circle.c2 {
+    width: 350px;
+    height: 350px;
+    background: var(--accent);
+    bottom: -100px;
+    left: -100px;
+    animation: bgFloat 12s ease-in-out infinite reverse;
+  }
+  .track-bg-circle.c3 {
+    width: 200px;
+    height: 200px;
+    background: var(--secondary);
+    top: 40%;
+    left: 10%;
+    animation: bgFloat 10s ease-in-out infinite;
+  }
+  @keyframes bgFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -30px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
   }
   
   .track-container {
-    width: 100%;
-    max-width: 600px;
+    max-width: 650px;
     margin: 0 auto;
+    padding: 60px 20px;
+    position: relative;
+    z-index: 1;
   }
   
-  .track-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-xl);
-    padding: 36px 32px;
-    box-shadow: var(--shadow-md);
-    transition: box-shadow 0.3s ease;
-  }
-  .track-card:hover { box-shadow: var(--shadow-lg); }
-  
-  .track-header {
+  /* Hero section */
+  .track-hero {
     text-align: center;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
   }
-  .track-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: var(--primary-light);
-    display: flex;
+  .track-hero-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, var(--primary) 0%, #06B6D4 100%);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 16px;
-    font-size: 1.6rem;
-    color: var(--primary);
-    transition: transform 0.3s ease;
+    font-size: 2rem;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+    box-shadow: 0 12px 40px rgba(0,102,255,0.3);
+    animation: heroFloat 3s ease-in-out infinite;
+    position: relative;
   }
-  .track-card:hover .track-icon { transform: scale(1.05); }
-  [data-theme="dark"] .track-icon { background: rgba(59,130,246,0.15); color: #60A5FA; }
-  .track-title {
+  .track-hero-icon::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 30px;
+    border: 2px solid rgba(0,102,255,0.2);
+    animation: heroPulse 2s ease-in-out infinite;
+  }
+  @keyframes heroFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes heroPulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0; transform: scale(1.15); }
+  }
+  .track-hero-title {
     font-family: var(--font-display);
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 6px;
-    letter-spacing: -0.4px;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
   }
-  .track-subtitle {
-    font-size: 0.88rem;
+  .track-hero-subtitle {
+    font-size: 0.92rem;
     color: var(--text-muted);
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
   }
   
-  .track-form { }
-  .form-group { margin-bottom: 16px; }
+  /* Search Card */
+  .search-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-2xl);
+    padding: 36px 32px;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .search-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--primary-gradient);
+    border-radius: 3px 3px 0 0;
+  }
+  .search-card:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-2px);
+  }
+  
+  .form-group { margin-bottom: 18px; }
   .form-label {
     display: block;
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-secondary);
     margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .form-label i {
+    font-size: 0.85rem;
+    color: var(--primary);
   }
   .form-input {
     width: 100%;
-    padding: 13px 16px;
+    padding: 14px 18px;
     border: 2px solid var(--border-color);
     border-radius: var(--radius);
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     font-family: var(--font-primary);
     color: var(--text-body);
     background: var(--bg-input);
     outline: none;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
   }
   .form-input:focus {
     border-color: var(--primary);
@@ -90,26 +174,48 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
-    padding: 14px 24px;
+    padding: 15px 28px;
     background: var(--primary-gradient);
     color: #FFFFFF;
     border: none;
     border-radius: var(--radius-full);
-    font-size: 0.94rem;
+    font-size: 0.95rem;
     font-weight: 600;
     font-family: var(--font-primary);
     cursor: pointer;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 16px rgba(0,102,255,0.25);
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 24px rgba(0,102,255,0.3);
+    position: relative;
+    overflow: hidden;
   }
+  .btn-track::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+  .btn-track:hover::after {
+    width: 400px;
+    height: 400px;
+  }
+  .btn-track span { position: relative; z-index: 1; }
+  .btn-track i { position: relative; z-index: 1; }
   .btn-track:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(0,102,255,0.35);
+    box-shadow: 0 10px 36px rgba(0,102,255,0.4);
   }
+  .btn-track:active { transform: translateY(0); }
   
-  .track-error {
+  /* Error Alert */
+  .error-alert {
     background: var(--error-bg);
     border: 1px solid var(--error);
     border-radius: var(--radius-lg);
@@ -121,190 +227,260 @@
     color: var(--error);
     font-size: 0.88rem;
     font-weight: 500;
-    animation: fadeSlideIn 0.3s ease;
+    animation: shakeIn 0.4s ease;
   }
-  .track-error i { font-size: 1.1rem; flex-shrink: 0; }
-  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes shakeIn {
+    0% { opacity: 0; transform: translateX(-10px); }
+    20% { transform: translateX(8px); }
+    40% { transform: translateX(-6px); }
+    60% { transform: translateX(4px); }
+    80% { transform: translateX(-2px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+  .error-alert i { font-size: 1.1rem; flex-shrink: 0; }
   
   /* Result Card */
   .result-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-2xl);
     overflow: hidden;
-    box-shadow: var(--shadow-md);
-    animation: fadeSlideIn 0.4s ease;
+    box-shadow: var(--shadow-xl);
+    animation: cardSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @keyframes cardSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   
   .result-header {
-    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-    padding: 28px 28px 24px;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+    padding: 32px 28px 28px;
     text-align: center;
     position: relative;
     overflow: hidden;
   }
-  [data-theme="dark"] .result-header { background: linear-gradient(135deg, #020617 0%, #0F172A 100%); }
-  .result-header::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 200px;
-    height: 200px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 50%;
+  [data-theme="dark"] .result-header {
+    background: linear-gradient(135deg, #020617 0%, #0F172A 50%, #020617 100%);
   }
-  .result-check {
-    width: 56px;
-    height: 56px;
+  .result-header-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
     border-radius: 50%;
-    background: rgba(52,211,153,0.2);
+    animation: particleFloat 6s ease-in-out infinite;
+  }
+  .particle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+  .particle:nth-child(2) { top: 30%; left: 70%; animation-delay: 1s; }
+  .particle:nth-child(3) { top: 60%; left: 15%; animation-delay: 2s; }
+  .particle:nth-child(4) { top: 20%; left: 85%; animation-delay: 3s; }
+  .particle:nth-child(5) { top: 70%; left: 60%; animation-delay: 4s; }
+  .particle:nth-child(6) { top: 45%; left: 40%; animation-delay: 5s; }
+  @keyframes particleFloat {
+    0%, 100% { transform: translate(0, 0); opacity: 0; }
+    25% { opacity: 1; }
+    50% { transform: translate(20px, -20px); opacity: 0.5; }
+    75% { opacity: 1; }
+  }
+  
+  .result-check-badge {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(52,211,153,0.15);
+    border: 2px solid rgba(52,211,153,0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 12px;
-    font-size: 1.5rem;
+    margin: 0 auto 14px;
+    font-size: 1.6rem;
     color: #34D399;
     position: relative;
     z-index: 1;
+    animation: checkPop 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  }
+  @keyframes checkPop {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
   }
   .result-order-num {
     font-family: var(--font-display);
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 700;
     color: #FFFFFF;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     position: relative;
     z-index: 1;
   }
   .result-order-date {
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: rgba(255,255,255,0.5);
     position: relative;
     z-index: 1;
   }
   
-  .result-body { padding: 24px 28px; }
+  .result-body { padding: 28px 32px; }
   
   /* Timeline */
-  .timeline { position: relative; padding-left: 32px; }
+  .timeline { 
+    position: relative; 
+    padding-left: 36px;
+    margin-bottom: 8px;
+  }
   .timeline::before {
     content: '';
     position: absolute;
-    left: 11px;
-    top: 8px;
-    bottom: 8px;
+    left: 13px;
+    top: 10px;
+    bottom: 10px;
     width: 2px;
     background: var(--border-color);
   }
-  
   .timeline-item {
     position: relative;
-    padding-bottom: 24px;
+    padding-bottom: 28px;
   }
   .timeline-item:last-child { padding-bottom: 0; }
-  
   .timeline-dot {
     position: absolute;
-    left: -32px;
+    left: -36px;
     top: 4px;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     z-index: 1;
     border: 3px solid var(--bg-card);
+    transition: all 0.3s ease;
   }
   .timeline-dot.completed {
     background: var(--success);
     color: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(16,185,129,0.15);
   }
   .timeline-dot.current {
     background: var(--primary);
     color: #FFFFFF;
-    box-shadow: 0 0 0 4px rgba(0,102,255,0.2);
-    animation: dotPulse 2s ease-in-out infinite;
+    box-shadow: 0 0 0 6px rgba(0,102,255,0.15);
+    animation: currentPulse 2s ease-in-out infinite;
   }
   .timeline-dot.pending {
     background: var(--gray-300);
     color: var(--text-muted);
   }
-  @keyframes dotPulse { 0%,100%{box-shadow:0 0 0 4px rgba(0,102,255,0.2)} 50%{box-shadow:0 0 0 10px rgba(0,102,255,0.05)} }
-  
+  @keyframes currentPulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(0,102,255,0.15); }
+    50% { box-shadow: 0 0 0 12px rgba(0,102,255,0.05); }
+  }
   .timeline-content { }
   .timeline-label {
     font-weight: 600;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     color: var(--text-primary);
-    margin-bottom: 2px;
+    margin-bottom: 3px;
   }
   .timeline-date {
-    font-size: 0.74rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
   }
   
-  /* Info Grid */
+  /* Info Cards Grid */
   .info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    gap: 12px;
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid var(--border-color);
   }
-  .info-item { }
+  .info-item {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    transition: all 0.2s ease;
+  }
+  .info-item:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  .info-item.full-width { grid-column: 1 / -1; }
   .info-label {
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.7px;
-    margin-bottom: 3px;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
   }
   .info-value {
     font-weight: 600;
     color: var(--text-primary);
-    font-size: 0.88rem;
+    font-size: 0.9rem;
   }
-  .info-value.tracking {
+  .info-value.tracking-num {
     color: var(--primary);
     font-family: var(--font-display);
     letter-spacing: 0.5px;
+    font-size: 0.95rem;
+  }
+  .info-value.carrier {
+    color: #D97706;
   }
   
-  .tracking-link {
+  /* Track with Carrier Button */
+  .track-carrier-wrap {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
+  .track-carrier-btn {
+    flex: 1;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin-top: 16px;
-    padding: 10px 20px;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 22px;
     background: var(--primary-light);
     color: var(--primary);
+    border: 2px solid transparent;
     border-radius: var(--radius-full);
     font-weight: 600;
-    font-size: 0.84rem;
+    font-size: 0.86rem;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    cursor: pointer;
   }
-  .tracking-link:hover {
+  .track-carrier-btn:hover {
     background: var(--primary);
     color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,102,255,0.25);
   }
+  .track-carrier-btn i { font-size: 0.9rem; transition: transform 0.3s ease; }
+  .track-carrier-btn:hover i { transform: translateX(3px); }
   
-  /* Back to Home Button - Redesigned */
+  /* Back to Home Button */
   .back-home-wrap {
     display: flex;
     justify-content: center;
-    margin-top: 24px;
+    margin-top: 28px;
   }
   .back-home-btn {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 14px 28px;
+    padding: 14px 30px;
     background: var(--bg-card);
     color: var(--text-secondary);
     border: 2px solid var(--border-color);
@@ -314,7 +490,7 @@
     font-family: var(--font-primary);
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
@@ -327,32 +503,20 @@
     width: 100%;
     height: 100%;
     background: var(--primary-gradient);
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: left 0.45s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 0;
     border-radius: var(--radius-full);
   }
-  .back-home-btn:hover::before {
-    left: 0;
-  }
-  .back-home-btn span {
-    position: relative;
-    z-index: 1;
-    transition: color 0.3s ease;
-  }
-  .back-home-btn i {
-    position: relative;
-    z-index: 1;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-  }
+  .back-home-btn span { position: relative; z-index: 1; transition: color 0.3s ease; }
+  .back-home-btn i { position: relative; z-index: 1; font-size: 0.95rem; transition: all 0.3s ease; }
   .back-home-btn:hover {
     color: #FFFFFF;
     border-color: transparent;
     transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0,102,255,0.25);
+    box-shadow: 0 14px 36px rgba(0,102,255,0.3);
   }
   .back-home-btn:hover i {
-    transform: translateX(-4px);
+    transform: translateX(-5px);
   }
   .back-home-btn:active {
     transform: translateY(-1px);
@@ -360,159 +524,187 @@
   }
   
   @media (max-width: 500px) {
-    .track-card { padding: 24px 20px; }
-    .result-body { padding: 18px 20px; }
-    .result-header { padding: 22px 20px; }
+    .search-card { padding: 24px 18px; }
+    .result-body { padding: 20px 18px; }
+    .result-header { padding: 24px 18px; }
     .info-grid { grid-template-columns: 1fr; }
+    .info-item.full-width { grid-column: 1; }
+    .track-carrier-wrap { flex-direction: column; }
     .back-home-btn { padding: 12px 24px; font-size: 0.85rem; }
+    .track-hero-title { font-size: 1.6rem; }
   }
 </style>
 
-<div class="track-section">
-  <div class="container">
-    <div class="track-container">
-      
-      <% if (!searched || error) { %>
-        <!-- Search Form -->
-        <div class="track-card">
-          <div class="track-header">
-            <div class="track-icon"><i class="fas fa-search-location"></i></div>
-            <h2 class="track-title">Track Your Order</h2>
-            <p class="track-subtitle">Enter your order number and email to check status</p>
+<div class="track-page">
+  
+  <!-- Background Decoration -->
+  <div class="track-bg-decoration">
+    <div class="track-bg-circle c1"></div>
+    <div class="track-bg-circle c2"></div>
+    <div class="track-bg-circle c3"></div>
+  </div>
+  
+  <div class="track-container">
+    
+    <!-- Hero -->
+    <div class="track-hero">
+      <div class="track-hero-icon"><i class="fas fa-search-location"></i></div>
+      <h1 class="track-hero-title">Track Your Order</h1>
+      <p class="track-hero-subtitle">Enter your order number and email address to check the status of your delivery</p>
+    </div>
+    
+    <% if (!searched || error) { %>
+      <!-- Search Form -->
+      <div class="search-card">
+        <% if (error) { %>
+          <div class="error-alert">
+            <i class="fas fa-exclamation-circle"></i>
+            <span><%= error %></span>
           </div>
-          
-          <% if (error) { %>
-            <div class="track-error">
-              <i class="fas fa-exclamation-circle"></i>
-              <span><%= error %></span>
-            </div>
-          <% } %>
-          
-          <form class="track-form" action="/track" method="POST">
-            <div class="form-group">
-              <label class="form-label">Order Number</label>
-              <input type="text" name="orderNumber" class="form-input" placeholder="e.g. ORD-20260523-142530-X7K2" value="<%= typeof order !== 'undefined' && order ? order.orderNumber : '' %>" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Email Address</label>
-              <input type="email" name="email" class="form-input" placeholder="you@example.com" required>
-            </div>
-            <button type="submit" class="btn-track">
-              <i class="fas fa-search"></i> Track Order
-            </button>
-          </form>
+        <% } %>
+        
+        <form action="/track" method="POST">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-hashtag"></i> Order Number
+            </label>
+            <input type="text" name="orderNumber" class="form-input" placeholder="e.g. ORD-20260523-142530-X7K2" value="<%= typeof order !== 'undefined' && order ? order.orderNumber : '' %>" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-envelope"></i> Email Address
+            </label>
+            <input type="email" name="email" class="form-input" placeholder="you@example.com" required>
+          </div>
+          <button type="submit" class="btn-track">
+            <i class="fas fa-search"></i>
+            <span>Track Order</span>
+          </button>
+        </form>
+      </div>
+    <% } %>
+    
+    <% if (searched && order && !error) { %>
+      <!-- Results -->
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-header-particles">
+            <span class="particle"></span><span class="particle"></span>
+            <span class="particle"></span><span class="particle"></span>
+            <span class="particle"></span><span class="particle"></span>
+          </div>
+          <div class="result-check-badge"><i class="fas fa-check-circle"></i></div>
+          <div class="result-order-num">Order #<%= order.orderNumber %></div>
+          <div class="result-order-date">Placed on <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></div>
         </div>
-      <% } %>
-      
-      <% if (searched && order && !error) { %>
-        <!-- Results -->
-        <div class="result-card">
-          <div class="result-header">
-            <div class="result-check"><i class="fas fa-check-circle"></i></div>
-            <div class="result-order-num">Order #<%= order.orderNumber %></div>
-            <div class="result-order-date">Placed on <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></div>
-          </div>
-          
-          <div class="result-body">
-            <!-- Timeline -->
-            <div class="timeline">
-              <%
-                var statuses = [
-                  { key: 'processing', label: 'Order Confirmed', icon: 'fa-check' },
-                  { key: 'shipped', label: 'Shipped', icon: 'fa-box' },
-                  { key: 'delivered', label: 'Delivered', icon: 'fa-home' }
-                ];
-                if (order.status === 'cancelled') {
-                  statuses = [{ key: 'cancelled', label: 'Cancelled', icon: 'fa-times' }];
-                }
-              %>
-              <% statuses.forEach(function(s) { 
-                var isCompleted = false;
-                var isCurrent = false;
-                if (order.status === 'cancelled') {
-                  isCompleted = true;
-                } else if (order.status === 'delivered') {
-                  isCompleted = true;
-                } else if (order.status === 'shipped' && (s.key === 'processing' || s.key === 'shipped')) {
-                  isCompleted = true;
-                  if (s.key === 'shipped') isCurrent = true;
-                } else if (order.status === 'processing' && s.key === 'processing') {
-                  isCurrent = true;
-                }
-                var dotClass = isCurrent ? 'current' : (isCompleted ? 'completed' : 'pending');
-              %>
-                <div class="timeline-item">
-                  <div class="timeline-dot <%= dotClass %>">
-                    <i class="fas <%= s.icon %>"></i>
-                  </div>
-                  <div class="timeline-content">
-                    <div class="timeline-label"><%= s.label %></div>
+        
+        <div class="result-body">
+          <!-- Timeline -->
+          <div class="timeline">
+            <%
+              var statuses = [
+                { key: 'processing', label: 'Order Confirmed', icon: 'fa-check', desc: 'Your order has been received' },
+                { key: 'shipped', label: 'Shipped', icon: 'fa-box', desc: 'Package is on the way' },
+                { key: 'delivered', label: 'Delivered', icon: 'fa-home', desc: 'Package has arrived' }
+              ];
+              if (order.status === 'cancelled') {
+                statuses = [{ key: 'cancelled', label: 'Cancelled', icon: 'fa-times', desc: 'Order was cancelled' }];
+              }
+            %>
+            <% statuses.forEach(function(s) { 
+              var isCompleted = false;
+              var isCurrent = false;
+              if (order.status === 'cancelled') {
+                isCompleted = true;
+              } else if (order.status === 'delivered') {
+                isCompleted = true;
+              } else if (order.status === 'shipped' && (s.key === 'processing' || s.key === 'shipped')) {
+                isCompleted = true;
+                if (s.key === 'shipped') isCurrent = true;
+              } else if (order.status === 'processing' && s.key === 'processing') {
+                isCurrent = true;
+              }
+              var dotClass = isCurrent ? 'current' : (isCompleted ? 'completed' : 'pending');
+            %>
+              <div class="timeline-item">
+                <div class="timeline-dot <%= dotClass %>">
+                  <i class="fas <%= s.icon %>"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-label"><%= s.label %></div>
+                  <div class="timeline-date">
                     <% if (s.key === 'processing' && order.createdAt) { %>
-                      <div class="timeline-date"><%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div>
+                      <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
                     <% } else if (s.key === 'shipped' && orderShipping.shippedDate) { %>
-                      <div class="timeline-date"><%= orderShipping.shippedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div>
+                      <%= orderShipping.shippedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
                     <% } else if (s.key === 'delivered' && orderShipping.deliveredDate) { %>
-                      <div class="timeline-date"><%= orderShipping.deliveredDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div>
+                      <%= orderShipping.deliveredDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                    <% } else if (!isCompleted) { %>
+                      Pending
                     <% } %>
                   </div>
                 </div>
-              <% }) %>
+              </div>
+            <% }) %>
+          </div>
+          
+          <!-- Info Grid -->
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">Status</div>
+              <div class="info-value" style="text-transform:capitalize;"><%= order.status %></div>
             </div>
-            
-            <!-- Info Grid -->
-            <div class="info-grid">
-              <div class="info-item">
-                <div class="info-label">Status</div>
-                <div class="info-value" style="text-transform:capitalize;"><%= order.status %></div>
+            <div class="info-item">
+              <div class="info-label">Items</div>
+              <div class="info-value"><%= order.items ? order.items.length : 0 %> item(s)</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Shipping</div>
+              <div class="info-value"><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Est. Delivery</div>
+              <div class="info-value">7-21 business days</div>
+            </div>
+            <% if (orderShipping.trackingNumber) { %>
+              <div class="info-item full-width">
+                <div class="info-label">Tracking Number</div>
+                <div class="info-value tracking-num"><%= orderShipping.trackingNumber %></div>
               </div>
-              <div class="info-item">
-                <div class="info-label">Items</div>
-                <div class="info-value"><%= order.items ? order.items.length : 0 %> item(s)</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Shipping Method</div>
-                <div class="info-value"><%= order.shippingCost === 0 ? 'FREE Shipping' : 'Standard Shipping' %></div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Estimated Delivery</div>
-                <div class="info-value">7-21 business days</div>
-              </div>
-              <% if (orderShipping.trackingNumber) { %>
-                <div class="info-item" style="grid-column: 1 / -1;">
-                  <div class="info-label">Tracking Number</div>
-                  <div class="info-value tracking"><%= orderShipping.trackingNumber %></div>
+              <% if (orderShipping.carrierName) { %>
+                <div class="info-item">
+                  <div class="info-label">Carrier</div>
+                  <div class="info-value carrier"><%= orderShipping.carrierName %></div>
                 </div>
-                <% if (orderShipping.carrierName) { %>
-                  <div class="info-item">
-                    <div class="info-label">Carrier</div>
-                    <div class="info-value"><%= orderShipping.carrierName %></div>
-                  </div>
-                <% } %>
               <% } %>
-            </div>
-            
-            <% if (orderShipping.trackingUrl) { %>
-              <a href="<%= orderShipping.trackingUrl %>" target="_blank" rel="noopener" class="tracking-link">
-                <i class="fas fa-external-link-alt"></i> Track with Carrier
-              </a>
-            <% } else if (orderShipping.trackingNumber) { %>
-              <a href="https://track.17track.net/en#nums=<%= orderShipping.trackingNumber %>" target="_blank" rel="noopener" class="tracking-link">
-                <i class="fas fa-external-link-alt"></i> Track with 17Track
-              </a>
             <% } %>
           </div>
+          
+          <% if (orderShipping.trackingNumber) { %>
+            <div class="track-carrier-wrap">
+              <% if (orderShipping.trackingUrl) { %>
+                <a href="<%= orderShipping.trackingUrl %>" target="_blank" rel="noopener" class="track-carrier-btn">
+                  <i class="fas fa-external-link-alt"></i> Track with Carrier
+                </a>
+              <% } else { %>
+                <a href="https://track.17track.net/en#nums=<%= orderShipping.trackingNumber %>" target="_blank" rel="noopener" class="track-carrier-btn">
+                  <i class="fas fa-external-link-alt"></i> Track with 17Track
+                </a>
+              <% } %>
+            </div>
+          <% } %>
         </div>
-      <% } %>
-      
-      <!-- Back to Home Button -->
-      <div class="back-home-wrap">
-        <a href="/" class="back-home-btn">
-          <i class="fas fa-home"></i>
-          <span>Back to Home</span>
-        </a>
       </div>
-      
+    <% } %>
+    
+    <!-- Back to Home Button -->
+    <div class="back-home-wrap">
+      <a href="/" class="back-home-btn">
+        <i class="fas fa-home"></i>
+        <span>Back to Home</span>
+      </a>
     </div>
+    
   </div>
 </div>
 
