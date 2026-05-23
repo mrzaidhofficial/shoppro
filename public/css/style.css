@@ -190,13 +190,18 @@ ul { list-style: none; }
 .header-btn-signin:hover { background: #0052CC !important; box-shadow: 0 6px 18px rgba(0,102,255,0.35); transform: translateY(-2px); }
 [data-theme="dark"] .header-btn-signin { background: #3B82F6 !important; box-shadow: 0 2px 10px rgba(59,130,246,0.3); }
 [data-theme="dark"] .header-btn-signin:hover { background: #2563EB !important; box-shadow: 0 6px 18px rgba(59,130,246,0.4); }
+
+/* Sign Up Button */
 .header-btn-signup { background: transparent; color: #0066FF !important; border: 2px solid #0066FF !important; }
 .header-btn-signup i { color: #0066FF !important; }
 .header-btn-signup:hover { background: #0066FF !important; color: #FFFFFF !important; border-color: #0066FF !important; box-shadow: 0 6px 18px rgba(0,102,255,0.2); transform: translateY(-2px); }
 .header-btn-signup:hover i { color: #FFFFFF !important; }
-[data-theme="dark"] .header-btn-signup { color: #3B82F6 !important; border-color: #3B82F6 !important; }
-[data-theme="dark"] .header-btn-signup i { color: #3B82F6 !important; }
-[data-theme="dark"] .header-btn-signup:hover { background: #3B82F6 !important; color: #FFFFFF !important; }
+[data-theme="dark"] .header-btn-signup { color: #60A5FA !important; border-color: #3B82F6 !important; }
+[data-theme="dark"] .header-btn-signup i { color: #60A5FA !important; }
+[data-theme="dark"] .header-btn-signup:hover { background: #3B82F6 !important; color: #FFFFFF !important; border-color: #3B82F6 !important; }
+[data-theme="dark"] .header-btn-signup:hover i { color: #FFFFFF !important; }
+
+/* Sign Out Button */
 .header-btn-signout { background: transparent; color: #475569 !important; border: 2px solid #E2E8F0 !important; }
 .header-btn-signout i { color: #64748B !important; }
 .header-btn-signout:hover { background: #E6F0FF; border-color: #0066FF !important; color: #0066FF !important; transform: translateY(-2px); }
@@ -204,7 +209,9 @@ ul { list-style: none; }
 [data-theme="dark"] .header-btn-signout { color: #CBD5E1 !important; border-color: #334155 !important; }
 [data-theme="dark"] .header-btn-signout i { color: #94A3B8 !important; }
 [data-theme="dark"] .header-btn-signout:hover { background: rgba(59,130,246,0.15); border-color: #3B82F6 !important; color: #3B82F6 !important; }
-[data-theme="dark"] .header-btn-signout:hover i { color: #3B82F6 !important; }
+[data-theme="dark"] .header-btn-signout:hover i { color: #FFFFFF !important; }
+
+/* Cart Button */
 .header-btn-cart { background: #F8FAFC; color: #334155 !important; border: 2px solid #E2E8F0 !important; position: relative; padding-right: 22px; }
 .header-btn-cart i { color: #64748B !important; font-size: 0.95rem !important; }
 .header-btn-cart:hover { background: #E6F0FF; border-color: #0066FF !important; color: #0066FF !important; box-shadow: 0 4px 14px rgba(0,102,255,0.1); transform: translateY(-2px); }
@@ -212,7 +219,7 @@ ul { list-style: none; }
 [data-theme="dark"] .header-btn-cart { background: #1a2332; color: #E2E8F0 !important; border-color: #334155 !important; }
 [data-theme="dark"] .header-btn-cart i { color: #94A3B8 !important; }
 [data-theme="dark"] .header-btn-cart:hover { background: rgba(59,130,246,0.15); border-color: #3B82F6 !important; color: #3B82F6 !important; }
-[data-theme="dark"] .header-btn-cart:hover i { color: #3B82F6 !important; }
+[data-theme="dark"] .header-btn-cart:hover i { color: #FFFFFF !important; }
 .cart-badge { position: absolute; top: -8px; right: -8px; background: #00E5A0; color: #0F172A; font-size: 0.65rem; font-weight: 700; min-width: 21px; height: 21px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; padding: 0 5px; border: 2.5px solid #FFFFFF; box-shadow: 0 2px 10px rgba(0,229,160,0.4); line-height: 1; }
 [data-theme="dark"] .cart-badge { background: #34D399; border-color: #1E293B; }
 
