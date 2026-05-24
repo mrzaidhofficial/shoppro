@@ -1,74 +1,34 @@
 /**
  * Email Service - ShopNest
- * Uses Brevo REST API (HTTPS) - works on Railway
+ * Uses Nodemailer + Gmail SMTP
  */
 
-var https = require('https');
+var nodemailer = require('nodemailer');
+var transporter = null;
 
-function getApiKey() {
-  return process.env.EMAIL_PASS || '';
-}
-
-function getSenderEmail() {
-  return process.env.ADMIN_EMAIL || 'shopnest.management@gmail.com';
-}
-
-function sendViaApi(emailData) {
-  return new Promise(function(resolve, reject) {
-    var apiKey = getApiKey();
-    if (!apiKey) {
-      console.log('Email skipped: Brevo API key not configured');
-      return resolve(false);
-    }
-
-    var data = JSON.stringify({
-      sender: { name: 'ShopNest', email: getSenderEmail() },
-      to: [{ email: emailData.to, name: emailData.name || '' }],
-      subject: emailData.subject,
-      htmlContent: emailData.html
-    });
-
-    var options = {
-      hostname: 'api.brevo.com',
-      port: 443,
-      path: '/v3/smtp/email',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-key': apiKey,
-        'Content-Length': Buffer.byteLength(data)
+function getTransporter() {
+  if (transporter) return transporter;
+  
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.EMAIL_PORT) || 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
       },
-      timeout: 15000
-    };
-
-    var req = https.request(options, function(res) {
-      var body = '';
-      res.on('data', function(chunk) { body += chunk; });
-      res.on('end', function() {
-        if (res.statusCode === 200 || res.statusCode === 201 || res.statusCode === 202) {
-          console.log('Email sent to ' + emailData.to + ' - Status: ' + res.statusCode);
-          resolve(true);
-        } else {
-          console.error('Brevo API error:', res.statusCode, body);
-          resolve(false);
-        }
-      });
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 15000
     });
-
-    req.on('error', function(err) {
-      console.error('Email send error:', err.message);
-      resolve(false);
-    });
-
-    req.on('timeout', function() {
-      console.error('Email send timeout');
-      req.destroy();
-      resolve(false);
-    });
-
-    req.write(data);
-    req.end();
-  });
+    
+    console.log('Email service: SMTP configured successfully');
+    return transporter;
+  }
+  
+  console.log('Email service: EMAIL_USER/EMAIL_PASS not configured. Emails disabled.');
+  return null;
 }
 
 function getEmailTemplate(title, content) {
@@ -81,7 +41,7 @@ function getEmailTemplate(title, content) {
     '<tr><td style="padding:32px 40px 0;text-align:center;"><h2 style="color:#1A1A2E;font-size:20px;font-weight:700;margin:0;">' + title + '</h2></td></tr>' +
     '<tr><td style="padding:24px 40px 32px;">' + content + '</td></tr>' +
     '<tr><td style="padding:0 40px;"><div style="border-top:1px solid #EEF0F4;"></div></td></tr>' +
-    '<tr><td style="padding:24px 40px 32px;text-align:center;color:#8B8FA3;font-size:12px;">Need help? Reply to this email or contact us at <a href="mailto:' + getSenderEmail() + '" style="color:#0066FF;">' + getSenderEmail() + '</a><br><br>&copy; 2026 ShopNest. All rights reserved.</td></tr>' +
+    '<tr><td style="padding:24px 40px 32px;text-align:center;color:#8B8FA3;font-size:12px;">Need help? Reply to this email or contact us at <a href="mailto:shopnest.management@gmail.com" style="color:#0066FF;">shopnest.management@gmail.com</a><br><br>&copy; 2026 ShopNest. All rights reserved.</td></tr>' +
     '</table></td></tr></table></body></html>';
 }
 
@@ -94,6 +54,28 @@ function getOrderStatusBadge(status) {
   };
   var c = colors[status] || colors.processing;
   return '<span style="display:inline-block;background:' + c.bg + ';color:' + c.text + ';padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;">' + c.label + '</span>';
+}
+
+async function sendEmail(to, subject, html) {
+  var t = getTransporter();
+  if (!t) {
+    console.log('Email skipped: SMTP not configured');
+    return false;
+  }
+  
+  try {
+    var info = await t.sendMail({
+      from: '"ShopNest" <shopnest.management@gmail.com>',
+      to: to,
+      subject: subject,
+      html: html
+    });
+    console.log('Email sent to ' + to + ' - Message ID: ' + info.messageId);
+    return true;
+  } catch (err) {
+    console.error('Email send error:', err.message);
+    return false;
+  }
 }
 
 async function sendOrderConfirmation(userEmail, userName, order) {
@@ -114,7 +96,7 @@ async function sendOrderConfirmation(userEmail, userName, order) {
     '<tr><td colspan="2" style="border-top:2px solid #E8ECF1;padding-top:8px;"></td></tr>' +
     '<tr><td style="font-weight:700;font-size:16px;">Total</td><td style="text-align:right;font-weight:700;font-size:16px;color:#0066FF;">$' + order.total.toFixed(2) + '</td></tr></table></div>';
 
-  return sendViaApi({ to: userEmail, name: userName, subject: 'Order Confirmed - #' + order.orderNumber, html: getEmailTemplate('Order Confirmed! 🎉', content) });
+  return sendEmail(userEmail, 'Order Confirmed - #' + order.orderNumber, getEmailTemplate('Order Confirmed! 🎉', content));
 }
 
 async function sendOrderStatusUpdate(userEmail, userName, order) {
@@ -130,7 +112,7 @@ async function sendOrderStatusUpdate(userEmail, userName, order) {
     '<table width="100%"><tr><td style="color:#8B8FA3;font-size:12px;">Order Number</td><td style="text-align:right;font-weight:600;">#' + order.orderNumber + '</td></tr>' +
     '<tr><td style="color:#8B8FA3;font-size:12px;">Status</td><td style="text-align:right;">' + getOrderStatusBadge(order.status) + '</td></tr></table></div>';
 
-  return sendViaApi({ to: userEmail, name: userName, subject: 'Order Update - #' + order.orderNumber, html: getEmailTemplate(sm.title, content) });
+  return sendEmail(userEmail, 'Order Update - #' + order.orderNumber, getEmailTemplate(sm.title, content));
 }
 
 async function sendContactNotification(name, email, subject, message) {
@@ -142,24 +124,25 @@ async function sendContactNotification(name, email, subject, message) {
     '<div style="background:#F8FAFC;border:1px solid #E8ECF1;border-radius:12px;padding:16px 20px;"><p style="color:#8B8FA3;font-size:12px;">Message:</p><p>' + message + '</p></div>' +
     '<div style="text-align:center;margin-top:20px;"><a href="mailto:' + email + '" style="display:inline-block;background:#0066FF;color:#FFFFFF;text-decoration:none;padding:12px 28px;border-radius:25px;font-weight:600;">Reply to ' + name + '</a></div>';
 
-  return sendViaApi({ to: getSenderEmail(), name: 'Admin', subject: 'New message from ' + name + ' - ' + subject, html: getEmailTemplate('📬 New Contact Message', content) });
+  return sendEmail('shopnest.management@gmail.com', 'New message from ' + name + ' - ' + subject, getEmailTemplate('📬 New Contact Message', content));
 }
 
 async function sendNewsletterNotification(subscriberEmail) {
-  var adminContent = '<p>A new user has subscribed:</p>' +
+  var adminContent = '<p>A new user has subscribed to your newsletter:</p>' +
     '<div style="background:#F8FAFC;border:1px solid #E8ECF1;border-radius:12px;padding:24px;text-align:center;">' +
     '<div style="font-size:40px;">📧</div><p style="font-size:18px;font-weight:700;">' + subscriberEmail + '</p>' +
     '<p style="color:#8B8FA3;font-size:13px;">Subscribed on ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + '</p></div>';
 
-  await sendViaApi({ to: getSenderEmail(), name: 'Admin', subject: 'New Subscriber: ' + subscriberEmail, html: getEmailTemplate('📰 New Subscriber!', adminContent) });
+  await sendEmail('shopnest.management@gmail.com', 'New Newsletter Subscriber: ' + subscriberEmail, getEmailTemplate('📰 New Subscriber!', adminContent));
 
-  var welcomeContent = '<p>Welcome to ShopNest! 🎉</p><p>Here is your exclusive welcome discount:</p>' +
+  var welcomeContent = '<p>Welcome to the ShopNest family! 🎉</p><p>Thank you for subscribing. Here is your exclusive welcome discount:</p>' +
     '<div style="background:linear-gradient(135deg,#0066FF 0%,#00C2FF 100%);border-radius:12px;padding:28px 20px;text-align:center;margin-bottom:20px;">' +
     '<p style="color:rgba(255,255,255,0.8);font-size:13px;">YOUR DISCOUNT CODE</p>' +
     '<p style="color:#FFFFFF;font-size:32px;font-weight:700;letter-spacing:4px;">WELCOME15</p>' +
-    '<p style="color:rgba(255,255,255,0.8);font-size:14px;">15% off your first order</p></div>';
+    '<p style="color:rgba(255,255,255,0.8);font-size:14px;">15% off your first order</p></div>' +
+    '<p style="text-align:center;"><a href="/products" style="display:inline-block;background:#0066FF;color:#FFFFFF;text-decoration:none;padding:12px 28px;border-radius:25px;font-weight:600;">Start Shopping</a></p>';
 
-  await sendViaApi({ to: subscriberEmail, name: '', subject: 'Welcome to ShopNest - 15% Off!', html: getEmailTemplate('Welcome! 🎁', welcomeContent) });
+  await sendEmail(subscriberEmail, 'Welcome to ShopNest - 15% Off!', getEmailTemplate('Welcome to ShopNest! 🎁', welcomeContent));
 
   return true;
 }
