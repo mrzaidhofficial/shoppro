@@ -1,6 +1,6 @@
 /**
  * Email Service - ShopNest
- * Uses Nodemailer + Gmail SMTP (Free Forever)
+ * Uses Nodemailer + Brevo SMTP (Free 300 emails/day)
  */
 
 var nodemailer = require('nodemailer');
@@ -11,8 +11,8 @@ function getTransporter() {
   
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
     transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.EMAIL_PORT) || 587,
+      host: process.env.EMAIL_HOST || 'smtp-relay.brevo.com',
+      port: parseInt(process.env.EMAIL_PORT) || 2525,
       secure: false,
       auth: {
         user: process.env.EMAIL_USER,
@@ -20,7 +20,7 @@ function getTransporter() {
       }
     });
     
-    console.log('Email service: Using Gmail SMTP');
+    console.log('Email service: SMTP configured successfully');
     return transporter;
   }
   
@@ -114,7 +114,7 @@ function getOrderStatusBadge(status) {
 async function sendEmail(to, subject, html) {
   var t = getTransporter();
   if (!t) {
-    console.log('Email skipped: Gmail SMTP not configured');
+    console.log('Email skipped: SMTP not configured');
     return false;
   }
   
@@ -133,7 +133,7 @@ async function sendEmail(to, subject, html) {
   }
 }
 
-// Order Confirmation Email
+// Order Confirmation Email - Sent to the customer
 async function sendOrderConfirmation(userEmail, userName, order) {
   var itemsRows = order.items.map(function(item) {
     return '<tr><td style="padding:10px 0;border-bottom:1px solid #F0F2F5;"><strong style="color:#1A1A2E;">' + item.name + '</strong><br><span style="color:#8B8FA3;font-size:12px;">Qty: ' + item.quantity + ' × $' + item.price.toFixed(2) + '</span></td><td style="padding:10px 0;border-bottom:1px solid #F0F2F5;text-align:right;font-weight:600;color:#1A1A2E;white-space:nowrap;">$' + item.subtotal.toFixed(2) + '</td></tr>';
@@ -155,13 +155,14 @@ async function sendOrderConfirmation(userEmail, userName, order) {
     (order.couponDiscount && order.couponDiscount > 0 ? '<tr><td style="padding:4px 0;color:#16A34A;font-size:13px;">Discount (' + order.couponCode + ')</td><td style="padding:4px 0;text-align:right;color:#16A34A;font-size:13px;">-$' + order.couponDiscount.toFixed(2) + '</td></tr>' : '') +
     '<tr><td colspan="2" style="padding:8px 0 0;"><div style="border-top:2px solid #E8ECF1;"></div></td></tr>' +
     '<tr><td style="padding:8px 0 0;font-weight:700;color:#1A1A2E;font-size:16px;">Total</td><td style="padding:8px 0 0;text-align:right;font-weight:700;color:#0066FF;font-size:16px;">$' + order.total.toFixed(2) + '</td></tr>' +
-    '</table></div>';
+    '</table></div>' +
+    '<p style="color:#8B8FA3;font-size:12px;margin-top:20px;text-align:center;">A tracking number will be sent once your order ships. You can also track your order on our website.</p>';
   
   var html = getEmailTemplate('Order Confirmed! 🎉', content);
   return sendEmail(userEmail, 'Order Confirmed - #' + order.orderNumber, html);
 }
 
-// Order Status Update Email
+// Order Status Update Email - Sent to the customer
 async function sendOrderStatusUpdate(userEmail, userName, order) {
   var statusMessages = {
     shipped: { title: '🚀 Your Order is On the Way!', msg: 'Great news! Your order has been shipped and is on its way to you.' },
@@ -175,13 +176,14 @@ async function sendOrderStatusUpdate(userEmail, userName, order) {
     '<table width="100%" cellpadding="0" cellspacing="0">' +
     '<tr><td style="padding:6px 0;color:#8B8FA3;font-size:12px;">Order Number</td><td style="padding:6px 0;text-align:right;font-weight:600;color:#1A1A2E;font-size:14px;">#' + order.orderNumber + '</td></tr>' +
     '<tr><td style="padding:6px 0;color:#8B8FA3;font-size:12px;">Status</td><td style="padding:6px 0;text-align:right;">' + getOrderStatusBadge(order.status) + '</td></tr>' +
-    '</table></div>';
+    '</table></div>' +
+    '<p style="text-align:center;"><a href="https://shopnest.com/track" style="display:inline-block;background:linear-gradient(135deg,#0066FF 0%,#00C2FF 100%);color:#FFFFFF;text-decoration:none;padding:12px 28px;border-radius:25px;font-weight:600;font-size:14px;">Track Your Order</a></p>';
   
   var html = getEmailTemplate(sm.title, content);
   return sendEmail(userEmail, 'Order Update - #' + order.orderNumber, html);
 }
 
-// Contact Form Notification to Admin
+// Contact Form Notification - Sent to admin (shopnest.management@gmail.com)
 async function sendContactNotification(name, email, subject, message) {
   var content = '<p style="color:#4A4D5E;font-size:14px;line-height:1.6;margin:0 0 16px;">You received a new message from the contact form:</p>' +
     '<div style="background:#F8FAFC;border:1px solid #E8ECF1;border-radius:12px;padding:20px;margin-bottom:16px;">' +
@@ -197,19 +199,43 @@ async function sendContactNotification(name, email, subject, message) {
     '<a href="mailto:' + email + '" style="display:inline-block;background:linear-gradient(135deg,#0066FF 0%,#00C2FF 100%);color:#FFFFFF;text-decoration:none;padding:12px 28px;border-radius:25px;font-weight:600;font-size:14px;">Reply to ' + name + '</a></div>';
   
   var html = getEmailTemplate('📬 New Contact Message', content);
-  return sendEmail(process.env.EMAIL_USER, 'New message from ' + name + ' - ' + subject, html);
+  
+  // Send to your admin email address
+  var adminEmail = process.env.ADMIN_EMAIL || 'shopnest.management@gmail.com';
+  return sendEmail(adminEmail, 'New message from ' + name + ' - ' + subject, html);
 }
 
-// Newsletter Subscription Notification
+// Newsletter Subscription - Send notification to admin AND welcome email to subscriber
 async function sendNewsletterNotification(subscriberEmail) {
-  var content = '<p style="color:#4A4D5E;font-size:14px;line-height:1.6;margin:0 0 16px;">A new user has subscribed to your newsletter:</p>' +
+  // 1. Send notification to admin
+  var adminContent = '<p style="color:#4A4D5E;font-size:14px;line-height:1.6;margin:0 0 16px;">A new user has subscribed to your newsletter:</p>' +
     '<div style="background:#F8FAFC;border:1px solid #E8ECF1;border-radius:12px;padding:24px;text-align:center;">' +
     '<div style="font-size:40px;margin-bottom:10px;">📧</div>' +
     '<p style="color:#1A1A2E;font-size:18px;font-weight:700;margin:0;">' + subscriberEmail + '</p>' +
     '<p style="color:#8B8FA3;font-size:13px;margin:8px 0 0;">Subscribed on ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + '</p></div>';
   
-  var html = getEmailTemplate('📰 New Subscriber!', content);
-  return sendEmail(process.env.EMAIL_USER, 'New Newsletter Subscriber: ' + subscriberEmail, html);
+  var adminHtml = getEmailTemplate('📰 New Subscriber!', adminContent);
+  var adminEmail = process.env.ADMIN_EMAIL || 'shopnest.management@gmail.com';
+  await sendEmail(adminEmail, 'New Newsletter Subscriber: ' + subscriberEmail, adminHtml);
+  
+  // 2. Send welcome email to subscriber with discount code
+  var discountCode = 'WELCOME15';
+  var welcomeContent = '<p style="color:#4A4D5E;font-size:14px;line-height:1.6;margin:0 0 16px;">Welcome to the ShopNest family! 🎉</p>' +
+    '<p style="color:#4A4D5E;font-size:14px;line-height:1.6;margin:0 0 20px;">Thank you for subscribing to our newsletter. As promised, here is your exclusive welcome discount:</p>' +
+    '<div style="background:linear-gradient(135deg,#0066FF 0%,#00C2FF 100%);border-radius:12px;padding:28px 20px;text-align:center;margin-bottom:20px;">' +
+    '<p style="color:rgba(255,255,255,0.8);font-size:13px;margin:0 0 8px;">YOUR DISCOUNT CODE</p>' +
+    '<p style="color:#FFFFFF;font-size:32px;font-weight:700;margin:0;letter-spacing:4px;font-family:monospace;">' + discountCode + '</p>' +
+    '<p style="color:rgba(255,255,255,0.8);font-size:14px;margin:8px 0 0;">15% off your first order</p>' +
+    '</div>' +
+    '<p style="color:#4A4D5E;font-size:13px;line-height:1.6;margin:0 0 6px;">Use this code at checkout to get <strong>15% off</strong> your first purchase.</p>' +
+    '<p style="color:#8B8FA3;font-size:12px;line-height:1.6;margin:0;">Stay tuned for exclusive deals, new arrivals, and special offers delivered straight to your inbox.</p>' +
+    '<div style="text-align:center;margin-top:20px;">' +
+    '<a href="https://shopnest.com/products" style="display:inline-block;background:linear-gradient(135deg,#0066FF 0%,#00C2FF 100%);color:#FFFFFF;text-decoration:none;padding:12px 28px;border-radius:25px;font-weight:600;font-size:14px;">Start Shopping Now</a></div>';
+  
+  var welcomeHtml = getEmailTemplate('Welcome to ShopNest! 🎁', welcomeContent);
+  await sendEmail(subscriberEmail, 'Welcome to ShopNest - Here is Your 15% Discount!', welcomeHtml);
+  
+  return true;
 }
 
 module.exports = { 
