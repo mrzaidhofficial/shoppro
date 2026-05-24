@@ -61,7 +61,7 @@ router.post('/newsletter', async function(req, res) {
     }
     
     await emailService.sendNewsletterNotification(email);
-    req.flash('success', 'Thank you for subscribing! Check your email for your 15% discount code.');
+    req.flash('success', 'Thank you for subscribing! Stay tuned for exclusive deals and updates.');
     res.redirect('/');
   } catch (err) {
     console.error('Newsletter error:', err);
