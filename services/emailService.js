@@ -160,7 +160,8 @@ async function sendNewsletterNotification(subscriberEmail) {
 
   await sendViaApi({ to: getSenderEmail(), name: 'Admin', subject: 'New Subscriber: ' + subscriberEmail, html: getEmailTemplate('📰 New Subscriber!', adminContent) });
 
-  var welcomeContent = '<p>Welcome to the ShopNest family! 🎉</p><p>Thank you for subscribing to our newsletter. You will receive updates about new products, exclusive deals, and special offers straight to your inbox.</p><p>Stay tuned!</p>';
+  var welcomeContent = '<p>Welcome to the ShopNest family! 🎉</p><p>Thank you for subscribing to our newsletter. You will receive updates about new products, exclusive deals, and special offers straight to your inbox.</p><p>Stay tuned!</p>' +
+    '<p style="text-align:center;margin-top:20px;"><a href="https://shopnest-production.up.railway.app/products" style="display:inline-block;background:#0066FF;color:#FFFFFF;text-decoration:none;padding:12px 28px;border-radius:25px;font-weight:600;">Start Shopping</a></p>';
 
   await sendViaApi({ to: subscriberEmail, name: '', subject: 'Welcome to ShopNest!', html: getEmailTemplate('Welcome to ShopNest! 🎁', welcomeContent) });
 
