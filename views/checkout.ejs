@@ -167,6 +167,44 @@ paypal_sdk.Buttons({
   },
   onError: function(err) { console.error('PayPal error:', err); alert('Payment error. Please try again.'); }
 }).render('#paypal-button-container');
+
+// Force white background on PayPal popup iframes when they appear in dark mode
+(function() {
+  var paypalContainer = document.getElementById('paypal-button-container');
+  if (!paypalContainer) return;
+
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      mutation.addedNodes.forEach(function(node) {
+        if (node.nodeName === 'IFRAME') {
+          // Wrap the iframe in a white-background div
+          var wrapper = document.createElement('div');
+          wrapper.style.cssText = 'background:#FFFFFF;border-radius:8px;padding:16px;position:relative;z-index:0;';
+          node.parentNode.insertBefore(wrapper, node);
+          wrapper.appendChild(node);
+          
+          // Force the iframe itself to have white background
+          node.style.backgroundColor = '#FFFFFF';
+          
+          // Observe the iframe body once loaded
+          node.addEventListener('load', function() {
+            try {
+              var iframeDoc = node.contentDocument || node.contentWindow.document;
+              if (iframeDoc && iframeDoc.body) {
+                iframeDoc.body.style.backgroundColor = '#FFFFFF';
+                iframeDoc.body.style.color = '#000000';
+              }
+            } catch(e) {
+              // Cross-origin iframe - can't access, but wrapper helps
+            }
+          });
+        }
+      });
+    });
+  });
+
+  observer.observe(paypalContainer, { childList: true, subtree: true });
+})();
 <% } %>
 </script>
 
