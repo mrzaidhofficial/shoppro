@@ -121,8 +121,7 @@
             Complete your payment securely with PayPal
           </p>
           <% if (typeof paypalConfigured !== 'undefined' && paypalConfigured) { %>
-            <!-- PayPal container with forced light background for internal popup readability -->
-            <div id="paypal-button-container" style="max-width:100%;margin:0 auto;background:#FFFFFF;border-radius:12px;padding:8px;"></div>
+            <div id="paypal-button-container" style="max-width:100%;margin:0 auto;"></div>
           <% } else { %>
             <div style="text-align:center;padding:20px;background:var(--bg-card-alt);border-radius:12px;border:2px dashed var(--border-color);">
               <p style="color:var(--text-muted);font-size:0.85rem;">Payment processing will be available soon.</p>
