@@ -160,14 +160,11 @@ async function sendNewsletterNotification(subscriberEmail) {
 
   await sendViaApi({ to: getSenderEmail(), name: 'Admin', subject: 'New Subscriber: ' + subscriberEmail, html: getEmailTemplate('📰 New Subscriber!', adminContent) });
 
-  var welcomeContent = '<p>Welcome to the ShopNest family! 🎉</p><p>Thank you for subscribing. Here is your exclusive welcome discount:</p>' +
-    '<div style="background:linear-gradient(135deg,#0066FF 0%,#00C2FF 100%);border-radius:12px;padding:28px 20px;text-align:center;margin-bottom:20px;">' +
-    '<p style="color:rgba(255,255,255,0.8);font-size:13px;">YOUR DISCOUNT CODE</p>' +
-    '<p style="color:#FFFFFF;font-size:32px;font-weight:700;letter-spacing:4px;">WELCOME15</p>' +
-    '<p style="color:rgba(255,255,255,0.8);font-size:14px;">15% off your first order</p></div>' +
-    '<p style="text-align:center;"><a href="/products" style="display:inline-block;background:#0066FF;color:#FFFFFF;text-decoration:none;padding:12px 28px;border-radius:25px;font-weight:600;">Start Shopping</a></p>';
+  var welcomeContent = '<p>Welcome to the ShopNest family! 🎉</p><p>Thank you for subscribing to our newsletter. You will receive updates about new products, exclusive deals, and special offers straight to your inbox.</p>' +
+    '<p>Stay tuned!</p>' +
+    '<p style="text-align:center;margin-top:20px;"><a href="/products" style="display:inline-block;background:#0066FF;color:#FFFFFF;text-decoration:none;padding:12px 28px;border-radius:25px;font-weight:600;">Start Shopping</a></p>';
 
-  await sendViaApi({ to: subscriberEmail, name: '', subject: 'Welcome to ShopNest - 15% Off!', html: getEmailTemplate('Welcome to ShopNest! 🎁', welcomeContent) });
+  await sendViaApi({ to: subscriberEmail, name: '', subject: 'Welcome to ShopNest!', html: getEmailTemplate('Welcome to ShopNest! 🎁', welcomeContent) });
 
   return true;
 }
