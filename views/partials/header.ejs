@@ -37,12 +37,6 @@
         <span class="logo-icon"><i class="fas fa-store"></i></span>
         <span class="logo-text">Shop<span class="logo-accent">Nest</span></span>
       </a>
-      <div class="header-search-wrapper">
-        <form class="search-form" action="/search" method="GET">
-          <input class="search-input" type="text" name="q" placeholder="Search products..." required>
-          <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
-        </form>
-      </div>
       <div class="header-actions-wrapper">
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
           <i class="fas fa-moon"></i>
@@ -58,6 +52,12 @@
           <i class="fas fa-shopping-bag"></i><span class="btn-text">Cart</span>
           <% if (typeof cartCount !== 'undefined' && cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
         </a>
+      </div>
+      <div class="header-search-wrapper">
+        <form class="search-form" action="/search" method="GET">
+          <input class="search-input" type="text" name="q" placeholder="Search products..." required>
+          <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
+        </form>
       </div>
     </div>
   </div>
