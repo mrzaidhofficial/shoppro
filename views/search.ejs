@@ -1,10 +1,10 @@
 <%- include('partials/header') %>
 
-<div class="container" style="padding:44px 0;">
-  <h1 style="font-family:var(--font-heading);font-size:1.75rem;margin-bottom:6px;">Search: <%= typeof query !== 'undefined' ? query : '' %></h1>
+<div class="container" style="padding:44px 0; min-height: 60vh;">
+  <h1 style="font-family:var(--font-display);font-size:clamp(1.3rem, 4vw, 1.75rem);margin-bottom:6px;color:var(--text-primary);">Search: <%= typeof query !== 'undefined' ? query : '' %></h1>
 
   <% if (typeof products !== 'undefined' && products.length > 0) { %>
-    <p style="color:#6B7280;margin-bottom:28px;"><%= products.length %> product(s) found</p>
+    <p style="color:var(--text-muted);margin-bottom:28px;"><%= products.length %> product(s) found</p>
     <div class="product-grid">
       <% products.forEach(function(product) { %>
         <div class="product-card">
@@ -36,10 +36,11 @@
       <% }) %>
     </div>
   <% } else { %>
-    <div style="text-align:center;padding:80px 0;">
-      <h2>No results found</h2>
-      <p style="color:#888;">Try a different search term.</p>
-      <a href="/products" class="btn btn-primary mt-3">Browse All</a>
+    <div style="text-align:center;padding:clamp(40px, 8vw, 80px) 20px;">
+      <i class="fas fa-search" style="font-size:clamp(3rem, 8vw, 5rem);color:var(--gray-200);margin-bottom:20px;display:block;"></i>
+      <h2 style="color:var(--text-secondary);">No results found</h2>
+      <p style="color:var(--text-muted);margin-top:8px;">Try a different search term.</p>
+      <a href="/products" class="btn btn-primary mt-3" style="margin-top:20px;">Browse All</a>
     </div>
   <% } %>
 </div>

@@ -75,7 +75,6 @@
     box-shadow: 0 12px 40px rgba(0,102,255,0.3);
     animation: heroFloat 3s ease-in-out infinite;
     position: relative;
-    line-height: 1;
   }
   .track-hero-icon i {
     display: flex;
@@ -102,7 +101,7 @@
   }
   .track-hero-title {
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 5vw, 2rem);
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 8px;
@@ -120,7 +119,7 @@
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-2xl);
-    padding: 36px 32px;
+    padding: clamp(24px, 4vw, 36px) clamp(18px, 4vw, 32px);
     box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
     position: relative;
@@ -246,32 +245,6 @@
   [data-theme="dark"] .result-header {
     background: linear-gradient(135deg, #020617 0%, #0F172A 50%, #020617 100%);
   }
-  .result-header-particles {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-  .particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 50%;
-    animation: particleFloat 6s ease-in-out infinite;
-  }
-  .particle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
-  .particle:nth-child(2) { top: 30%; left: 70%; animation-delay: 1s; }
-  .particle:nth-child(3) { top: 60%; left: 15%; animation-delay: 2s; }
-  .particle:nth-child(4) { top: 20%; left: 85%; animation-delay: 3s; }
-  .particle:nth-child(5) { top: 70%; left: 60%; animation-delay: 4s; }
-  .particle:nth-child(6) { top: 45%; left: 40%; animation-delay: 5s; }
-  @keyframes particleFloat {
-    0%, 100% { transform: translate(0, 0); opacity: 0; }
-    25% { opacity: 1; }
-    50% { transform: translate(20px, -20px); opacity: 0.5; }
-    75% { opacity: 1; }
-  }
-  
   .result-check-badge {
     width: 64px;
     height: 64px;
@@ -342,7 +315,6 @@
     font-size: 0.7rem;
     z-index: 1;
     border: 3px solid var(--bg-card);
-    transition: all 0.3s ease;
   }
   .timeline-dot.completed {
     background: var(--success);
@@ -390,11 +362,6 @@
     padding: 14px 16px;
     transition: all 0.2s ease;
   }
-  .info-item:hover {
-    border-color: var(--primary);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
-  }
   .info-item.full-width { grid-column: 1 / -1; }
   .info-label {
     font-size: 0.66rem;
@@ -414,6 +381,7 @@
     font-family: var(--font-display);
     letter-spacing: 0.5px;
     font-size: 0.95rem;
+    word-break: break-all;
   }
   .info-value.carrier { color: #D97706; }
   
@@ -447,7 +415,6 @@
   }
   .track-carrier-btn i { font-size: 0.9rem; }
   
-  /* Back to Home Button */
   .back-home-wrap {
     display: flex;
     justify-content: center;
@@ -477,17 +444,20 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 28px rgba(0,102,255,0.4);
   }
-  .back-home-btn:active { transform: translateY(0); }
   
   @media (max-width: 500px) {
-    .search-card { padding: 24px 18px; }
-    .result-body { padding: 20px 18px; }
-    .result-header { padding: 24px 18px; }
+    .track-container { padding: 40px 16px; }
+    .track-hero-icon { width: 60px; height: 60px; font-size: 1.5rem; margin-bottom: 16px; }
+    .search-card { padding: 20px 16px; }
+    .result-body { padding: 20px 16px; }
+    .result-header { padding: 24px 16px; }
+    .result-order-num { font-size: 1.2rem; }
     .info-grid { grid-template-columns: 1fr; }
     .info-item.full-width { grid-column: 1; }
     .track-carrier-wrap { flex-direction: column; }
-    .back-home-btn { padding: 12px 24px; font-size: 0.85rem; }
-    .track-hero-title { font-size: 1.6rem; }
+    .back-home-btn { padding: 12px 24px; font-size: 0.85rem; width: 100%; justify-content: center; }
+    .timeline { padding-left: 30px; }
+    .timeline-dot { width: 24px; height: 24px; left: -30px; font-size: 0.6rem; }
   }
 </style>
 
@@ -540,11 +510,6 @@
     <% if (searched && order && !error) { %>
       <div class="result-card">
         <div class="result-header">
-          <div class="result-header-particles">
-            <span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span>
-          </div>
           <div class="result-check-badge"><i class="fas fa-check-circle"></i></div>
           <div class="result-order-num">Tracking #<%= order.orderNumber %></div>
           <div class="result-order-date">Placed on <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></div>
