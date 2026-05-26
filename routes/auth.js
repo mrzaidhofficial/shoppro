@@ -41,15 +41,10 @@ router.post('/signin', async function(req, res) {
         };
         
         req.flash('success', 'Welcome back, ' + user.firstName + '!');
-        
-        req.session.save(function(err) {
-            if (err) {
-                return res.redirect('/auth/signin');
-            }
-            res.redirect('/');
-        });
+        res.redirect('/');
         
     } catch (err) {
+        console.error('Sign in error:', err);
         req.flash('error', 'Sign in failed');
         res.redirect('/auth/signin');
     }
@@ -60,7 +55,7 @@ router.post('/signup', async function(req, res) {
     try {
         var firstName = req.body.firstName;
         var lastName = req.body.lastName;
-        var email = req.body.email;
+        var email = req.body.email.trim().toLowerCase();
         var password = req.body.password;
         var password2 = req.body.password2;
         
@@ -87,6 +82,7 @@ router.post('/signup', async function(req, res) {
         res.redirect('/auth/signin');
         
     } catch (err) {
+        console.error('Sign up error:', err);
         req.flash('error', 'Sign up failed');
         res.redirect('/auth/signup');
     }
@@ -96,6 +92,7 @@ router.post('/signup', async function(req, res) {
 router.get('/logout', function(req, res) {
     req.session.destroy(function(err) {
         if (err) {
+            console.error('Logout error:', err);
             return res.redirect('/');
         }
         res.clearCookie('connect.sid');
@@ -113,13 +110,11 @@ router.get('/profile', async function(req, res) {
             .sort({ createdAt: -1 })
             .limit(10);
         
-        // Get tracking numbers for orders
         var orderIds = orders.map(function(o) { return o._id; });
         var shippingInfos = await OrderShipping.find({ order: { $in: orderIds } });
         var shippingMap = {};
         shippingInfos.forEach(function(si) { shippingMap[si.order.toString()] = si; });
         
-        // Add tracking numbers to orders
         orders = orders.map(function(order) {
             var o = order.toObject();
             var si = shippingMap[order._id.toString()];
@@ -134,6 +129,7 @@ router.get('/profile', async function(req, res) {
             orders: orders
         });
     } catch (err) {
+        console.error('Profile error:', err);
         res.render('profile', { 
             title: 'My Account',
             orders: []
