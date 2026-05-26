@@ -1,7 +1,10 @@
 <%- include('partials/header') %>
-<div style="text-align:center;padding:100px 20px;">
-  <h1 style="font-size:3rem;">Oops!</h1>
-  <p style="color:#6B7280;margin:20px 0;"><%= message %></p>
-  <a href="/" class="btn btn-primary">Go Home</a>
+<div style="text-align:center;padding:clamp(60px, 15vw, 100px) 20px;min-height:60vh;display:flex;align-items:center;justify-content:center;background:var(--bg-body);">
+  <div>
+    <div style="font-size:clamp(4rem, 10vw, 6rem);color:var(--gray-200);margin-bottom:10px;">🤷</div>
+    <h1 style="font-size:clamp(1.5rem, 4vw, 2rem);color:var(--text-primary);margin-bottom:8px;">Oops!</h1>
+    <p style="color:var(--text-muted);margin-bottom:24px;font-size:0.95rem;"><%= message %></p>
+    <a href="/" class="btn btn-primary" style="padding:12px 28px;background:var(--primary-gradient);color:white;border-radius:var(--radius-full);font-weight:600;text-decoration:none;display:inline-block;">Go Home</a>
+  </div>
 </div>
 <%- include('partials/footer') %>
