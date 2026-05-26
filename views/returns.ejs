@@ -17,7 +17,7 @@
     margin-bottom: 18px; position: relative; z-index: 1;
   }
   .page-hero-title {
-    font-family: var(--font-display); font-size: 2.2rem;
+    font-family: var(--font-display); font-size: clamp(1.6rem, 5vw, 2.2rem);
     font-weight: 700; color: #FFFFFF; position: relative; z-index: 1;
   }
   
@@ -28,14 +28,14 @@
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
-    padding: 32px;
+    padding: clamp(20px, 4vw, 32px);
     box-shadow: var(--shadow-sm);
     margin-bottom: 20px;
     transition: box-shadow 0.3s ease;
   }
   .policy-card:hover { box-shadow: var(--shadow-md); }
   .policy-card h2 {
-    font-family: var(--font-display); font-size: 1.3rem;
+    font-family: var(--font-display); font-size: clamp(1.1rem, 3vw, 1.3rem);
     font-weight: 700; color: var(--text-primary);
     margin-bottom: 12px; display: flex; align-items: center; gap: 10px;
   }
@@ -79,8 +79,13 @@
   .step-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
   
   @media (max-width: 600px) {
-    .policy-card { padding: 22px; }
-    .timeline-steps { grid-template-columns: 1fr; }
+    .page-hero { padding: 48px 0; }
+    .page-hero-icon { width: 50px; height: 50px; font-size: 1.3rem; margin-bottom: 14px; }
+    .page-content { padding: 36px 0; }
+    .policy-card { padding: 20px; }
+    .timeline-steps { grid-template-columns: 1fr; gap: 10px; }
+    .policy-card p { font-size: 0.85rem; }
+    .policy-card ul li { font-size: 0.85rem; }
   }
 </style>
 
