@@ -65,7 +65,6 @@
 <script src="/js/main.js"></script>
 
 <script>
-// Set correct icon on page load
 (function() {
   var toggle = document.getElementById('themeToggle');
   var currentTheme = document.documentElement.getAttribute('data-theme');
@@ -74,7 +73,6 @@
   }
 })();
 
-// Theme Toggle - instant switch without transition flash
 document.getElementById('themeToggle').addEventListener('click', function() {
   var html = document.documentElement;
   var current = html.getAttribute('data-theme');

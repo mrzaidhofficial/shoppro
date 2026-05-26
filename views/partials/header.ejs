@@ -2,12 +2,11 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="ShopNest - Your cozy curated marketplace. Quality products, fast shipping, secure checkout.">
   <title>ShopNest</title>
   <link rel="stylesheet" href="/css/style.css?v=10">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <!-- Apply saved theme IMMEDIATELY to prevent flash -->
   <script>
     (function() {
       var saved = localStorage.getItem('shopnest-theme');
@@ -40,12 +39,11 @@
       </a>
       <div class="header-search-wrapper">
         <form class="search-form" action="/search" method="GET">
-          <input class="search-input" type="text" name="q" placeholder="Search for products, brands, categories..." required>
+          <input class="search-input" type="text" name="q" placeholder="Search products..." required>
           <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
         </form>
       </div>
       <div class="header-actions-wrapper">
-        <!-- Theme Toggle Button -->
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
           <i class="fas fa-moon"></i>
         </button>
