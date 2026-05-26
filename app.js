@@ -92,17 +92,17 @@ async function seedData() {
     console.log('Products seeded!');
   }
   
-  var adminExists = await User.findOne({ email: 'admin@shoppro.com' });
+  var adminExists = await User.findOne({ email: 'admin@shopnest.com' });
   if (!adminExists) {
     var adminUser = new User({
       firstName: 'Admin',
       lastName: 'User',
-      email: 'admin@shoppro.com',
-      password: 'Admin@123',
+      email: 'admin@shopnest.com',
+      password: '18980MRZ@#z',
       role: 'admin'
     });
     await adminUser.save();
-    console.log('Admin user created: admin@shoppro.com / Admin@123');
+    console.log('Admin user created: admin@shopnest.com / 18980MRZ@#z');
   }
 }
 
