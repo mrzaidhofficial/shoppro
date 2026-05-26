@@ -5,6 +5,12 @@ var Order = require('../models/Order');
 var { OrderShipping } = require('../models/Shipping');
 var emailService = require('../services/emailService');
 
+// Session test route
+router.get('/session-test', function(req, res) {
+  req.session.testData = 'hello';
+  res.json({ session: req.session, testData: req.session.testData });
+});
+
 router.get('/', async function(req, res) {
   try {
     var featuredProducts = await Product.find({ featured: true }).limit(8);
