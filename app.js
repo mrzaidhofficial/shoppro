@@ -2,16 +2,15 @@ require('dotenv').config();
 var express = require('express');
 var mongoose = require('mongoose');
 var session = require('express-session');
+var MongoStore = require('connect-mongo');
 var flash = require('express-flash');
 var helmet = require('helmet');
 var path = require('path');
 
 var app = express();
 
-// Trust proxy for Railway
 app.set('trust proxy', 1);
 
-// Security middleware
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -41,9 +40,16 @@ if (!mongoUri) {
 }
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || '57a28291c920e9323df0e0ab7c0c23df0cc750aa1686d5a88829db82f21812c0f866c31c0ab8a4a22404c8835bb4823e47a909e9a3f4150d1bc518fb2e22783e',
+    secret: process.env.SESSION_SECRET || '57a28291c920e9323df0e0ab7c0c23df0cc750aa1686d5a88829db82f21812c0f866c31c0ab8a4a22404c8835bb4823e47a909e9a3f4150d1bc518fb2e22783e',
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: mongoUri,
+    collectionName: 'sessions',
+    ttl: 14 * 24 * 60 * 60,
+    autoRemove: 'native',
+    touchAfter: 24 * 3600
+  }),
   cookie: { 
     maxAge: 86400000,
     httpOnly: true,
