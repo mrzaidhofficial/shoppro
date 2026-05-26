@@ -1,10 +1,10 @@
 <%- include('partials/header') %>
 
-<div style="padding:56px 0;min-height:60vh;background:var(--white);">
+<div style="padding:56px 0;min-height:60vh;background:var(--bg-card);">
   <div class="container">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;">
-      <h1 style="font-family:var(--font-display);font-size:2rem;color:var(--gray-900);">My Wishlist</h1>
-      <a href="/products" class="btn btn-outline" style="padding:10px 24px;border:2px solid var(--primary);color:var(--primary);border-radius:var(--radius-full);font-weight:600;text-decoration:none;">Browse Products</a>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;flex-wrap:wrap;gap:12px;">
+      <h1 style="font-family:var(--font-display);font-size:clamp(1.5rem, 4vw, 2rem);color:var(--text-primary);">My Wishlist</h1>
+      <a href="/products" class="btn btn-outline" style="padding:10px 24px;border:2px solid var(--primary);color:var(--primary);border-radius:var(--radius-full);font-weight:600;text-decoration:none;font-size:0.88rem;">Browse Products</a>
     </div>
     
     <% if (wishlistProducts && wishlistProducts.length > 0) { %>
@@ -33,10 +33,10 @@
         <% }) %>
       </div>
     <% } else { %>
-      <div style="text-align:center;padding:80px 20px;">
-        <i class="fas fa-heart" style="font-size:5rem;color:var(--gray-200);margin-bottom:20px;display:block;"></i>
-        <h3 style="font-family:var(--font-display);font-size:1.5rem;color:var(--gray-700);margin-bottom:10px;">Your wishlist is empty</h3>
-        <p style="color:var(--gray-500);margin-bottom:24px;">Save your favorite products here for later!</p>
+      <div style="text-align:center;padding:clamp(40px, 8vw, 80px) 20px;">
+        <i class="fas fa-heart" style="font-size:clamp(3rem, 8vw, 5rem);color:var(--gray-200);margin-bottom:20px;display:block;"></i>
+        <h3 style="font-family:var(--font-display);font-size:clamp(1.2rem, 3vw, 1.5rem);color:var(--text-secondary);margin-bottom:10px;">Your wishlist is empty</h3>
+        <p style="color:var(--text-muted);margin-bottom:24px;">Save your favorite products here for later!</p>
         <a href="/products" class="btn btn-primary" style="padding:12px 28px;background:var(--primary-gradient);color:white;border-radius:var(--radius-full);font-weight:600;text-decoration:none;display:inline-block;">Start Shopping</a>
       </div>
     <% } %>
