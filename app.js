@@ -49,7 +49,7 @@ app.use(session({
   cookie: { 
     maxAge: 86400000,
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: 'lax'
   }
 }));
@@ -57,7 +57,6 @@ app.use(session({
 app.use(flash());
 
 app.use(function(req, res, next) {
-  console.log('Session user:', req.session.user ? req.session.user.email : 'none');
   res.locals.user = req.session.user || null;
   res.locals.cart = req.session.cart || [];
   res.locals.cartCount = req.session.cart ? req.session.cart.length : 0;
