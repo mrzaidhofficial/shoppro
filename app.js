@@ -4,15 +4,32 @@ var mongoose = require('mongoose');
 var session = require('express-session');
 var MongoStore = require('connect-mongo');
 var flash = require('express-flash');
+var helmet = require('helmet');
 var path = require('path');
 
 var app = express();
 
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.paypal.com", "https://www.paypalobjects.com", "https://cdnjs.cloudflare.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      frameSrc: ["'self'", "https://www.paypal.com", "https://www.sandbox.paypal.com"],
+      connectSrc: ["'self'", "https://api.mailjet.com", "https://api-m.sandbox.paypal.com", "https://api-m.paypal.com"],
+    }
+  },
+  crossOriginEmbedderPolicy: false
+}));
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '10mb' }));
 
 var mongoUri = process.env.MONGODB_URI;
 
@@ -29,7 +46,12 @@ app.use(session({
     mongoUrl: mongoUri,
     ttl: 14 * 24 * 60 * 60
   }),
-  cookie: { maxAge: 86400000 }
+  cookie: { 
+    maxAge: 86400000,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
+  }
 }));
 
 app.use(flash());
@@ -99,13 +121,20 @@ async function start() {
     app.use('/admin/shipping', require('./routes/shipping'));
     app.use('/admin/finances', require('./routes/finances'));
 
+    // 404 handler
     app.use(function(req, res) {
       res.status(404).render('error', { message: 'Page not found' });
     });
 
+    // Error handler
+    app.use(function(err, req, res, next) {
+      console.error(err.stack);
+      res.status(500).render('error', { message: 'Something went wrong. Please try again later.' });
+    });
+
     var PORT = process.env.PORT || 3000;
     app.listen(PORT, '0.0.0.0', function() {
-      console.log('Server running on port ' + PORT);
+      console.log('ShopNest server running on port ' + PORT);
     });
 
   } catch (err) {
