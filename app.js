@@ -8,6 +8,9 @@ var path = require('path');
 
 var app = express();
 
+// Trust proxy for Railway
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: {
@@ -44,7 +47,7 @@ app.use(session({
   cookie: { 
     maxAge: 86400000,
     httpOnly: true,
-    secure: true,
+    secure: false,
     sameSite: 'lax'
   }
 }));
