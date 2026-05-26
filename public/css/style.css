@@ -730,7 +730,14 @@ ul { list-style: none; }
   .hero-badge-dot { width: 5px; height: 5px; }
   .hero-actions { flex-direction: column; align-items: stretch; gap: 8px; }
   .hero-btn-primary, .hero-btn-outline { width: 100%; justify-content: center; padding: 12px 20px; font-size: 0.82rem; }
-  .hero-trust-section { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 12px 10px; }
+  .hero-trust-section { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr 1fr; 
+  gap: 6px; 
+  padding: 12px 10px; 
+  justify-items: center; 
+  text-align: center; 
+}
   .hero-trust-item { gap: 6px; }
   .trust-icon-circle { width: 28px; height: 28px; }
   .trust-icon-circle i { font-size: 0.7rem; }
