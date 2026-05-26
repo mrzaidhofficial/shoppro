@@ -91,6 +91,7 @@
   .content-header { 
     display: flex; justify-content: space-between; align-items: center; 
     margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); 
+    flex-wrap: wrap; gap: 10px;
   }
   .content-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.4px; }
   .content-count { 
@@ -178,9 +179,19 @@
   .btn-primary-sm:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,102,255,0.3); }
   
   @media (max-width: 768px) {
-    .profile-layout { grid-template-columns: 1fr; }
+    .profile-layout { grid-template-columns: 1fr; gap: 16px; }
     .profile-card { position: static; }
-    .content-card { padding: 20px; }
+    .content-card { padding: 16px; }
+    .profile-cover { height: 60px; }
+    .profile-avatar { width: 60px; height: 60px; font-size: 1.4rem; }
+    .profile-avatar-wrap { margin-top: -30px; margin-bottom: 10px; }
+    .profile-name { font-size: 1.1rem; }
+    .profile-card-body { padding: 0 16px 16px; }
+    .order-item-top { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .order-item-bottom { flex-direction: column; gap: 8px; align-items: flex-start; }
+    .order-item-middle { flex-direction: column; gap: 4px; align-items: flex-start; }
+    .content-header { flex-direction: column; gap: 8px; align-items: flex-start; }
+    .profile-menu a { padding: 8px 10px; font-size: 0.8rem; }
   }
 </style>
 
@@ -239,13 +250,13 @@
                     <span class="order-total">$<%= order.total.toFixed(2) %></span>
                   </div>
                   <div class="order-item-bottom">
-                    <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                       <span style="font-size:0.75rem;color:var(--text-muted);">Order ID:</span>
                       <span style="font-size:0.78rem;font-weight:500;color:var(--text-secondary);"><%= order.orderNumber %></span>
                       <button class="copy-btn" onclick="copyToClipboard('<%= order.orderNumber %>', this)"><i class="fas fa-copy"></i> Copy</button>
                     </div>
                     <% if (order.trackingNumber) { %>
-                      <div style="display:flex;align-items:center;gap:8px;">
+                      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                         <span style="font-size:0.75rem;color:var(--text-muted);">Tracking No:</span>
                         <span style="font-size:0.78rem;font-weight:500;color:var(--primary);"><%= order.trackingNumber %></span>
                         <button class="copy-btn" onclick="copyToClipboard('<%= order.trackingNumber %>', this)"><i class="fas fa-copy"></i> Copy</button>
