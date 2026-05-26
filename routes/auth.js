@@ -17,7 +17,7 @@ router.get('/signup', function(req, res) {
 // Sign In handler
 router.post('/signin', async function(req, res) {
     try {
-        var email = req.body.email;
+        var email = req.body.email.trim().toLowerCase();
         var password = req.body.password;
         
         var user = await User.findOne({ email: email });
