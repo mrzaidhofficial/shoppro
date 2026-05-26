@@ -242,14 +242,19 @@ router.post('/settings/update-name', isAdmin, async (req, res) => {
     try {
         const { firstName, lastName } = req.body;
         const user = await User.findById(req.session.user.id);
-        user.firstName = firstName;
-        user.lastName = lastName;
+        if (!user) {
+            req.flash('error', 'User not found');
+            return res.redirect('/admin/settings');
+        }
+        user.firstName = firstName.trim();
+        user.lastName = lastName.trim();
         await user.save();
-        req.session.user.firstName = firstName;
-        req.session.user.lastName = lastName;
+        req.session.user.firstName = firstName.trim();
+        req.session.user.lastName = lastName.trim();
         req.flash('success', 'Name updated successfully');
         res.redirect('/admin/settings');
     } catch (err) {
+        console.error('Update name error:', err);
         req.flash('error', 'Error updating name');
         res.redirect('/admin/settings');
     }
@@ -259,34 +264,62 @@ router.post('/settings/update-email', isAdmin, async (req, res) => {
     try {
         const { newEmail, password } = req.body;
         const user = await User.findById(req.session.user.id);
+        if (!user) {
+            req.flash('error', 'User not found');
+            return res.redirect('/admin/settings');
+        }
         const isMatch = await user.comparePassword(password);
-        if (!isMatch) { req.flash('error', 'Current password is incorrect'); return res.redirect('/admin/settings'); }
-        const existingUser = await User.findOne({ email: newEmail });
+        if (!isMatch) { 
+            req.flash('error', 'Current password is incorrect'); 
+            return res.redirect('/admin/settings'); 
+        }
+        const existingUser = await User.findOne({ email: newEmail.trim().toLowerCase() });
         if (existingUser && existingUser._id.toString() !== user._id.toString()) {
             req.flash('error', 'Email already in use');
             return res.redirect('/admin/settings');
         }
-        user.email = newEmail;
+        user.email = newEmail.trim().toLowerCase();
         await user.save();
-        req.session.user.email = newEmail;
+        req.session.user.email = newEmail.trim().toLowerCase();
         req.flash('success', 'Email updated successfully');
         res.redirect('/admin/settings');
-    } catch (err) { req.flash('error', 'Error updating email'); res.redirect('/admin/settings'); }
+    } catch (err) { 
+        console.error('Update email error:', err);
+        req.flash('error', 'Error updating email'); 
+        res.redirect('/admin/settings'); 
+    }
 });
 
 router.post('/settings/update-password', isAdmin, async (req, res) => {
     try {
         const { currentPassword, newPassword, confirmPassword } = req.body;
         const user = await User.findById(req.session.user.id);
+        if (!user) {
+            req.flash('error', 'User not found');
+            return res.redirect('/admin/settings');
+        }
         const isMatch = await user.comparePassword(currentPassword);
-        if (!isMatch) { req.flash('error', 'Current password is incorrect'); return res.redirect('/admin/settings'); }
-        if (newPassword !== confirmPassword) { req.flash('error', 'New passwords do not match'); return res.redirect('/admin/settings'); }
-        if (newPassword.length < 6) { req.flash('error', 'Password must be at least 6 characters'); return res.redirect('/admin/settings'); }
+        if (!isMatch) { 
+            req.flash('error', 'Current password is incorrect'); 
+            return res.redirect('/admin/settings'); 
+        }
+        if (newPassword !== confirmPassword) { 
+            req.flash('error', 'New passwords do not match'); 
+            return res.redirect('/admin/settings'); 
+        }
+        if (newPassword.length < 6) { 
+            req.flash('error', 'Password must be at least 6 characters'); 
+            return res.redirect('/admin/settings'); 
+        }
         user.password = newPassword;
         await user.save();
         req.flash('success', 'Password updated successfully');
         res.redirect('/admin/settings');
-    } catch (err) { req.flash('error', 'Error updating password'); res.redirect('/admin/settings'); }
+    } catch (err) { 
+        console.error('Update password error:', err);
+        req.flash('error', 'Error updating password'); 
+        res.redirect('/admin/settings'); 
+    }
 });
 
 module.exports = router;
