@@ -850,7 +850,7 @@ ul { list-style: none; }
     .site-footer { padding: 40px 0 0; }
   .footer-grid { 
     grid-template-columns: 1fr 1fr; 
-    gap: 24px; 
+    gap: 20px 24px; 
     padding-bottom: 28px;
     text-align: left;
   }
@@ -858,6 +858,7 @@ ul { list-style: none; }
     grid-column: 1 / -1; 
     text-align: center;
     padding-bottom: 16px;
+    margin-bottom: 4px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
   .footer-col:first-child .footer-brand-desc {
@@ -947,10 +948,12 @@ ul { list-style: none; }
   
   .auth-card { padding: 24px 16px; }
   
-  .footer-grid { grid-template-columns: 1fr; gap: 20px; }
-  .footer-col:first-child { grid-column: 1; }
-  .footer-brand-desc { font-size: 0.8rem; }
-  .footer-social a { width: 36px; height: 36px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 18px; }
+  .footer-col:first-child { grid-column: 1 / -1; }
+  .footer-heading { font-size: 0.68rem; margin-bottom: 12px; }
+  .footer-links a { font-size: 0.78rem; }
+  .footer-brand-desc { font-size: 0.78rem; }
+  .footer-social a { width: 34px; height: 34px; }
   
   .modal-body { padding: 16px; }
   
