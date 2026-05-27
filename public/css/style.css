@@ -467,7 +467,7 @@ ul { list-style: none; }
 .cart-item-image { width: 110px; height: 110px; border-radius: var(--radius-lg); object-fit: cover; flex-shrink: 0; }
 .cart-item-info { flex: 1; }
 .cart-item-name { font-weight: 600; font-size: 0.98rem; color: var(--text-primary); margin-bottom: 5px; }
-.cart-item-price { color: var(--text-muted); font-size: 0.86rem; margin-bottom: 10px; }
+.cart-item-price { color: var(--text-primary); font-size: 0.86rem; margin-bottom: 10px; }
 .cart-item-actions { display: flex; align-items: center; gap: 14px; }
 .cart-item-quantity { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--radius-full); overflow: hidden; }
 .cart-qty-btn { width: 34px; height: 34px; border: none; background: var(--bg-card-alt); cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: var(--transition-fast); }
