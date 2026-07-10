@@ -130,37 +130,6 @@
   window.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 
-  // Fixed add-to-cart handler
-  document.addEventListener('submit', function(e) {
-    var form = e.target;
-    if (form.action && form.action.indexOf('/cart/add/') !== -1) {
-      e.preventDefault();
-      var formData = new FormData(form);
-      fetch(form.action, {
-        method: 'POST',
-        body: new URLSearchParams(formData),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-      })
-      .then(function(res) {
-        if (res.redirected) { window.location.href = res.url; return null; }
-        return res.text();
-      })
-      .then(function() {
-        return fetch('/cart/count');
-      })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        var badges = document.querySelectorAll('.cart-badge');
-        badges.forEach(function(badge) {
-          if (data.count > 0) { badge.textContent = data.count; badge.style.display = 'flex'; }
-          else { badge.style.display = 'none'; }
-        });
-        window.location.reload();
-      })
-      .catch(function(err) { console.error('Add to cart error:', err); });
-    }
-  });
-
   document.querySelectorAll('.alert').forEach(function(a) {
     setTimeout(function() { a.style.opacity = '0'; a.style.transition = 'opacity 0.3s'; setTimeout(function() { if (a.parentElement) a.remove(); }, 300); }, 5000);
   });
