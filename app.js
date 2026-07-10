@@ -15,13 +15,13 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-hashes'", "https://www.paypal.com", "https://www.paypalobjects.com", "https://cdnjs.cloudflare.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-hashes'", "https://cdnjs.cloudflare.com"],
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      frameSrc: ["'self'", "https://www.paypal.com", "https://www.sandbox.paypal.com"],
-      connectSrc: ["'self'", "https://api.mailjet.com", "https://api-m.sandbox.paypal.com", "https://api-m.paypal.com"],
+      frameSrc: ["'self'"],
+      connectSrc: ["'self'", "https://api.mailjet.com"],
     }
   },
   crossOriginEmbedderPolicy: false
@@ -30,6 +30,7 @@ app.use(helmet({
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.json({ limit: '10mb' }));
 
@@ -41,7 +42,7 @@ if (!mongoUri) {
 }
 
 app.use(session({
-    secret: process.env.SESSION_SECRET || '57a28291c920e9323df0e0ab7c0c23df0cc750aa1686d5a88829db82f21812c0f866c31c0ab8a4a22404c8835bb4823e47a909e9a3f4150d1bc518fb2e22783e',
+  secret: process.env.SESSION_SECRET || '57a28291c920e9323df0e0ab7c0c23df0cc750aa1686d5a88829db82f21812c0f866c31c0ab8a4a22404c8835bb4823e47a909e9a3f4150d1bc518fb2e22783e',
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
