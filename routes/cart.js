@@ -178,7 +178,7 @@ router.post('/add/:id', async function(req, res) {
         req.session.recentlyViewed.unshift(req.params.id);
         if (req.session.recentlyViewed.length > 6) req.session.recentlyViewed = req.session.recentlyViewed.slice(0, 6);
         req.flash('success', product.name + ' added to cart');
-        req.session.save(function(err) { if (err) console.error('Session save error:', err); res.redirect(req.get('referer') || '/products'); });
+        req.session.save(function(err) { if (err) console.error('Session save error:', err); res.redirect('back'); });
     } catch (err) { req.flash('error', 'Error adding to cart'); res.redirect('/products'); }
 });
 
@@ -227,7 +227,7 @@ router.post('/wishlist/add/:id', async function(req, res) {
         if (!wishlist.products.find(function(p) { return p.toString() === req.params.id; })) {
             wishlist.products.push(req.params.id); await wishlist.save(); req.flash('success', 'Added to wishlist!');
         } else { req.flash('error', 'Already in your wishlist'); }
-        res.redirect(req.get('referer') || '/products');
+        res.redirect('back');
     } catch (err) { req.flash('error', 'Error adding to wishlist'); res.redirect('/products'); }
 });
 
