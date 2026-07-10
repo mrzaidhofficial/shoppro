@@ -19,7 +19,7 @@ var COLORS = {
 };
 
 function getStatusColor(status) {
-  var colors = { processing: COLORS.orange, shipped: COLORS.blue, delivered: COLORS.green, cancelled: COLORS.red };
+  var colors = { pending: COLORS.orange, processing: COLORS.orange, shipped: COLORS.blue, delivered: COLORS.green, cancelled: COLORS.red };
   return colors[status] || COLORS.orange;
 }
 
@@ -58,7 +58,8 @@ function generateInvoice(order, res) {
   doc.fontSize(8).font('Helvetica-Bold').fillColor(COLORS.gray).text('Order Date', rightX, y + 28);
   doc.fontSize(9).font('Helvetica').fillColor(COLORS.dark).text(order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), rightX, y + 40);
   doc.fontSize(8).font('Helvetica-Bold').fillColor(COLORS.gray).text('Payment Method', rightX, y + 56);
-  doc.fontSize(9).font('Helvetica').fillColor(COLORS.dark).text(order.paymentInfo.method.replace('_', ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); }), rightX, y + 68);
+  var paymentDisplay = order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Bank Transfer';
+  doc.fontSize(9).font('Helvetica').fillColor(COLORS.dark).text(paymentDisplay, rightX, y + 68);
   
   var statusColor = getStatusColor(order.status);
   doc.rect(rightX, y + 88, 100, 22).fill(statusColor).stroke(statusColor);
@@ -85,8 +86,8 @@ function generateInvoice(order, res) {
   order.items.forEach(function(item) {
     doc.fontSize(9).font('Helvetica-Bold').fillColor(COLORS.dark).text(item.name, 50, itemY, { width: 240 });
     doc.fontSize(9).font('Helvetica').fillColor(COLORS.gray).text(item.quantity.toString(), 300, itemY, { width: 60, align: 'center' });
-    doc.text('$' + item.price.toFixed(2), 370, itemY, { width: 80, align: 'right' });
-    doc.font('Helvetica-Bold').fillColor(COLORS.dark).text('$' + item.subtotal.toFixed(2), 460, itemY, { width: 100, align: 'right' });
+    doc.text('LKR ' + item.price.toFixed(2), 370, itemY, { width: 80, align: 'right' });
+    doc.font('Helvetica-Bold').fillColor(COLORS.dark).text('LKR ' + item.subtotal.toFixed(2), 460, itemY, { width: 100, align: 'right' });
     itemY += 24;
   });
   
@@ -96,24 +97,24 @@ function generateInvoice(order, res) {
   var totalsX = 370;
   doc.fontSize(9).font('Helvetica').fillColor(COLORS.gray);
   doc.text('Subtotal', totalsX, itemY);
-  doc.font('Helvetica-Bold').fillColor(COLORS.dark).text('$' + order.subtotal.toFixed(2), 460, itemY, { width: 100, align: 'right' });
+  doc.font('Helvetica-Bold').fillColor(COLORS.dark).text('LKR ' + order.subtotal.toFixed(2), 460, itemY, { width: 100, align: 'right' });
   itemY += 20;
   doc.fontSize(9).font('Helvetica').fillColor(COLORS.gray);
   doc.text('Shipping', totalsX, itemY);
-  doc.font('Helvetica-Bold').fillColor(COLORS.dark).text(order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2), 460, itemY, { width: 100, align: 'right' });
+  doc.font('Helvetica-Bold').fillColor(COLORS.dark).text(order.shippingCost === 0 ? 'FREE' : 'LKR ' + order.shippingCost.toFixed(2), 460, itemY, { width: 100, align: 'right' });
   itemY += 20;
   
   if (order.couponDiscount && order.couponDiscount > 0) {
     doc.fontSize(9).font('Helvetica').fillColor(COLORS.green);
     doc.text('Discount (' + order.couponCode + ')', totalsX, itemY);
-    doc.font('Helvetica-Bold').fillColor(COLORS.green).text('-$' + order.couponDiscount.toFixed(2), 460, itemY, { width: 100, align: 'right' });
+    doc.font('Helvetica-Bold').fillColor(COLORS.green).text('-LKR ' + order.couponDiscount.toFixed(2), 460, itemY, { width: 100, align: 'right' });
     itemY += 20;
   }
   
   doc.rect(totalsX, itemY, 192, 1).fill(COLORS.dark);
   itemY += 10;
   doc.fontSize(12).font('Helvetica-Bold').fillColor(COLORS.dark).text('Total', totalsX, itemY);
-  doc.fontSize(14).fillColor(COLORS.primary).text('$' + order.total.toFixed(2), 460, itemY - 2, { width: 100, align: 'right' });
+  doc.fontSize(14).fillColor(COLORS.primary).text('LKR ' + order.total.toFixed(2), 460, itemY - 2, { width: 100, align: 'right' });
   itemY += 18;
   doc.fontSize(7).font('Helvetica').fillColor(COLORS.gray).text('Tax/VAT included', totalsX, itemY);
   
