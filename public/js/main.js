@@ -130,6 +130,7 @@
   window.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 
+  // Fixed add-to-cart handler
   document.addEventListener('submit', function(e) {
     var form = e.target;
     if (form.action && form.action.indexOf('/cart/add/') !== -1) {
@@ -141,19 +142,20 @@
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       })
       .then(function(res) {
-        if (res.redirected) { window.location.href = res.url; return; }
+        if (res.redirected) { window.location.href = res.url; return null; }
         return res.text();
       })
       .then(function() {
-        fetch('/cart/count')
-          .then(function(res) { return res.json(); })
-          .then(function(data) {
-            var badges = document.querySelectorAll('.cart-badge');
-            badges.forEach(function(badge) {
-              if (data.count > 0) { badge.textContent = data.count; badge.style.display = 'flex'; }
-              else { badge.style.display = 'none'; }
-            });
-          });
+        return fetch('/cart/count');
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        var badges = document.querySelectorAll('.cart-badge');
+        badges.forEach(function(badge) {
+          if (data.count > 0) { badge.textContent = data.count; badge.style.display = 'flex'; }
+          else { badge.style.display = 'none'; }
+        });
+        window.location.reload();
       })
       .catch(function(err) { console.error('Add to cart error:', err); });
     }
