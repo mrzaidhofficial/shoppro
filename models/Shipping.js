@@ -14,10 +14,6 @@ var shippingSettingsSchema = new mongoose.Schema({
     handlingFee: { type: Number, default: 0 },
     estimatedDelivery: { type: String, default: '7-21 business days' },
     supplierInfo: { type: String, default: '' },
-    bankName: { type: String, default: 'Sample Bank' },
-    bankBranch: { type: String, default: 'Colombo' },
-    bankAccountName: { type: String, default: 'ShopNest (Pvt) Ltd' },
-    bankAccountNumber: { type: String, default: '1234567890' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

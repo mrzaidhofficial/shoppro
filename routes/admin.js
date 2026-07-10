@@ -215,6 +215,43 @@ router.post('/orders/verify-payment/:id', isAdmin, async (req, res) => {
     } catch (error) { req.flash('error', 'Error verifying payment'); res.redirect('/admin/orders'); }
 });
 
+// Bank Details Settings
+router.get('/bank-details', isAdmin, async (req, res) => {
+    try {
+        var BankDetails = require('../models/BankDetails');
+        var bankDetails = await BankDetails.findOne();
+        if (!bankDetails) {
+            bankDetails = new BankDetails();
+            await bankDetails.save();
+        }
+        res.render('admin/bank-details', { title: 'Bank Details', bankDetails: bankDetails });
+    } catch (error) {
+        req.flash('error', 'Error loading bank details');
+        res.redirect('/admin/dashboard');
+    }
+});
+
+router.post('/bank-details', isAdmin, async (req, res) => {
+    try {
+        var BankDetails = require('../models/BankDetails');
+        var bankDetails = await BankDetails.findOne();
+        if (!bankDetails) {
+            bankDetails = new BankDetails();
+        }
+        bankDetails.bankName = req.body.bankName || 'Sample Bank';
+        bankDetails.bankBranch = req.body.bankBranch || 'Colombo';
+        bankDetails.bankAccountName = req.body.bankAccountName || 'ShopNest (Pvt) Ltd';
+        bankDetails.bankAccountNumber = req.body.bankAccountNumber || '1234567890';
+        bankDetails.updatedAt = new Date();
+        await bankDetails.save();
+        req.flash('success', 'Bank details updated successfully');
+        res.redirect('/admin/bank-details');
+    } catch (err) {
+        req.flash('error', 'Error updating bank details');
+        res.redirect('/admin/bank-details');
+    }
+});
+
 // Coupons
 router.get('/coupons', isAdmin, async (req, res) => {
     const coupons = await Coupon.find().sort({ createdAt: -1 });

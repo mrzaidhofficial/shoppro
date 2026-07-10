@@ -1,0 +1,132 @@
+<%- include('../partials/header') %>
+
+<style>
+  .admin-layout { display: grid; grid-template-columns: 250px 1fr; gap: 32px; padding: 40px 0; min-height: 70vh; }
+  .admin-sidebar { background: var(--white); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 20px 0; height: fit-content; position: sticky; top: 100px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .admin-sidebar-header { padding: 8px 20px 18px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
+  .admin-sidebar-header h3 { font-family: var(--font-display); font-size: 1rem; color: var(--text-primary); margin-bottom: 2px; }
+  .admin-sidebar-header span { font-size: 0.72rem; color: var(--text-muted); }
+  .admin-nav-item { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: var(--text-secondary); font-weight: 500; font-size: 0.85rem; transition: all 0.2s ease; border-left: 3px solid transparent; text-decoration: none; margin: 2px 8px; border-radius: 0 var(--radius) var(--radius) 0; }
+  .admin-nav-item:hover { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); }
+  .admin-nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+  .admin-nav-item i { width: 18px; text-align: center; font-size: 0.85rem; }
+  .admin-content { min-width: 0; }
+  
+  .page-top { margin-bottom: 24px; }
+  .page-title { font-family: var(--font-display); font-size: 1.7rem; color: var(--text-primary); letter-spacing: -0.5px; }
+  .page-subtitle { font-size: 0.84rem; color: var(--text-muted); margin-top: 2px; }
+  
+  .settings-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); overflow: hidden; transition: box-shadow 0.3s ease; max-width: 700px; }
+  .settings-card:hover { box-shadow: var(--shadow-md); }
+  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; background: var(--bg-card-alt); }
+  .card-header-icon { width: 34px; height: 34px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; background: rgba(16,185,129,0.1); color: #059669; }
+  [data-theme="dark"] .card-header-icon { background: rgba(52,211,153,0.15); color: #34D399; }
+  .card-header-text { flex: 1; }
+  .card-header-title { font-weight: 700; color: var(--text-primary); font-size: 0.88rem; }
+  .card-header-sub { font-size: 0.7rem; color: var(--text-muted); }
+  .card-body { padding: 20px; }
+  
+  .form-group { margin-bottom: 14px; }
+  .form-group:last-child { margin-bottom: 0; }
+  .form-label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
+  .form-input { width: 100%; padding: 11px 14px; border: 2px solid var(--border-color); border-radius: var(--radius); font-size: 0.86rem; font-family: var(--font-primary); color: var(--text-primary); background: var(--bg-input); outline: none; transition: all 0.2s ease; }
+  .form-input:focus { border-color: var(--primary); background: var(--bg-card); box-shadow: 0 0 0 3px rgba(0,102,255,0.06); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  
+  .form-footer { display: flex; align-items: center; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color); }
+  .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: 11px 26px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-full); font-size: 0.86rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: all 0.25s ease; box-shadow: 0 4px 14px rgba(0,102,255,0.25); }
+  .btn-save:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,102,255,0.35); }
+  .save-note { font-size: 0.76rem; color: var(--text-muted); }
+  
+  .preview-box { background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px 20px; margin-top: 20px; }
+  .preview-box-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+  .preview-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem; }
+  
+  @media (max-width: 900px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .admin-sidebar { position: static; display: flex; overflow-x: auto; padding: 12px; gap: 4px; }
+    .admin-sidebar-header { display: none; }
+    .admin-nav-item { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 10px 16px; font-size: 0.8rem; margin: 0; border-radius: 0; }
+    .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--primary); }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="container">
+  <div class="admin-layout">
+    
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <h3>Admin Panel</h3>
+        <span><i class="fas fa-circle" style="font-size:0.35rem;color:var(--accent);"></i> Logged in as <strong><%= user.firstName %></strong></span>
+      </div>
+      <a href="/admin/dashboard" class="admin-nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="/admin/products" class="admin-nav-item"><i class="fas fa-box"></i> Products</a>
+      <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
+      <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
+      <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/bank-details" class="admin-nav-item active"><i class="fas fa-university"></i> Bank Details</a>
+      <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
+      <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+      <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+    </aside>
+    
+    <div class="admin-content">
+      <div class="page-top">
+        <h1 class="page-title">Bank Details</h1>
+        <p class="page-subtitle">Manage bank account information shown to customers at checkout</p>
+      </div>
+      
+      <div class="settings-card">
+        <div class="card-header">
+          <div class="card-header-icon"><i class="fas fa-university"></i></div>
+          <div class="card-header-text">
+            <div class="card-header-title">Bank Account Information</div>
+            <div class="card-header-sub">These details appear when customers select Bank Transfer payment</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form action="/admin/bank-details" method="POST">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Bank Name</label>
+                <input type="text" name="bankName" class="form-input" value="<%= bankDetails.bankName || '' %>" placeholder="e.g. Commercial Bank" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Branch</label>
+                <input type="text" name="bankBranch" class="form-input" value="<%= bankDetails.bankBranch || '' %>" placeholder="e.g. Colombo Fort" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Account Holder Name</label>
+                <input type="text" name="bankAccountName" class="form-input" value="<%= bankDetails.bankAccountName || '' %>" placeholder="e.g. ShopNest (Pvt) Ltd" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Account Number</label>
+                <input type="text" name="bankAccountNumber" class="form-input" value="<%= bankDetails.bankAccountNumber || '' %>" placeholder="e.g. 1234567890" required>
+              </div>
+            </div>
+            
+            <div class="form-footer">
+              <button type="submit" class="btn-save"><i class="fas fa-save"></i> Save Details</button>
+              <span class="save-note">Updates appear immediately on checkout</span>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="preview-box">
+        <div class="preview-box-label"><i class="fas fa-eye"></i> Customer View Preview</div>
+        <div class="preview-box-grid">
+          <div><span style="color: var(--text-muted);">Bank:</span> <strong style="color: var(--text-primary);"><%= bankDetails.bankName || '—' %></strong></div>
+          <div><span style="color: var(--text-muted);">Branch:</span> <strong style="color: var(--text-primary);"><%= bankDetails.bankBranch || '—' %></strong></div>
+          <div><span style="color: var(--text-muted);">Account Name:</span> <strong style="color: var(--text-primary);"><%= bankDetails.bankAccountName || '—' %></strong></div>
+          <div><span style="color: var(--text-muted);">Account Number:</span> <strong style="color: var(--text-primary);"><%= bankDetails.bankAccountNumber || '—' %></strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

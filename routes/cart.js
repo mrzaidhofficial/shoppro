@@ -6,6 +6,7 @@ var Product = require('../models/Product');
 var Order = require('../models/Order');
 var Coupon = require('../models/Coupon');
 var { ShippingSettings, OrderShipping } = require('../models/Shipping');
+var BankDetails = require('../models/BankDetails');
 var emailService = require('../services/emailService');
 var invoiceService = require('../services/invoiceService');
 
@@ -43,6 +44,15 @@ async function getShippingSettings() {
         await settings.save();
     }
     return settings;
+}
+
+async function getBankDetails() {
+    var bankDetails = await BankDetails.findOne();
+    if (!bankDetails) {
+        bankDetails = new BankDetails();
+        await bankDetails.save();
+    }
+    return bankDetails;
 }
 
 async function calculateShipping(cartItems) {
@@ -193,7 +203,8 @@ router.get('/checkout', async function(req, res) {
     }
     var total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
     var settings = await getShippingSettings();
-    res.render('checkout', { title: 'Checkout', cartItems: cartItems, subtotal: subtotal.toFixed(2), shipping: shipping.toFixed(2), total: total.toFixed(2), couponDiscount: couponDiscount.toFixed(2), appliedCoupon: appliedCoupon, settings: settings });
+    var bankDetails = await getBankDetails();
+    res.render('checkout', { title: 'Checkout', cartItems: cartItems, subtotal: subtotal.toFixed(2), shipping: shipping.toFixed(2), total: total.toFixed(2), couponDiscount: couponDiscount.toFixed(2), appliedCoupon: appliedCoupon, settings: settings, bankDetails: bankDetails });
 });
 
 router.post('/place-order', upload.single('paymentReceipt'), async function(req, res) {
