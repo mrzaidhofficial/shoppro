@@ -32,7 +32,7 @@
           </div>
           <div>
             <span style="display: block; font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Total Amount</span>
-            <span style="font-weight: 700; color: var(--primary); font-size: 1.2rem;">$<%= order.total.toFixed(2) %></span>
+            <span style="font-weight: 700; color: var(--primary); font-size: 1.2rem;">LKR <%= order.total.toFixed(2) %></span>
           </div>
           <div>
             <span style="display: block; font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Status</span>
@@ -48,18 +48,18 @@
                 <span style="font-weight: 500; color: var(--text-primary);"><%= item.name %></span>
                 <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 10px;">x<%= item.quantity %></span>
               </div>
-              <span style="font-weight: 600; color: var(--text-primary);">$<%= item.subtotal.toFixed(2) %></span>
+              <span style="font-weight: 600; color: var(--text-primary);">LKR <%= item.subtotal.toFixed(2) %></span>
             </div>
           <% }) %>
         </div>
         
         <div style="border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 16px;">
-          <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--text-body); font-size: 0.9rem;"><span>Subtotal</span><span>$<%= order.subtotal.toFixed(2) %></span></div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--text-body); font-size: 0.9rem;"><span>Subtotal</span><span>LKR <%= order.subtotal.toFixed(2) %></span></div>
           <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--text-body); font-size: 0.9rem;"><span>Shipping</span><span><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></span></div>
           <% if (order.couponDiscount && order.couponDiscount > 0) { %>
-            <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--success); font-size: 0.9rem;"><span>Discount (<%= order.couponCode %>)</span><span>-$<%= order.couponDiscount.toFixed(2) %></span></div>
+            <div style="display: flex; justify-content: space-between; padding: 6px 0; color: var(--success); font-size: 0.9rem;"><span>Discount (<%= order.couponCode %>)</span><span>-LKR <%= order.couponDiscount.toFixed(2) %></span></div>
           <% } %>
-          <div style="display: flex; justify-content: space-between; padding: 8px 0; font-weight: 700; color: var(--text-primary); font-size: 1.05rem; border-top: 1px solid var(--border-color); margin-top: 8px;"><span>Total</span><span>$<%= order.total.toFixed(2) %></span></div>
+          <div style="display: flex; justify-content: space-between; padding: 8px 0; font-weight: 700; color: var(--text-primary); font-size: 1.05rem; border-top: 1px solid var(--border-color); margin-top: 8px;"><span>Total</span><span>LKR <%= order.total.toFixed(2) %></span></div>
           <div style="font-size:0.75rem;color:var(--text-muted);text-align:right;margin-top:4px;">Tax/VAT included</div>
         </div>
         

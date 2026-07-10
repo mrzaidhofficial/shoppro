@@ -181,7 +181,7 @@
                   </td>
                   <td style="font-weight:600;color:var(--primary);white-space:nowrap;"><%= order.orderNumber %></td>
                   <td style="font-size:0.85rem;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></td>
-                  <td style="font-weight:600;">$<%= order.total.toFixed(2) %></td>
+                  <td style="font-weight:600;">LKR <%= order.total.toFixed(2) %></td>
                   <td><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></td>
                   <td><span class="badge badge-<%= order.status %>"><%= order.status %></span></td>
                   <td><span class="badge badge-<%= shipInfo.shippingStatus || 'pending' %>"><%= shipInfo.shippingStatus || 'pending' %></span></td>

@@ -247,7 +247,7 @@
           </div>
           <span class="review-count"><%= product.averageRating.toFixed(1) %> (<%= product.numReviews || product.ratings.length %> reviews)</span>
         </div>
-        <div class="product-info-price">$<%= product.price.toFixed(2) %></div>
+        <div class="product-info-price">LKR <%= product.price.toFixed(2) %></div>
         <% if (product.shortDescription) { %><p class="product-info-short-desc"><%= product.shortDescription %></p><% } %>
         <p class="product-info-description"><%= product.description %></p>
         
@@ -352,7 +352,7 @@
                 <div class="product-card-rating">
                   <% for (var i = 1; i <= 5; i++) { %><span class="star <%= i <= Math.floor(relProduct.averageRating) ? 'filled' : 'empty' %>"><i class="fas fa-star"></i></span><% } %>
                 </div>
-                <div class="product-card-price">$<%= relProduct.price.toFixed(2) %></div>
+                <div class="product-card-price">LKR <%= relProduct.price.toFixed(2) %></div>
               </div>
               <div class="product-card-footer">
                 <a href="/products/<%= relProduct._id %>" class="btn btn-outline">Details</a>
@@ -378,7 +378,7 @@
                 <div class="product-card-rating">
                   <% for (var i = 1; i <= 5; i++) { %><span class="star <%= i <= Math.floor(rvProduct.averageRating) ? 'filled' : 'empty' %>"><i class="fas fa-star"></i></span><% } %>
                 </div>
-                <div class="product-card-price">$<%= rvProduct.price.toFixed(2) %></div>
+                <div class="product-card-price">LKR <%= rvProduct.price.toFixed(2) %></div>
               </div>
             </div>
           <% }) %>

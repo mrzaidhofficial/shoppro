@@ -1,12 +1,42 @@
 var express = require('express');
 var router = express.Router();
+var path = require('path');
+var multer = require('multer');
 var Product = require('../models/Product');
 var Order = require('../models/Order');
 var Coupon = require('../models/Coupon');
 var { ShippingSettings, OrderShipping } = require('../models/Shipping');
 var emailService = require('../services/emailService');
 var invoiceService = require('../services/invoiceService');
-var paypalService = require('../services/paypalService');
+
+// Configure multer for payment receipt uploads
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        var dir = 'uploads/receipts';
+        var fs = require('fs');
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+        cb(null, dir);
+    },
+    filename: function(req, file, cb) {
+        cb(null, 'receipt-' + Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
+    }
+});
+
+var upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: function(req, file, cb) {
+        var allowedTypes = /jpeg|jpg|png|pdf/;
+        var extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        var mimetype = file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf';
+        if (extname && mimetype) {
+            return cb(null, true);
+        }
+        cb(new Error('Only JPG, PNG, and PDF files are allowed'));
+    }
+});
 
 // Get current shipping settings
 async function getShippingSettings() {
@@ -31,17 +61,14 @@ async function getShippingSettings() {
 async function calculateShipping(cartItems) {
     var settings = await getShippingSettings();
     
-    // If shipping is disabled or type is disabled, return 0
     if (!settings.shippingEnabled || settings.shippingType === 'disabled') {
         return 0;
     }
     
-    // If shipping type is free, return 0
     if (settings.shippingType === 'free') {
         return 0;
     }
     
-    // Calculate subtotal
     var subtotal = 0;
     var itemCount = 0;
     cartItems.forEach(function(item) {
@@ -49,15 +76,12 @@ async function calculateShipping(cartItems) {
         itemCount += item.quantity;
     });
     
-    // Check free shipping threshold
     if (settings.freeShippingEnabled && subtotal >= settings.freeShippingMinAmount) {
         return 0;
     }
     
-    // Flat rate calculation
     var shipping = settings.flatRatePerOrder + (settings.flatRatePerItem * itemCount) + settings.handlingFee;
     
-    // Check product-level free shipping
     var productIds = cartItems.map(function(item) { return item.productId; });
     var products = await Product.find({ _id: { $in: productIds } });
     
@@ -124,7 +148,7 @@ router.post('/apply-coupon', async function(req, res) {
         if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) { req.flash('error', 'This coupon has reached its usage limit'); return res.redirect('/cart'); }
         var cart = req.session.cart || [];
         var subtotal = cart.reduce(function(sum, item) { return sum + (item.price * item.quantity); }, 0);
-        if (coupon.minPurchase && subtotal < coupon.minPurchase) { req.flash('error', 'Minimum purchase of $' + coupon.minPurchase.toFixed(2) + ' required'); return res.redirect('/cart'); }
+        if (coupon.minPurchase && subtotal < coupon.minPurchase) { req.flash('error', 'Minimum purchase of LKR ' + coupon.minPurchase.toFixed(2) + ' required'); return res.redirect('/cart'); }
         req.session.coupon = { _id: coupon._id, code: coupon.code, discountType: coupon.discountType, discountValue: coupon.discountValue, maxDiscount: coupon.maxDiscount };
         req.flash('success', 'Coupon "' + coupon.code + '" applied!');
         req.session.save(function(err) { if (err) console.error('Session save error:', err); res.redirect('/cart'); });
@@ -247,105 +271,110 @@ router.get('/checkout', async function(req, res) {
         total: total.toFixed(2), 
         couponDiscount: couponDiscount.toFixed(2), 
         appliedCoupon: appliedCoupon, 
-        paypalConfigured: paypalService.isConfigured(),
         settings: settings
     });
 });
 
-// PayPal Create Order
-router.post('/paypal/create-order', async function(req, res) {
+// Place Order (New Checkout Flow)
+router.post('/place-order', upload.single('paymentReceipt'), async function(req, res) {
     try {
         if (!req.session.user) return res.status(401).json({ error: 'Please sign in' });
         var cart = req.session.cart || [];
         if (cart.length === 0) return res.status(400).json({ error: 'Cart is empty' });
-        var subtotal = 0;
-        var items = cart.map(function(item) { subtotal += item.price * item.quantity; return { name: item.name, quantity: item.quantity, price: item.price }; });
-        subtotal = Math.round(subtotal * 100) / 100;
-        var shipping = await calculateShipping(cart);
-        var discount = 0;
-        if (req.session.coupon) {
-            var coupon = req.session.coupon;
-            if (coupon.discountType === 'percentage') { discount = Math.round(subtotal * (coupon.discountValue / 100) * 100) / 100; if (coupon.maxDiscount && discount > coupon.maxDiscount) discount = coupon.maxDiscount; }
-            else { discount = coupon.discountValue; }
-            if (discount > subtotal) discount = subtotal;
+        
+        var paymentMethod = req.body.paymentMethod;
+        if (!paymentMethod || !['cod', 'bank_transfer'].includes(paymentMethod)) {
+            return res.status(400).json({ error: 'Invalid payment method' });
         }
-        var total = Math.round((subtotal + shipping - discount) * 100) / 100;
-        if (total < 0) total = 0;
-        var paypalOrder = await paypalService.createOrder({ items: items, subtotal: subtotal, shipping: shipping, tax: 0, discount: discount, total: total });
-        req.session.pendingOrder = { paypalOrderId: paypalOrder.id, subtotal: subtotal, shipping: shipping, tax: 0, discount: discount, total: total, items: items };
-        req.session.save(function(err) { if (err) console.error('Session save error:', err); res.json({ id: paypalOrder.id }); });
-    } catch (err) { console.error('PayPal create order error:', err.message); res.status(500).json({ error: 'Failed to create PayPal order' }); }
-});
-
-// PayPal Capture
-router.post('/paypal/capture-payment', async function(req, res) {
-    try {
-        if (!req.session.user) return res.status(401).json({ error: 'Please sign in' });
-        var pendingOrder = req.session.pendingOrder;
-        if (!pendingOrder) return res.status(400).json({ error: 'No pending order found' });
-        var captureResult = await paypalService.capturePayment(req.body.orderID);
-        var cart = req.session.cart || []; var orderItems = [];
-        for (var i = 0; i < cart.length; i++) {
-            var item = cart[i]; var product = await Product.findById(item.productId);
-            if (product && product.stock >= item.quantity) { product.stock -= item.quantity; await product.save(); }
-            if (product) orderItems.push({ product: product._id, name: item.name, price: item.price, quantity: item.quantity, subtotal: Math.round(item.price * item.quantity * 100) / 100 });
+        
+        if (paymentMethod === 'bank_transfer' && !req.file) {
+            return res.status(400).json({ error: 'Please upload your payment receipt' });
         }
-        var shippingAddress = req.body.shippingAddress || { street: 'N/A', city: 'N/A', state: 'N/A', zipCode: '00000', country: 'US' };
-        var order = new Order({
-            user: req.session.user.id, items: orderItems, shippingAddress: shippingAddress, billingAddress: shippingAddress,
-            paymentInfo: { method: 'paypal', transactionId: captureResult.transactionId, status: 'completed', paypalOrderId: captureResult.paypalOrderId, payerEmail: captureResult.payerEmail },
-            subtotal: pendingOrder.subtotal, shippingCost: pendingOrder.shipping, tax: 0, total: pendingOrder.total,
-            couponCode: req.session.coupon ? req.session.coupon.code : null, couponDiscount: pendingOrder.discount, status: 'processing'
-        });
-        await order.save();
-        if (req.session.coupon) await Coupon.findByIdAndUpdate(req.session.coupon._id, { $inc: { usedCount: 1 } });
-        var User = require('../models/User');
-        User.findById(req.session.user.id).then(function(customer) { if (customer && customer.email) emailService.sendOrderConfirmation(customer.email, customer.firstName, order).catch(function(err) { console.error('Email failed:', err.message); }); }).catch(function(err) { console.error('Customer lookup failed:', err.message); });
-        req.session.cart = []; req.session.coupon = null; req.session.pendingOrder = null; req.session.cartShipping = 0;
-        res.json({ success: true, orderId: order._id, orderNumber: order.orderNumber });
-    } catch (err) { console.error('PayPal capture error:', err.message); res.status(500).json({ error: 'Payment failed' }); }
-});
-
-// Mock checkout (fallback for non-PayPal)
-router.post('/checkout', async function(req, res) {
-    try {
-        if (!req.session.user) return res.status(401).json({ error: 'Please sign in' });
-        var cart = req.session.cart || [];
-        if (cart.length === 0) return res.status(400).json({ error: 'Cart is empty' });
-        var subtotal = 0; var orderItems = [];
+        
+        var subtotal = 0; 
+        var orderItems = [];
+        
         for (var i = 0; i < cart.length; i++) {
-            var item = cart[i]; var product = await Product.findById(item.productId);
+            var item = cart[i]; 
+            var product = await Product.findById(item.productId);
             if (!product) return res.status(400).json({ error: 'Product "' + item.name + '" is no longer available' });
             if (product.stock < item.quantity) return res.status(400).json({ error: 'Insufficient stock for ' + item.name });
-            var itemTotal = Math.round(item.price * item.quantity * 100) / 100; subtotal += itemTotal;
+            var itemTotal = Math.round(item.price * item.quantity * 100) / 100; 
+            subtotal += itemTotal;
             orderItems.push({ product: product._id, name: item.name, price: item.price, quantity: item.quantity, subtotal: itemTotal });
-            product.stock -= item.quantity; await product.save();
+            product.stock -= item.quantity; 
+            await product.save();
         }
+        
         subtotal = Math.round(subtotal * 100) / 100;
-        var shipping = await calculateShipping(cart);
-        var couponDiscount = 0; var appliedCouponId = null;
+        var shipping = req.session.cartShipping || 0;
+        var couponDiscount = 0; 
+        var appliedCouponId = null;
+        
         if (req.session.coupon) {
             var coupon = req.session.coupon;
-            if (coupon.discountType === 'percentage') { couponDiscount = Math.round(subtotal * (coupon.discountValue / 100) * 100) / 100; if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) couponDiscount = coupon.maxDiscount; }
-            else { couponDiscount = coupon.discountValue; }
-            if (couponDiscount > subtotal) couponDiscount = subtotal; appliedCouponId = coupon._id;
+            if (coupon.discountType === 'percentage') { 
+                couponDiscount = Math.round(subtotal * (coupon.discountValue / 100) * 100) / 100; 
+                if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) couponDiscount = coupon.maxDiscount; 
+            } else { 
+                couponDiscount = coupon.discountValue; 
+            }
+            if (couponDiscount > subtotal) couponDiscount = subtotal; 
+            appliedCouponId = coupon._id;
         }
+        
         var total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
         if (total < 0) total = 0;
-        var shippingAddress = req.body.shippingAddress || { street: 'N/A', city: 'N/A', state: 'N/A', zipCode: '00000', country: 'US' };
+        
+        var shippingAddress = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            street: req.body.street,
+            city: req.body.city,
+            state: req.body.state,
+            zipCode: req.body.zipCode,
+            country: req.body.country
+        };
+        
         var order = new Order({
-            user: req.session.user.id, items: orderItems, shippingAddress: shippingAddress, billingAddress: shippingAddress,
-            paymentInfo: { method: req.body.paymentMethod || 'credit_card', transactionId: 'TXN-' + Date.now(), status: 'completed' },
-            subtotal: subtotal, shippingCost: shipping, tax: 0, total: total,
-            couponCode: req.session.coupon ? req.session.coupon.code : null, couponDiscount: couponDiscount, status: 'processing'
+            user: req.session.user.id, 
+            items: orderItems, 
+            shippingAddress: shippingAddress,
+            paymentMethod: paymentMethod,
+            paymentReceipt: req.file ? req.file.filename : null,
+            paymentVerified: false,
+            subtotal: subtotal, 
+            shippingCost: shipping, 
+            tax: 0, 
+            total: total,
+            couponCode: req.session.coupon ? req.session.coupon.code : null, 
+            couponDiscount: couponDiscount, 
+            status: 'pending'
         });
+        
         await order.save();
+        
         if (appliedCouponId) await Coupon.findByIdAndUpdate(appliedCouponId, { $inc: { usedCount: 1 } });
+        
         var User = require('../models/User');
-        User.findById(req.session.user.id).then(function(customer) { if (customer && customer.email) emailService.sendOrderConfirmation(customer.email, customer.firstName, order).catch(function(err) { console.error('Email failed:', err.message); }); }).catch(function(err) { console.error('Customer lookup failed:', err.message); });
-        req.session.cart = []; req.session.coupon = null; req.session.cartShipping = 0;
+        User.findById(req.session.user.id).then(function(customer) { 
+            if (customer && customer.email) 
+                emailService.sendOrderConfirmation(customer.email, customer.firstName, order).catch(function(err) { 
+                    console.error('Email failed:', err.message); 
+                }); 
+        });
+        
+        req.session.cart = []; 
+        req.session.coupon = null; 
+        req.session.cartShipping = 0;
+        
         res.json({ success: true, orderId: order._id, orderNumber: order.orderNumber });
-    } catch (err) { console.error('Checkout error:', err.message); res.status(500).json({ error: 'Checkout failed' }); }
+        
+    } catch (err) { 
+        console.error('Order error:', err.message); 
+        res.status(500).json({ error: 'Failed to place order' }); 
+    }
 });
 
 // Order confirmation

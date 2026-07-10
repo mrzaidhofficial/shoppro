@@ -26,31 +26,27 @@ var orderSchema = new mongoose.Schema({
         subtotal: Number
     }],
     shippingAddress: {
+        firstName: String,
+        lastName: String,
+        email: String,
         street: String,
         city: String,
         state: String,
         zipCode: String,
         country: String
     },
-    billingAddress: {
-        street: String,
-        city: String,
-        state: String,
-        zipCode: String,
-        country: String
+    paymentMethod: {
+        type: String,
+        enum: ['cod', 'bank_transfer'],
+        default: 'cod'
     },
-    paymentInfo: {
-        method: {
-            type: String,
-            default: 'credit_card'
-        },
-        transactionId: String,
-        status: {
-            type: String,
-            default: 'completed'
-        },
-        paypalOrderId: String,
-        payerEmail: String
+    paymentReceipt: {
+        type: String,
+        default: null
+    },
+    paymentVerified: {
+        type: Boolean,
+        default: false
     },
     subtotal: {
         type: Number,
@@ -78,7 +74,8 @@ var orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        default: 'processing'
+        enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
+        default: 'pending'
     },
     trackingNumber: String,
     notes: String,

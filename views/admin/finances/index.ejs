@@ -145,27 +145,27 @@
       <div class="summary-grid">
         <div class="summary-card revenue">
           <div class="summary-icon blue"><i class="fas fa-shopping-cart"></i></div>
-          <div class="summary-value">$<%= totalRevenue.toFixed(2) %></div>
+          <div class="summary-value">LKR <%= totalRevenue.toFixed(2) %></div>
           <div class="summary-label">Total Revenue</div>
         </div>
         <div class="summary-card costs">
           <div class="summary-icon red"><i class="fas fa-receipt"></i></div>
-          <div class="summary-value">−$<%= totalProductCost.toFixed(2) %></div>
+          <div class="summary-value">−LKR <%= totalProductCost.toFixed(2) %></div>
           <div class="summary-label">Product Costs</div>
         </div>
         <div class="summary-card shipping">
           <div class="summary-icon orange"><i class="fas fa-truck"></i></div>
-          <div class="summary-value">−$<%= totalShippingCost.toFixed(2) %></div>
+          <div class="summary-value">−LKR <%= totalShippingCost.toFixed(2) %></div>
           <div class="summary-label">Shipping Costs</div>
         </div>
         <div class="summary-card coupons">
           <div class="summary-icon purple"><i class="fas fa-tag"></i></div>
-          <div class="summary-value">−$<%= totalCoupons.toFixed(2) %></div>
+          <div class="summary-value">−LKR <%= totalCoupons.toFixed(2) %></div>
           <div class="summary-label">Coupons</div>
         </div>
         <div class="summary-card profit">
           <div class="summary-icon green"><i class="fas fa-chart-line"></i></div>
-          <div class="summary-value">$<%= totalNetProfit.toFixed(2) %></div>
+          <div class="summary-value">LKR <%= totalNetProfit.toFixed(2) %></div>
           <div class="summary-label">Net Profit</div>
         </div>
       </div>
@@ -212,10 +212,10 @@
                       </td>
                       <td><span class="prod-name"><%= item.name %></span></td>
                       <td><%= item.quantity %></td>
-                      <td class="amount neutral">$<%= item.price.toFixed(2) %></td>
-                      <td class="amount cost-color">$<%= ((item.cost || 0) * item.quantity).toFixed(2) %></td>
+                      <td class="amount neutral">LKR <%= item.price.toFixed(2) %></td>
+                      <td class="amount cost-color">LKR <%= ((item.cost || 0) * item.quantity).toFixed(2) %></td>
                       <td class="amount shipping-color"><%= idx === 0 ? '$' + itemShipping.toFixed(2) : '—' %></td>
-                      <td class="amount coupon-color"><%= idx === 0 && itemCoupon > 0 ? '−$' + itemCoupon.toFixed(2) : '$0.00' %></td>
+                      <td class="amount coupon-color"><%= idx === 0 && itemCoupon > 0 ? '−$' + itemCoupon.toFixed(2) : 'LKR 0.00' %></td>
                       <td class="amount revenue-color"><%= idx === 0 ? '$' + itemRevenue.toFixed(2) : '—' %></td>
                       <td class="amount <%= itemProfit >= 0 ? 'profit-color' : 'cost-color' %>">
                         <%= idx === 0 ? '$' + itemProfit.toFixed(2) : '$' + ((item.price - (item.cost || 0)) * item.quantity).toFixed(2) %>

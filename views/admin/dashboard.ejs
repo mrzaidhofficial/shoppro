@@ -320,14 +320,14 @@
         <div class="financial-card sales">
           <div class="fc-badge">Gross Sales</div>
           <div class="fc-icon"><i class="fas fa-shopping-cart"></i></div>
-          <div class="fc-amount">$<%= totalSales.toFixed(2) %></div>
+          <div class="fc-amount">LKR <%= totalSales.toFixed(2) %></div>
           <div class="fc-label">Total Sales</div>
           <div class="fc-sub">Complete revenue from all orders placed</div>
         </div>
         <div class="financial-card profit">
           <div class="fc-badge">Net Profit</div>
           <div class="fc-icon"><i class="fas fa-chart-line"></i></div>
-          <div class="fc-amount">$<%= totalRevenue.toFixed(2) %></div>
+          <div class="fc-amount">LKR <%= totalRevenue.toFixed(2) %></div>
           <div class="fc-label">Net Profit</div>
           <div class="fc-sub">Pure profit from all placed orders</div>
         </div>
@@ -337,7 +337,7 @@
         <div class="info-card">
           <h3><i class="fas fa-shipping-fast" style="color:#2563EB;margin-right:8px;"></i> Shipping Overview</h3>
           <div class="info-card-stats">
-            <div class="info-card-stat"><div class="info-card-stat-number" style="color:#2563EB;">$<%= typeof totalShippingCollected !== 'undefined' ? totalShippingCollected.toFixed(2) : '0.00' %></div><div class="info-card-stat-label">Total Shipping Collected</div></div>
+            <div class="info-card-stat"><div class="info-card-stat-number" style="color:#2563EB;">LKR <%= typeof totalShippingCollected !== 'undefined' ? totalShippingCollected.toFixed(2) : '0.00' %></div><div class="info-card-stat-label">Total Shipping Collected</div></div>
             <div class="info-card-divider"></div>
             <div class="info-card-stat"><div class="info-card-stat-number" style="color:#1E40AF;"><%= typeof paidShippingOrders !== 'undefined' ? paidShippingOrders : 0 %></div><div class="info-card-stat-label">Orders with Shipping</div></div>
           </div>
@@ -345,7 +345,7 @@
         <div class="info-card">
           <h3><i class="fas fa-tags" style="color:#D97706;margin-right:8px;"></i> Coupons Overview</h3>
           <div class="info-card-stats">
-            <div class="info-card-stat"><div class="info-card-stat-number" style="color:#D97706;">$<%= typeof totalCouponsGiven !== 'undefined' ? totalCouponsGiven.toFixed(2) : '0.00' %></div><div class="info-card-stat-label">Total Coupons Given</div></div>
+            <div class="info-card-stat"><div class="info-card-stat-number" style="color:#D97706;">LKR <%= typeof totalCouponsGiven !== 'undefined' ? totalCouponsGiven.toFixed(2) : '0.00' %></div><div class="info-card-stat-label">Total Coupons Given</div></div>
             <div class="info-card-divider"></div>
             <div class="info-card-stat"><div class="info-card-stat-number" style="color:#92400E;"><%= typeof couponOrderCount !== 'undefined' ? couponOrderCount : 0 %></div><div class="info-card-stat-label">Orders with Coupons</div></div>
           </div>
@@ -368,7 +368,7 @@
             <div class="bar-chart">
               <% var maxRevenue = 0; monthlySales.forEach(function(m) { if (m.revenue > maxRevenue) maxRevenue = m.revenue; }); %>
               <% monthlySales.forEach(function(m) { %>
-                <div class="bar-item"><div class="bar-value">$<%= m.revenue.toFixed(0) %></div><div class="bar" style="height:<%= maxRevenue > 0 ? (m.revenue / maxRevenue * 100) : 0 %>%"></div><div class="bar-label"><%= m._id %></div></div>
+                <div class="bar-item"><div class="bar-value">LKR <%= m.revenue.toFixed(0) %></div><div class="bar" style="height:<%= maxRevenue > 0 ? (m.revenue / maxRevenue * 100) : 0 %>%"></div><div class="bar-label"><%= m._id %></div></div>
               <% }) %>
             </div>
           <% } else { %>
@@ -380,7 +380,7 @@
           <% if (typeof topProducts !== 'undefined' && topProducts.length > 0) { %>
             <div class="top-products-list">
               <% topProducts.forEach(function(tp, index) { %>
-                <div class="top-product-item"><div class="top-product-rank"><%= index + 1 %></div><div class="top-product-info"><div class="top-product-name"><%= tp.name %></div><div class="top-product-sold"><%= tp.totalSold %> units sold</div></div><div class="top-product-revenue">$<%= tp.revenue.toFixed(2) %></div></div>
+                <div class="top-product-item"><div class="top-product-rank"><%= index + 1 %></div><div class="top-product-info"><div class="top-product-name"><%= tp.name %></div><div class="top-product-sold"><%= tp.totalSold %> units sold</div></div><div class="top-product-revenue">LKR <%= tp.revenue.toFixed(2) %></div></div>
               <% }) %>
             </div>
           <% } else { %>
@@ -411,7 +411,7 @@
                   <td style="font-weight:600;color:var(--primary);"><%= order.orderNumber %></td>
                   <td><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></td>
                   <td><%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></td>
-                  <td style="font-weight:600;color:#2563EB;font-family:var(--font-display);">$<%= order.total.toFixed(2) %></td>
+                  <td style="font-weight:600;color:#2563EB;font-family:var(--font-display);">LKR <%= order.total.toFixed(2) %></td>
                   <td><span class="badge-status badge-<%= order.status %>"><%= order.status %></span></td>
                 </tr>
               <% }) %>

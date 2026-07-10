@@ -23,7 +23,7 @@
               <div class="product-card-rating">
                 <% for (var i = 1; i <= 5; i++) { %><span class="star <%= i <= Math.floor(product.averageRating) ? 'filled' : '' %>"><i class="fas fa-star"></i></span><% } %>
               </div>
-              <div class="product-card-price">$<%= product.price.toFixed(2) %></div>
+              <div class="product-card-price">LKR <%= product.price.toFixed(2) %></div>
             </div>
             <div class="product-card-footer">
               <form action="/cart/wishlist/remove/<%= product._id %>" method="POST" style="flex:1;"><button type="submit" class="btn btn-outline btn-sm btn-block" style="width:100%;">Remove</button></form>

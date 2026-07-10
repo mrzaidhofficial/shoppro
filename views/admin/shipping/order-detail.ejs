@@ -145,7 +145,7 @@
       <div class="info-cards">
         <div class="info-card"><div class="info-card-label">Customer</div><div class="info-card-value"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></div></div>
         <div class="info-card"><div class="info-card-label">Order Date</div><div class="info-card-value"><%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div></div>
-        <div class="info-card"><div class="info-card-label">Order Total</div><div class="info-card-value price">$<%= order.total.toFixed(2) %></div></div>
+        <div class="info-card"><div class="info-card-label">Order Total</div><div class="info-card-value price">LKR <%= order.total.toFixed(2) %></div></div>
         <div class="info-card"><div class="info-card-label">Shipping Charged</div><div class="info-card-value"><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></div></div>
       </div>
       
@@ -159,7 +159,7 @@
                 <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead>
                 <tbody>
                   <% order.items.forEach(function(item) { %>
-                    <tr><td style="font-weight:500;"><%= item.name %></td><td><%= item.quantity %></td><td>$<%= item.price.toFixed(2) %></td><td style="font-weight:600;">$<%= item.subtotal.toFixed(2) %></td></tr>
+                    <tr><td style="font-weight:500;"><%= item.name %></td><td><%= item.quantity %></td><td>LKR <%= item.price.toFixed(2) %></td><td style="font-weight:600;">LKR <%= item.subtotal.toFixed(2) %></td></tr>
                   <% }) %>
                 </tbody>
               </table>
@@ -190,10 +190,10 @@
               </div>
             </div>
             <div class="profit-metrics-row">
-              <div class="profit-metric-box"><div class="metric-icon-circle blue"><i class="fas fa-shopping-cart"></i></div><div class="metric-value">$<%= revenue.toFixed(2) %></div><div class="metric-label">Revenue</div></div>
+              <div class="profit-metric-box"><div class="metric-icon-circle blue"><i class="fas fa-shopping-cart"></i></div><div class="metric-value">LKR <%= revenue.toFixed(2) %></div><div class="metric-label">Revenue</div></div>
               <div class="profit-metric-box"><div class="metric-icon-circle amber"><i class="fas fa-cubes"></i></div><div class="metric-value"><%= order.items ? order.items.length : 0 %></div><div class="metric-label">Items</div></div>
-              <div class="profit-metric-box"><div class="metric-icon-circle red"><i class="fas fa-arrow-trend-down"></i></div><div class="metric-value danger">−$<%= productCost.toFixed(2) %></div><div class="metric-label">Product Cost</div></div>
-              <div class="profit-metric-box"><div class="metric-icon-circle purple"><i class="fas fa-tag"></i></div><div class="metric-value<%= couponDiscount > 0 ? ' danger' : '' %>"><%= couponDiscount > 0 ? '−$' + couponDiscount.toFixed(2) : '$0.00' %></div><div class="metric-label">Coupon</div></div>
+              <div class="profit-metric-box"><div class="metric-icon-circle red"><i class="fas fa-arrow-trend-down"></i></div><div class="metric-value danger">−LKR <%= productCost.toFixed(2) %></div><div class="metric-label">Product Cost</div></div>
+              <div class="profit-metric-box"><div class="metric-icon-circle purple"><i class="fas fa-tag"></i></div><div class="metric-value<%= couponDiscount > 0 ? ' danger' : '' %>"><%= couponDiscount > 0 ? '−$' + couponDiscount.toFixed(2) : 'LKR 0.00' %></div><div class="metric-label">Coupon</div></div>
               <div class="profit-metric-box"><div class="metric-icon-circle teal"><i class="fas fa-truck"></i></div><div class="metric-value danger"><%= shippingCost === 0 ? 'FREE' : '−$' + shippingCost.toFixed(2) %></div><div class="metric-label">Shipping</div></div>
             </div>
           </div>

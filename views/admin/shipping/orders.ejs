@@ -328,7 +328,7 @@
                     <div style="font-size:0.75rem;color:var(--gray-400);"><%= order.user ? order.user.email : '' %></div>
                   </td>
                   <td><%= order.items ? order.items.length : 0 %> item(s)</td>
-                  <td class="order-total-amount">$<%= order.total.toFixed(2) %></td>
+                  <td class="order-total-amount">LKR <%= order.total.toFixed(2) %></td>
                   <td style="font-size:0.82rem;white-space:nowrap;">
                     <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
                   </td>
