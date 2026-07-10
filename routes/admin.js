@@ -201,6 +201,20 @@ router.post('/orders/bulk-update', isAdmin, async (req, res) => {
     } catch (error) { req.flash('error', 'Error updating orders'); res.redirect('/admin/orders'); }
 });
 
+// Verify payment for bank transfer orders
+router.post('/orders/verify-payment/:id', isAdmin, async (req, res) => {
+    try {
+        var order = await Order.findById(req.params.id);
+        if (!order) { req.flash('error', 'Order not found'); return res.redirect('/admin/orders'); }
+        order.paymentVerified = true;
+        order.status = 'processing';
+        order.updatedAt = new Date();
+        await order.save();
+        req.flash('success', 'Payment verified for Order #' + order.orderNumber);
+        res.redirect('/admin/orders');
+    } catch (error) { req.flash('error', 'Error verifying payment'); res.redirect('/admin/orders'); }
+});
+
 // Coupons
 router.get('/coupons', isAdmin, async (req, res) => {
     const coupons = await Coupon.find().sort({ createdAt: -1 });

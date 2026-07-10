@@ -112,10 +112,14 @@
   .badge-shipped { background: #DBEAFE; color: #2563EB; }
   .badge-delivered { background: var(--success-bg); color: var(--success); }
   .badge-cancelled { background: var(--error-bg); color: var(--error); }
+  .badge-pending { background: #FEF3C7; color: #D97706; }
+  .badge-verified { background: var(--success-bg); color: var(--success); }
   [data-theme="dark"] .badge-processing { background: rgba(251,191,36,0.2); color: #FBBF24; }
   [data-theme="dark"] .badge-shipped { background: rgba(59,130,246,0.2); color: #60A5FA; }
   [data-theme="dark"] .badge-delivered { background: rgba(52,211,153,0.2); color: #34D399; }
   [data-theme="dark"] .badge-cancelled { background: rgba(248,113,113,0.2); color: #F87171; }
+  [data-theme="dark"] .badge-pending { background: rgba(251,191,36,0.2); color: #FBBF24; }
+  [data-theme="dark"] .badge-verified { background: rgba(52,211,153,0.2); color: #34D399; }
   
   .empty-state {
     text-align: center;
@@ -241,6 +245,22 @@
   .btn-status-update:hover {
     background: var(--primary-dark);
   }
+  .btn-verify {
+    padding: 4px 10px;
+    background: #059669;
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+  }
+  .btn-verify:hover {
+    background: #047857;
+  }
   
   @media (max-width: 900px) {
     .admin-layout { grid-template-columns: 1fr; }
@@ -307,6 +327,7 @@
                 <th>Customer</th>
                 <th>Items</th>
                 <th>Total</th>
+                <th>Payment</th>
                 <th>Date</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -329,6 +350,18 @@
                   </td>
                   <td><%= order.items ? order.items.length : 0 %> item(s)</td>
                   <td class="order-total-amount">LKR <%= order.total.toFixed(2) %></td>
+                  <td style="font-size:0.78rem;">
+                    <% if (order.paymentMethod === 'bank_transfer') { %>
+                      Bank Transfer
+                      <% if (order.paymentVerified) { %>
+                        <span class="badge-status badge-verified" style="font-size:0.6rem;">Verified</span>
+                      <% } else { %>
+                        <span class="badge-status badge-pending" style="font-size:0.6rem;">Pending</span>
+                      <% } %>
+                    <% } else { %>
+                      COD
+                    <% } %>
+                  </td>
                   <td style="font-size:0.82rem;white-space:nowrap;">
                     <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
                   </td>
@@ -336,8 +369,14 @@
                     <span class="badge-status badge-<%= order.status %>"><%= order.status %></span>
                   </td>
                   <td>
+                    <% if (order.paymentMethod === 'bank_transfer' && !order.paymentVerified) { %>
+                      <form action="/admin/orders/verify-payment/<%= order._id %>" method="POST" style="margin-bottom:6px;">
+                        <button type="submit" class="btn-verify">Verify Payment</button>
+                      </form>
+                    <% } %>
                     <form action="/admin/orders/update-status/<%= order._id %>" method="POST" class="status-update-form">
                       <select name="status" class="status-select-sm">
+                        <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
                         <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
                         <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
                         <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
