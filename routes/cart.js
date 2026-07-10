@@ -9,14 +9,11 @@ var { ShippingSettings, OrderShipping } = require('../models/Shipping');
 var emailService = require('../services/emailService');
 var invoiceService = require('../services/invoiceService');
 
-// Configure multer for payment receipt uploads
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         var dir = 'uploads/receipts';
         var fs = require('fs');
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
+        if (!fs.existsSync(dir)) { fs.mkdirSync(dir, { recursive: true }); }
         cb(null, dir);
     },
     filename: function(req, file, cb) {
@@ -31,113 +28,59 @@ var upload = multer({
         var allowedTypes = /jpeg|jpg|png|pdf/;
         var extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
         var mimetype = file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf';
-        if (extname && mimetype) {
-            return cb(null, true);
-        }
+        if (extname && mimetype) return cb(null, true);
         cb(new Error('Only JPG, PNG, and PDF files are allowed'));
     }
 });
 
-// Get current shipping settings
 async function getShippingSettings() {
     var settings = await ShippingSettings.findOne();
     if (!settings) {
         settings = new ShippingSettings({
-            shippingEnabled: true,
-            shippingType: 'flat_rate',
-            flatRatePerItem: 5.99,
-            flatRatePerOrder: 0,
-            freeShippingEnabled: false,
-            freeShippingMinAmount: 100,
-            handlingFee: 0,
-            estimatedDelivery: '7-21 business days'
+            shippingEnabled: true, shippingType: 'flat_rate', flatRatePerItem: 5.99, flatRatePerOrder: 0,
+            freeShippingEnabled: false, freeShippingMinAmount: 100, handlingFee: 0, estimatedDelivery: '7-21 business days'
         });
         await settings.save();
     }
     return settings;
 }
 
-// Calculate shipping based on settings
 async function calculateShipping(cartItems) {
     var settings = await getShippingSettings();
-    
-    if (!settings.shippingEnabled || settings.shippingType === 'disabled') {
-        return 0;
-    }
-    
-    if (settings.shippingType === 'free') {
-        return 0;
-    }
-    
-    var subtotal = 0;
-    var itemCount = 0;
-    cartItems.forEach(function(item) {
-        subtotal += item.price * item.quantity;
-        itemCount += item.quantity;
-    });
-    
-    if (settings.freeShippingEnabled && subtotal >= settings.freeShippingMinAmount) {
-        return 0;
-    }
-    
+    if (!settings.shippingEnabled || settings.shippingType === 'disabled') return 0;
+    if (settings.shippingType === 'free') return 0;
+    var subtotal = 0, itemCount = 0;
+    cartItems.forEach(function(item) { subtotal += item.price * item.quantity; itemCount += item.quantity; });
+    if (settings.freeShippingEnabled && subtotal >= settings.freeShippingMinAmount) return 0;
     var shipping = settings.flatRatePerOrder + (settings.flatRatePerItem * itemCount) + settings.handlingFee;
-    
     var productIds = cartItems.map(function(item) { return item.productId; });
     var products = await Product.find({ _id: { $in: productIds } });
-    
     var allFreeShipping = products.length > 0 && products.every(function(p) { return p.freeShipping; });
-    if (allFreeShipping) {
-        shipping = 0;
-    }
-    
+    if (allFreeShipping) shipping = 0;
     return Math.round(shipping * 100) / 100;
 }
 
-// View cart
 router.get('/', async function(req, res) {
     var cart = req.session.cart || [];
     var subtotal = 0;
-    var cartItems = cart.map(function(item) {
-        subtotal += item.price * item.quantity;
-        return item;
-    });
-    
+    var cartItems = cart.map(function(item) { subtotal += item.price * item.quantity; return item; });
     var shipping = await calculateShipping(cart);
     req.session.cartShipping = shipping;
-    
     var total = Math.round((subtotal + shipping) * 100) / 100;
-    
-    var couponDiscount = 0;
-    var appliedCoupon = null;
+    var couponDiscount = 0, appliedCoupon = null;
     if (req.session.coupon) {
         appliedCoupon = req.session.coupon;
         if (appliedCoupon.discountType === 'percentage') {
             couponDiscount = Math.round(subtotal * (appliedCoupon.discountValue / 100) * 100) / 100;
-            if (appliedCoupon.maxDiscount && couponDiscount > appliedCoupon.maxDiscount) {
-                couponDiscount = appliedCoupon.maxDiscount;
-            }
-        } else {
-            couponDiscount = appliedCoupon.discountValue;
-        }
+            if (appliedCoupon.maxDiscount && couponDiscount > appliedCoupon.maxDiscount) couponDiscount = appliedCoupon.maxDiscount;
+        } else { couponDiscount = appliedCoupon.discountValue; }
         if (couponDiscount > subtotal) couponDiscount = subtotal;
         total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
     }
-    
     var settings = await getShippingSettings();
-    
-    res.render('cart', {
-        title: 'Shopping Cart',
-        cartItems: cartItems,
-        subtotal: subtotal.toFixed(2),
-        shipping: shipping.toFixed(2),
-        total: total.toFixed(2),
-        couponDiscount: couponDiscount.toFixed(2),
-        appliedCoupon: appliedCoupon,
-        settings: settings
-    });
+    res.render('cart', { title: 'Shopping Cart', cartItems: cartItems, subtotal: subtotal.toFixed(2), shipping: shipping.toFixed(2), total: total.toFixed(2), couponDiscount: couponDiscount.toFixed(2), appliedCoupon: appliedCoupon, settings: settings });
 });
 
-// Apply coupon
 router.post('/apply-coupon', async function(req, res) {
     try {
         var code = req.body.couponCode ? req.body.couponCode.trim().toUpperCase() : '';
@@ -155,13 +98,11 @@ router.post('/apply-coupon', async function(req, res) {
     } catch (err) { req.flash('error', 'Error applying coupon'); res.redirect('/cart'); }
 });
 
-// Remove coupon
 router.get('/remove-coupon', function(req, res) {
     req.session.coupon = null; req.flash('success', 'Coupon removed');
     req.session.save(function(err) { if (err) console.error('Session save error:', err); res.redirect('/cart'); });
 });
 
-// Add to cart
 router.post('/add/:id', async function(req, res) {
     try {
         var product = await Product.findById(req.params.id);
@@ -170,9 +111,7 @@ router.post('/add/:id', async function(req, res) {
         var existingItem = req.session.cart.find(function(item) { return item.productId === req.params.id; });
         if (existingItem) { existingItem.quantity += parseInt(req.body.quantity) || 1; }
         else { req.session.cart.push({ productId: product._id.toString(), name: product.name, price: product.price, image: product.images && product.images[0] ? product.images[0] : '/images/placeholder.jpg', quantity: parseInt(req.body.quantity) || 1 }); }
-        
         req.session.cartShipping = await calculateShipping(req.session.cart);
-        
         if (!req.session.recentlyViewed) req.session.recentlyViewed = [];
         req.session.recentlyViewed = req.session.recentlyViewed.filter(function(id) { return id !== req.params.id; });
         req.session.recentlyViewed.unshift(req.params.id);
@@ -182,7 +121,6 @@ router.post('/add/:id', async function(req, res) {
     } catch (err) { req.flash('error', 'Error adding to cart'); res.redirect('/products'); }
 });
 
-// Update quantity
 router.post('/update/:id', async function(req, res) {
     var quantity = parseInt(req.body.quantity);
     var cartItem = req.session.cart.find(function(item) { return item.productId === req.params.id; });
@@ -194,7 +132,6 @@ router.post('/update/:id', async function(req, res) {
     req.session.save(function(err) { if (err) console.error('Session save error:', err); res.redirect('/cart'); });
 });
 
-// Remove from cart
 router.post('/remove/:id', async function(req, res) {
     req.session.cart = req.session.cart.filter(function(item) { return item.productId !== req.params.id; });
     req.session.cartShipping = await calculateShipping(req.session.cart || []);
@@ -202,13 +139,11 @@ router.post('/remove/:id', async function(req, res) {
     req.session.save(function(err) { if (err) console.error('Session save error:', err); res.redirect('/cart'); });
 });
 
-// Cart count
 router.get('/count', function(req, res) {
     var count = req.session.cart ? req.session.cart.length : 0;
     res.json({ count: count });
 });
 
-// Wishlist
 router.get('/wishlist', async function(req, res) {
     if (!req.session.user) { req.flash('error', 'Please sign in'); return res.redirect('/auth/signin'); }
     try {
@@ -241,17 +176,14 @@ router.post('/wishlist/remove/:id', async function(req, res) {
     } catch (err) { res.redirect('/cart/wishlist'); }
 });
 
-// Checkout page
 router.get('/checkout', async function(req, res) {
     if (!req.session.user) { req.flash('error', 'Please sign in'); return res.redirect('/auth/signin'); }
     var cart = req.session.cart || [];
     if (cart.length === 0) { req.flash('error', 'Your cart is empty'); return res.redirect('/cart'); }
     var subtotal = 0;
     var cartItems = cart.map(function(item) { subtotal += item.price * item.quantity; return item; });
-    
     var shipping = await calculateShipping(cart);
     req.session.cartShipping = shipping;
-    
     var couponDiscount = 0; var appliedCoupon = null;
     if (req.session.coupon) {
         appliedCoupon = req.session.coupon;
@@ -260,124 +192,54 @@ router.get('/checkout', async function(req, res) {
         if (couponDiscount > subtotal) couponDiscount = subtotal;
     }
     var total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
-    
     var settings = await getShippingSettings();
-    
-    res.render('checkout', { 
-        title: 'Checkout', 
-        cartItems: cartItems, 
-        subtotal: subtotal.toFixed(2), 
-        shipping: shipping.toFixed(2), 
-        total: total.toFixed(2), 
-        couponDiscount: couponDiscount.toFixed(2), 
-        appliedCoupon: appliedCoupon, 
-        settings: settings
-    });
+    res.render('checkout', { title: 'Checkout', cartItems: cartItems, subtotal: subtotal.toFixed(2), shipping: shipping.toFixed(2), total: total.toFixed(2), couponDiscount: couponDiscount.toFixed(2), appliedCoupon: appliedCoupon, settings: settings });
 });
 
-// Place Order (New Checkout Flow)
 router.post('/place-order', upload.single('paymentReceipt'), async function(req, res) {
     try {
         if (!req.session.user) return res.status(401).json({ error: 'Please sign in' });
         var cart = req.session.cart || [];
         if (cart.length === 0) return res.status(400).json({ error: 'Cart is empty' });
-        
         var paymentMethod = req.body.paymentMethod;
-        if (!paymentMethod || !['cod', 'bank_transfer'].includes(paymentMethod)) {
-            return res.status(400).json({ error: 'Invalid payment method' });
-        }
-        
-        if (paymentMethod === 'bank_transfer' && !req.file) {
-            return res.status(400).json({ error: 'Please upload your payment receipt' });
-        }
-        
-        var subtotal = 0; 
-        var orderItems = [];
-        
+        if (!paymentMethod || !['cod', 'bank_transfer'].includes(paymentMethod)) return res.status(400).json({ error: 'Invalid payment method' });
+        if (paymentMethod === 'bank_transfer' && !req.file) return res.status(400).json({ error: 'Please upload your payment receipt' });
+        var subtotal = 0; var orderItems = [];
         for (var i = 0; i < cart.length; i++) {
-            var item = cart[i]; 
-            var product = await Product.findById(item.productId);
+            var item = cart[i]; var product = await Product.findById(item.productId);
             if (!product) return res.status(400).json({ error: 'Product "' + item.name + '" is no longer available' });
             if (product.stock < item.quantity) return res.status(400).json({ error: 'Insufficient stock for ' + item.name });
-            var itemTotal = Math.round(item.price * item.quantity * 100) / 100; 
-            subtotal += itemTotal;
+            var itemTotal = Math.round(item.price * item.quantity * 100) / 100; subtotal += itemTotal;
             orderItems.push({ product: product._id, name: item.name, price: item.price, quantity: item.quantity, subtotal: itemTotal });
-            product.stock -= item.quantity; 
-            await product.save();
+            product.stock -= item.quantity; await product.save();
         }
-        
         subtotal = Math.round(subtotal * 100) / 100;
         var shipping = req.session.cartShipping || 0;
-        var couponDiscount = 0; 
-        var appliedCouponId = null;
-        
+        var couponDiscount = 0; var appliedCouponId = null;
         if (req.session.coupon) {
             var coupon = req.session.coupon;
-            if (coupon.discountType === 'percentage') { 
-                couponDiscount = Math.round(subtotal * (coupon.discountValue / 100) * 100) / 100; 
-                if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) couponDiscount = coupon.maxDiscount; 
-            } else { 
-                couponDiscount = coupon.discountValue; 
-            }
-            if (couponDiscount > subtotal) couponDiscount = subtotal; 
-            appliedCouponId = coupon._id;
+            if (coupon.discountType === 'percentage') { couponDiscount = Math.round(subtotal * (coupon.discountValue / 100) * 100) / 100; if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) couponDiscount = coupon.maxDiscount; }
+            else { couponDiscount = coupon.discountValue; }
+            if (couponDiscount > subtotal) couponDiscount = subtotal; appliedCouponId = coupon._id;
         }
-        
         var total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
         if (total < 0) total = 0;
-        
-        var shippingAddress = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            street: req.body.street,
-            city: req.body.city,
-            state: req.body.state,
-            zipCode: req.body.zipCode,
-            country: req.body.country
-        };
-        
         var order = new Order({
-            user: req.session.user.id, 
-            items: orderItems, 
-            shippingAddress: shippingAddress,
-            paymentMethod: paymentMethod,
-            paymentReceipt: req.file ? req.file.filename : null,
-            paymentVerified: false,
-            subtotal: subtotal, 
-            shippingCost: shipping, 
-            tax: 0, 
-            total: total,
-            couponCode: req.session.coupon ? req.session.coupon.code : null, 
-            couponDiscount: couponDiscount, 
-            status: 'pending'
+            user: req.session.user.id, items: orderItems, 
+            shippingAddress: { firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, street: req.body.street, city: req.body.city, state: req.body.state, zipCode: req.body.zipCode, country: req.body.country },
+            paymentMethod: paymentMethod, paymentReceipt: req.file ? req.file.filename : null, paymentVerified: false,
+            subtotal: subtotal, shippingCost: shipping, tax: 0, total: total,
+            couponCode: req.session.coupon ? req.session.coupon.code : null, couponDiscount: couponDiscount, status: 'pending'
         });
-        
         await order.save();
-        
         if (appliedCouponId) await Coupon.findByIdAndUpdate(appliedCouponId, { $inc: { usedCount: 1 } });
-        
         var User = require('../models/User');
-        User.findById(req.session.user.id).then(function(customer) { 
-            if (customer && customer.email) 
-                emailService.sendOrderConfirmation(customer.email, customer.firstName, order).catch(function(err) { 
-                    console.error('Email failed:', err.message); 
-                }); 
-        });
-        
-        req.session.cart = []; 
-        req.session.coupon = null; 
-        req.session.cartShipping = 0;
-        
+        User.findById(req.session.user.id).then(function(customer) { if (customer && customer.email) emailService.sendOrderConfirmation(customer.email, customer.firstName, order).catch(function(err) { console.error('Email failed:', err.message); }); });
+        req.session.cart = []; req.session.coupon = null; req.session.cartShipping = 0;
         res.json({ success: true, orderId: order._id, orderNumber: order.orderNumber });
-        
-    } catch (err) { 
-        console.error('Order error:', err.message); 
-        res.status(500).json({ error: 'Failed to place order' }); 
-    }
+    } catch (err) { console.error('Order error:', err.message); res.status(500).json({ error: 'Failed to place order' }); }
 });
 
-// Order confirmation
 router.get('/order-confirmation/:id', async function(req, res) {
     try {
         if (!req.session.user) { req.flash('error', 'Please sign in'); return res.redirect('/auth/signin'); }
@@ -387,7 +249,6 @@ router.get('/order-confirmation/:id', async function(req, res) {
     } catch (err) { console.error('Order confirmation error:', err); req.flash('error', 'Error loading order details'); res.redirect('/'); }
 });
 
-// Download invoice
 router.get('/invoice/:id', async function(req, res) {
     try {
         if (!req.session.user) { req.flash('error', 'Please sign in'); return res.redirect('/auth/signin'); }

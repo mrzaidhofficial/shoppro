@@ -104,7 +104,6 @@
   .btn-save:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,102,255,0.35); }
   .save-note { font-size: 0.76rem; color: var(--text-muted); }
   
-  /* Filter Bar - Fixed with curved corners */
   .filter-bar-wrap { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 16px 20px; margin-bottom: 20px; box-shadow: var(--shadow-xs); }
   .filter-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .filter-select { padding: 10px 16px; border: 2px solid var(--border-color); border-radius: var(--radius-full); font-size: 0.82rem; font-family: var(--font-primary); background: var(--bg-input); color: var(--text-body); outline: none; cursor: pointer; transition: all 0.2s ease; min-width: 160px; }
@@ -332,6 +331,38 @@
               </div>
             </div>
             
+            <div class="settings-card span-2">
+              <div class="card-header">
+                <div class="card-header-icon green"><i class="fas fa-university"></i></div>
+                <div class="card-header-text">
+                  <div class="card-header-title">Bank Account Details</div>
+                  <div class="card-header-sub">Shown to customers choosing bank transfer</div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Bank Name</label>
+                    <input type="text" name="bankName" class="form-input" value="<%= settings.bankName || 'Sample Bank' %>" placeholder="e.g. Commercial Bank">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Branch</label>
+                    <input type="text" name="bankBranch" class="form-input" value="<%= settings.bankBranch || 'Colombo' %>" placeholder="e.g. Colombo Fort">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Account Holder Name</label>
+                    <input type="text" name="bankAccountName" class="form-input" value="<%= settings.bankAccountName || 'ShopNest (Pvt) Ltd' %>" placeholder="e.g. ShopNest (Pvt) Ltd">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Account Number</label>
+                    <input type="text" name="bankAccountNumber" class="form-input" value="<%= settings.bankAccountNumber || '1234567890' %>" placeholder="e.g. 1234567890">
+                  </div>
+                </div>
+              </div>
+            </div>
+            
           </div>
           
           <div class="form-footer">
@@ -376,7 +407,7 @@
                     <td style="font-size:0.8rem;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></td>
                     <td><%= order.items ? order.items.length : 0 %></td>
                     <td class="order-total-blue">LKR <%= order.total.toFixed(2) %></td>
-                    <td><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></td>
+                    <td><%= order.shippingCost === 0 ? 'FREE' : 'LKR ' + order.shippingCost.toFixed(2) %></td>
                     <td><span class="badge badge-<%= order.status %>"><%= order.status %></span></td>
                     <td><span class="badge badge-<%= si.shippingStatus || 'pending' %>"><%= si.shippingStatus || 'pending' %></span></td>
                     <td style="font-size:0.78rem;"><%= si.supplierName || '—' %></td>
@@ -483,11 +514,11 @@ function refreshPreview() {
   else if (type === 'free') { txt.textContent = 'Shipping: FREE'; sub.textContent = ''; }
   else {
     var p = [];
-    if (perOrder > 0) p.push('$' + perOrder.toFixed(2) + ' base');
-    if (perItem > 0) p.push('$' + perItem.toFixed(2) + '/item');
-    if (handling > 0) p.push('$' + handling.toFixed(2) + ' handling');
+    if (perOrder > 0) p.push('LKR ' + perOrder.toFixed(2) + ' base');
+    if (perItem > 0) p.push('LKR ' + perItem.toFixed(2) + '/item');
+    if (handling > 0) p.push('LKR ' + handling.toFixed(2) + ' handling');
     txt.textContent = 'Shipping: ' + (p.join(' + ') || 'LKR 0.00');
-    sub.textContent = (freeEnabled && freeMin > 0) ? 'Free over $' + freeMin.toFixed(2) : '';
+    sub.textContent = (freeEnabled && freeMin > 0) ? 'Free over LKR ' + freeMin.toFixed(2) : '';
   }
   document.getElementById('thresholdVal').textContent = freeMin.toFixed(2);
 }

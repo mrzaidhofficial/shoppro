@@ -24,7 +24,11 @@ async function getShippingSettings() {
             freeShippingMinAmount: 100,
             handlingFee: 0,
             estimatedDelivery: '7-21 business days',
-            supplierInfo: ''
+            supplierInfo: '',
+            bankName: 'Sample Bank',
+            bankBranch: 'Colombo',
+            bankAccountName: 'ShopNest (Pvt) Ltd',
+            bankAccountNumber: '1234567890'
         });
         await settings.save();
     }
@@ -55,7 +59,7 @@ router.get('/settings', isAdmin, async function(req, res) {
         var shippingMap = {};
         shippingInfos.forEach(function(si) { shippingMap[si.order.toString()] = si; });
         
-        var bulkOrders = await Order.find({ status: { $in: ['processing', 'shipped'] } })
+        var bulkOrders = await Order.find({ status: { $in: ['processing', 'shipped', 'pending'] } })
             .populate('user', 'firstName lastName email')
             .sort({ createdAt: -1 })
             .limit(100);
@@ -96,6 +100,10 @@ router.post('/settings', isAdmin, async function(req, res) {
         settings.handlingFee = parseFloat(req.body.handlingFee) || 0;
         settings.estimatedDelivery = req.body.estimatedDelivery || '7-21 business days';
         settings.supplierInfo = req.body.supplierInfo || '';
+        settings.bankName = req.body.bankName || 'Sample Bank';
+        settings.bankBranch = req.body.bankBranch || 'Colombo';
+        settings.bankAccountName = req.body.bankAccountName || 'ShopNest (Pvt) Ltd';
+        settings.bankAccountNumber = req.body.bankAccountNumber || '1234567890';
         settings.updatedAt = new Date();
         await settings.save();
         req.flash('success', 'Shipping settings updated successfully');
@@ -107,7 +115,7 @@ router.post('/settings', isAdmin, async function(req, res) {
     }
 });
 
-// Order Shipping List (redirects to tabbed page)
+// Order Shipping List
 router.get('/orders', isAdmin, async function(req, res) {
     res.redirect('/admin/shipping/settings');
 });
@@ -118,7 +126,6 @@ router.get('/orders/:id', isAdmin, async function(req, res) {
         var order = await Order.findById(req.params.id).populate('user', 'firstName lastName email');
         if (!order) { req.flash('error', 'Order not found'); return res.redirect('/admin/shipping/settings'); }
         
-        // Get product costs for profit calculation
         if (order.items && order.items.length > 0) {
             for (var i = 0; i < order.items.length; i++) {
                 var item = order.items[i];
@@ -155,14 +162,11 @@ router.post('/orders/:id', isAdmin, async function(req, res) {
         var orderShipping = await OrderShipping.findOne({ order: req.params.id });
         if (!orderShipping) { orderShipping = new OrderShipping({ order: req.params.id }); }
         
-        // Tracking & Supplier Info
         orderShipping.trackingNumber = req.body.trackingNumber || '';
         orderShipping.trackingUrl = req.body.trackingUrl || '';
         orderShipping.carrierName = req.body.carrierName || '';
         orderShipping.supplierName = req.body.supplierName || '';
         orderShipping.supplierOrderId = req.body.supplierOrderId || '';
-        
-        // Status
         orderShipping.shippingNotes = req.body.shippingNotes || '';
         orderShipping.shippingStatus = req.body.shippingStatus || 'pending';
         if (req.body.shippedDate) { orderShipping.shippedDate = new Date(req.body.shippedDate); }

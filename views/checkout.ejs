@@ -1,5 +1,60 @@
 <%- include('partials/header') %>
 
+<style>
+  .upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .upload-btn-wrapper input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .upload-btn-custom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background: var(--bg-card-alt);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: var(--font-primary);
+    transition: all 0.2s ease;
+    text-align: center;
+    cursor: pointer;
+  }
+  .upload-btn-custom:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+  }
+  .upload-btn-custom.has-file {
+    border-color: var(--success);
+    color: var(--success);
+    background: var(--success-bg);
+    border-style: solid;
+  }
+  #file-name {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+</style>
+
 <section class="checkout-section-page">
   <div class="container">
     <h1 style="font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 36px; color: var(--text-primary); text-align: center;">Secure Checkout</h1>
@@ -47,7 +102,7 @@
         </h3>
         
         <div style="margin-bottom: 16px;">
-          <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card-alt); border: 2px solid var(--border-color); border-radius: var(--radius-lg); cursor: pointer; margin-bottom: 10px; transition: border-color 0.2s;" id="codLabel">
+          <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card-alt); border: 2px solid var(--primary); border-radius: var(--radius-lg); cursor: pointer; margin-bottom: 10px; transition: border-color 0.2s;" id="codLabel">
             <input type="radio" name="paymentMethod" value="cod" checked onchange="togglePaymentMethod()" style="width: 18px; height: 18px; accent-color: var(--primary);">
             <div>
               <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">Cash on Delivery</div>
@@ -64,21 +119,26 @@
           </label>
         </div>
 
-        <!-- Bank Details (shown only when bank transfer is selected) -->
         <div id="bankDetails" style="display: none; background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 18px;">
           <div style="font-weight: 600; color: var(--text-primary); font-size: 0.88rem; margin-bottom: 12px;">
             <i class="fas fa-university" style="color: var(--primary); margin-right: 6px;"></i> Bank Account Details
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem;">
-            <div><span style="color: var(--text-muted);">Bank:</span> <strong style="color: var(--text-primary);">Sample Bank</strong></div>
-            <div><span style="color: var(--text-muted);">Branch:</span> <strong style="color: var(--text-primary);">Colombo</strong></div>
-            <div><span style="color: var(--text-muted);">Account Name:</span> <strong style="color: var(--text-primary);">ShopNest (Pvt) Ltd</strong></div>
-            <div><span style="color: var(--text-muted);">Account Number:</span> <strong style="color: var(--text-primary);">1234567890</strong></div>
+            <div><span style="color: var(--text-muted);">Bank:</span> <strong style="color: var(--text-primary);"><%= settings.bankName || 'Sample Bank' %></strong></div>
+            <div><span style="color: var(--text-muted);">Branch:</span> <strong style="color: var(--text-primary);"><%= settings.bankBranch || 'Colombo' %></strong></div>
+            <div><span style="color: var(--text-muted);">Account Name:</span> <strong style="color: var(--text-primary);"><%= settings.bankAccountName || 'ShopNest (Pvt) Ltd' %></strong></div>
+            <div><span style="color: var(--text-muted);">Account Number:</span> <strong style="color: var(--text-primary);"><%= settings.bankAccountNumber || '1234567890' %></strong></div>
           </div>
           
           <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color);">
             <label class="form-label">Upload Payment Receipt *</label>
-            <input type="file" name="paymentReceipt" id="paymentReceipt" accept="image/*,.pdf" style="display: block; margin-top: 6px; color: var(--text-body); font-size: 0.85rem;">
+            <div class="upload-btn-wrapper">
+              <button type="button" class="upload-btn-custom" id="uploadBtn">
+                <i class="fas fa-cloud-upload-alt"></i> Choose File
+              </button>
+              <input type="file" name="paymentReceipt" id="paymentReceipt" accept="image/*,.pdf" onchange="updateFileName()">
+            </div>
+            <span id="file-name"></span>
             <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Accepted: JPG, PNG, PDF. Max size: 5MB</div>
           </div>
         </div>
@@ -119,13 +179,34 @@
 </section>
 
 <script>
+function updateFileName() {
+  var fileInput = document.getElementById('paymentReceipt');
+  var fileName = document.getElementById('file-name');
+  var uploadBtn = document.getElementById('uploadBtn');
+  if (fileInput.files.length > 0) {
+    fileName.textContent = fileInput.files[0].name;
+    uploadBtn.classList.add('has-file');
+    uploadBtn.innerHTML = '<i class="fas fa-check-circle"></i> File Selected';
+  } else {
+    fileName.textContent = '';
+    uploadBtn.classList.remove('has-file');
+    uploadBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Choose File';
+  }
+}
+
 function togglePaymentMethod() {
   var method = document.querySelector('input[name="paymentMethod"]:checked').value;
   var bankDetails = document.getElementById('bankDetails');
+  var codLabel = document.getElementById('codLabel');
+  var bankLabel = document.getElementById('bankLabel');
   if (method === 'bank_transfer') {
     bankDetails.style.display = 'block';
+    bankLabel.style.borderColor = 'var(--primary)';
+    codLabel.style.borderColor = 'var(--border-color)';
   } else {
     bankDetails.style.display = 'none';
+    codLabel.style.borderColor = 'var(--primary)';
+    bankLabel.style.borderColor = 'var(--border-color)';
   }
 }
 
