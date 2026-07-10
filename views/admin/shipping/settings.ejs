@@ -190,6 +190,7 @@
       <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
       <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
       <a href="/admin/shipping/settings" class="admin-nav-item active"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/bank-details" class="admin-nav-item"><i class="fas fa-university"></i> Bank Details</a>
       <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
       <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
@@ -269,8 +270,8 @@
               <div class="card-body">
                 <div class="threshold-wrap">
                   <div class="threshold-input">
-                    <span class="dollar">LKR </span>
-                    <input type="number" name="freeShippingMinAmount" id="freeShippingMinAmount" value="<%= settings.freeShippingMinAmount %>" min="0" step="0.01" onchange="refreshPreview()">
+                    <span class="dollar">LKR</span>
+                    <input type="number" name="freeShippingMinAmount" id="freeShippingMinAmount" value="<%= settings.freeShippingMinAmount %>" min="0" step="0.01" onchange="refreshPreview()" style="padding-left: 55px;">
                   </div>
                 </div>
                 <div class="threshold-info">
@@ -293,17 +294,17 @@
                   <div class="rate-item">
                     <div class="rate-label"><i class="fas fa-box"></i> Per Order Base</div>
                     <div class="rate-desc">Added once per order</div>
-                    <div class="rate-input"><span class="dollar">LKR </span><input type="number" name="flatRatePerOrder" value="<%= settings.flatRatePerOrder %>" min="0" step="0.01" onchange="refreshPreview()"></div>
+                    <div class="rate-input"><span class="dollar">LKR</span><input type="number" name="flatRatePerOrder" value="<%= settings.flatRatePerOrder %>" min="0" step="0.01" onchange="refreshPreview()" style="padding-left: 55px;"></div>
                   </div>
                   <div class="rate-item">
                     <div class="rate-label"><i class="fas fa-cubes"></i> Per Item Rate</div>
                     <div class="rate-desc">× quantity in cart</div>
-                    <div class="rate-input"><span class="dollar">LKR </span><input type="number" name="flatRatePerItem" value="<%= settings.flatRatePerItem %>" min="0" step="0.01" onchange="refreshPreview()"></div>
+                    <div class="rate-input"><span class="dollar">LKR</span><input type="number" name="flatRatePerItem" value="<%= settings.flatRatePerItem %>" min="0" step="0.01" onchange="refreshPreview()" style="padding-left: 55px;"></div>
                   </div>
                   <div class="rate-item">
                     <div class="rate-label"><i class="fas fa-hand-holding"></i> Handling Fee</div>
                     <div class="rate-desc">Processing charge</div>
-                    <div class="rate-input"><span class="dollar">LKR </span><input type="number" name="handlingFee" value="<%= settings.handlingFee %>" min="0" step="0.01" onchange="refreshPreview()"></div>
+                    <div class="rate-input"><span class="dollar">LKR</span><input type="number" name="handlingFee" value="<%= settings.handlingFee %>" min="0" step="0.01" onchange="refreshPreview()" style="padding-left: 55px;"></div>
                   </div>
                 </div>
               </div>
@@ -326,38 +327,6 @@
                   <div class="form-group">
                     <label class="form-label">Supplier Reference <span class="muted">— internal only</span></label>
                     <input type="text" name="supplierInfo" class="form-input" value="<%= settings.supplierInfo || '' %>" placeholder="e.g. AliExpress Supplier #42">
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="settings-card span-2">
-              <div class="card-header">
-                <div class="card-header-icon green"><i class="fas fa-university"></i></div>
-                <div class="card-header-text">
-                  <div class="card-header-title">Bank Account Details</div>
-                  <div class="card-header-sub">Shown to customers choosing bank transfer</div>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Bank Name</label>
-                    <input type="text" name="bankName" class="form-input" value="<%= settings.bankName || 'Sample Bank' %>" placeholder="e.g. Commercial Bank">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Branch</label>
-                    <input type="text" name="bankBranch" class="form-input" value="<%= settings.bankBranch || 'Colombo' %>" placeholder="e.g. Colombo Fort">
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Account Holder Name</label>
-                    <input type="text" name="bankAccountName" class="form-input" value="<%= settings.bankAccountName || 'ShopNest (Pvt) Ltd' %>" placeholder="e.g. ShopNest (Pvt) Ltd">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Account Number</label>
-                    <input type="text" name="bankAccountNumber" class="form-input" value="<%= settings.bankAccountNumber || '1234567890' %>" placeholder="e.g. 1234567890">
                   </div>
                 </div>
               </div>
