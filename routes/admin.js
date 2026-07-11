@@ -26,12 +26,13 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         const conversionRate = totalRegisteredUsers > 0 ? ((totalCustomers / totalRegisteredUsers) * 100).toFixed(1) : 0;
         
         const salesResult = await Order.aggregate([
+            { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $group: { _id: null, totalSales: { $sum: '$total' } } }
         ]);
         var totalSales = salesResult.length > 0 ? salesResult[0].totalSales : 0;
         
         const profitResult = await Order.aggregate([
-            { $match: { status: { $in: ['pending', 'processing', 'shipped', 'delivered'] } } },
+            { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $unwind: '$items' },
             { $lookup: { from: 'products', localField: 'items.product', foreignField: '_id', as: 'productData' } },
             { $unwind: { path: '$productData', preserveNullAndEmptyArrays: true } },
@@ -60,14 +61,14 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         var netProfit = totalRevenue - totalProductCost - totalShippingCost;
         
         const shippingStats = await Order.aggregate([
-            { $match: { shippingCost: { $gt: 0 } } },
+            { $match: { shippingCost: { $gt: 0 }, status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $group: { _id: null, totalShipping: { $sum: '$shippingCost' }, orderCount: { $sum: 1 } } }
         ]);
         const totalShippingCollected = shippingStats.length > 0 ? shippingStats[0].totalShipping : 0;
         const paidShippingOrders = shippingStats.length > 0 ? shippingStats[0].orderCount : 0;
         
         const couponStats = await Order.aggregate([
-            { $match: { couponDiscount: { $gt: 0 } } },
+            { $match: { couponDiscount: { $gt: 0 }, status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $group: { _id: null, totalCoupons: { $sum: '$couponDiscount' }, orderCount: { $sum: 1 } } }
         ]);
         const totalCouponsGiven = couponStats.length > 0 ? couponStats[0].totalCoupons : 0;
@@ -77,13 +78,13 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         
         var sixMonthsAgo = new Date(); sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
         const monthlySales = await Order.aggregate([
-            { $match: { createdAt: { $gte: sixMonthsAgo }, status: { $in: ['pending', 'processing', 'shipped', 'delivered'] } } },
+            { $match: { createdAt: { $gte: sixMonthsAgo }, status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $group: { _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } }, revenue: { $sum: '$total' }, orders: { $sum: 1 } } },
             { $sort: { _id: 1 } }
         ]);
         
         const topProducts = await Order.aggregate([
-            { $match: { status: { $in: ['pending', 'processing', 'shipped', 'delivered'] } } },
+            { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
             { $unwind: '$items' },
             { $group: { _id: '$items.product', totalSold: { $sum: '$items.quantity' }, revenue: { $sum: '$items.subtotal' } } },
             { $sort: { totalSold: -1 } }, { $limit: 5 },
@@ -207,12 +208,29 @@ router.post('/orders/verify-payment/:id', isAdmin, async (req, res) => {
         var order = await Order.findById(req.params.id);
         if (!order) { req.flash('error', 'Order not found'); return res.redirect('/admin/orders'); }
         order.paymentVerified = true;
-        order.status = 'processing';
         order.updatedAt = new Date();
         await order.save();
-        req.flash('success', 'Payment verified for Order #' + order.orderNumber);
+        req.flash('success', 'Payment verified for Order #' + order.orderNumber + '. Change order status to Processing manually.');
         res.redirect('/admin/orders');
     } catch (error) { req.flash('error', 'Error verifying payment'); res.redirect('/admin/orders'); }
+});
+
+// Change payment verification status
+router.post('/orders/payment-status/:id', isAdmin, async (req, res) => {
+    try {
+        var order = await Order.findById(req.params.id);
+        if (!order) { req.flash('error', 'Order not found'); return res.redirect('/admin/orders'); }
+        var newStatus = req.body.paymentStatus;
+        if (newStatus === 'verified') {
+            order.paymentVerified = true;
+        } else if (newStatus === 'unverified') {
+            order.paymentVerified = false;
+        }
+        order.updatedAt = new Date();
+        await order.save();
+        req.flash('success', 'Payment status updated for Order #' + order.orderNumber);
+        res.redirect('/admin/orders');
+    } catch (error) { req.flash('error', 'Error updating payment status'); res.redirect('/admin/orders'); }
 });
 
 // Bank Details Settings
