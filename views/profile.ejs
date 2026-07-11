@@ -152,6 +152,8 @@
     font-size: 0.68rem; font-weight: 600; text-transform: capitalize; letter-spacing: 0.3px;
   }
   .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .status-pending { background: rgba(245,158,11,0.1); color: #D97706; }
+  .status-pending::before { background: #D97706; }
   .status-processing { background: rgba(245,158,11,0.1); color: #D97706; }
   .status-processing::before { background: #D97706; }
   .status-shipped { background: rgba(37,99,235,0.1); color: #2563EB; }
@@ -160,10 +162,18 @@
   .status-delivered::before { background: #059669; }
   .status-cancelled { background: rgba(239,68,68,0.1); color: #EF4444; }
   .status-cancelled::before { background: #EF4444; }
+  [data-theme="dark"] .status-pending { background: rgba(251,191,36,0.15); color: #FBBF24; }
   [data-theme="dark"] .status-processing { background: rgba(251,191,36,0.15); color: #FBBF24; }
   [data-theme="dark"] .status-shipped { background: rgba(59,130,246,0.15); color: #60A5FA; }
   [data-theme="dark"] .status-delivered { background: rgba(52,211,153,0.15); color: #34D399; }
   [data-theme="dark"] .status-cancelled { background: rgba(248,113,113,0.15); color: #F87171; }
+  
+  .payment-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.72rem; font-weight: 500;
+  }
+  .payment-badge.verified { color: var(--success); }
+  .payment-badge.pending { color: #D97706; }
   
   .empty-state { text-align: center; padding: 48px 20px; }
   .empty-state-icon { font-size: 3.5rem; color: var(--text-muted); margin-bottom: 16px; display: block; opacity: 0.3; }
@@ -250,18 +260,18 @@
                     <span class="order-total">LKR <%= order.total.toFixed(2) %></span>
                   </div>
                   <div class="order-item-bottom">
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                      <span style="font-size:0.75rem;color:var(--text-muted);">Order ID:</span>
-                      <span style="font-size:0.78rem;font-weight:500;color:var(--text-secondary);"><%= order.orderNumber %></span>
-                      <button class="copy-btn" onclick="copyToClipboard('<%= order.orderNumber %>', this)"><i class="fas fa-copy"></i> Copy</button>
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                      <% if (order.paymentMethod === 'bank_transfer') { %>
+                        <span class="payment-badge <%= order.paymentVerified ? 'verified' : 'pending' %>">
+                          <i class="fas <%= order.paymentVerified ? 'fa-check-circle' : 'fa-clock' %>"></i>
+                          Bank Transfer: <%= order.paymentVerified ? 'Verified' : 'Pending' %>
+                        </span>
+                      <% } else { %>
+                        <span class="payment-badge" style="color:var(--text-secondary);">
+                          <i class="fas fa-money-bill-wave"></i> COD
+                        </span>
+                      <% } %>
                     </div>
-                    <% if (order.trackingNumber) { %>
-                      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                        <span style="font-size:0.75rem;color:var(--text-muted);">Tracking No:</span>
-                        <span style="font-size:0.78rem;font-weight:500;color:var(--primary);"><%= order.trackingNumber %></span>
-                        <button class="copy-btn" onclick="copyToClipboard('<%= order.trackingNumber %>', this)"><i class="fas fa-copy"></i> Copy</button>
-                      </div>
-                    <% } %>
                     <a href="/cart/order-confirmation/<%= order._id %>" style="font-size:0.78rem;color:var(--primary);font-weight:600;text-decoration:none;">View Details →</a>
                   </div>
                 </div>
