@@ -64,37 +64,53 @@
       <div class="checkout-form-card">
         <h3 class="checkout-section-title">
           <i class="fas fa-shipping-fast" style="color: var(--primary); margin-right: 8px;"></i>
-          Shipping Address
+          Delivery Address
         </h3>
         <div class="form-row">
           <div class="form-group"><label class="form-label">First Name *</label><input type="text" class="form-input" id="firstName" name="firstName" required placeholder="John"></div>
           <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-input" id="lastName" name="lastName" required placeholder="Doe"></div>
         </div>
         <div class="form-group"><label class="form-label">Email Address *</label><input type="email" class="form-input" id="email" name="email" required placeholder="john@example.com"></div>
+        <div class="form-group"><label class="form-label">Phone Number *</label><input type="tel" class="form-input" id="phone" name="phone" required placeholder="07XXXXXXXX"></div>
         <div class="form-group"><label class="form-label">Street Address *</label><input type="text" class="form-input" id="address" name="street" required placeholder="123 Main Street, Apt 4B"></div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">City *</label><input type="text" class="form-input" id="city" name="city" required placeholder="New York"></div>
-          <div class="form-group"><label class="form-label">State/Province *</label><input type="text" class="form-input" id="state" name="state" required placeholder="NY"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">ZIP/Postal Code *</label><input type="text" class="form-input" id="zip" name="zipCode" required placeholder="10001"></div>
-          <div class="form-group">
-            <label class="form-label">Country *</label>
-            <select class="form-input form-select" id="country" name="country" required>
-              <option value="">Select Country</option>
-              <option value="LK" selected>Sri Lanka</option>
-              <option value="US">United States</option>
-              <option value="CA">Canada</option>
-              <option value="GB">United Kingdom</option>
-              <option value="AU">Australia</option>
-              <option value="IN">India</option>
-              <option value="AE">United Arab Emirates</option>
-              <option value="SG">Singapore</option>
-              <option value="MY">Malaysia</option>
-              <option value="Other">Other</option>
+          <div class="form-group"><label class="form-label">City *</label><input type="text" class="form-input" id="city" name="city" required placeholder="Colombo"></div>
+          <div class="form-group"><label class="form-label">District *</label>
+            <select class="form-input form-select" id="state" name="state" required>
+              <option value="">Select District</option>
+              <option value="Colombo">Colombo</option>
+              <option value="Gampaha">Gampaha</option>
+              <option value="Kalutara">Kalutara</option>
+              <option value="Kandy">Kandy</option>
+              <option value="Matale">Matale</option>
+              <option value="Nuwara Eliya">Nuwara Eliya</option>
+              <option value="Galle">Galle</option>
+              <option value="Matara">Matara</option>
+              <option value="Hambantota">Hambantota</option>
+              <option value="Jaffna">Jaffna</option>
+              <option value="Kilinochchi">Kilinochchi</option>
+              <option value="Mannar">Mannar</option>
+              <option value="Vavuniya">Vavuniya</option>
+              <option value="Mullaitivu">Mullaitivu</option>
+              <option value="Batticaloa">Batticaloa</option>
+              <option value="Ampara">Ampara</option>
+              <option value="Trincomalee">Trincomalee</option>
+              <option value="Kurunegala">Kurunegala</option>
+              <option value="Puttalam">Puttalam</option>
+              <option value="Anuradhapura">Anuradhapura</option>
+              <option value="Polonnaruwa">Polonnaruwa</option>
+              <option value="Badulla">Badulla</option>
+              <option value="Moneragala">Moneragala</option>
+              <option value="Ratnapura">Ratnapura</option>
+              <option value="Kegalle">Kegalle</option>
             </select>
           </div>
         </div>
+        <div class="form-group">
+          <label class="form-label">Postal Code</label>
+          <input type="text" class="form-input" id="zip" name="zipCode" placeholder="e.g. 00100">
+        </div>
+        <input type="hidden" name="country" value="Sri Lanka">
 
         <h3 class="checkout-section-title" style="margin-top: 28px;">
           <i class="fas fa-credit-card" style="color: var(--primary); margin-right: 8px;"></i>
@@ -161,7 +177,7 @@
         </div>
         <div class="order-totals">
           <div class="order-total-row"><span>Subtotal</span><span>LKR <%= subtotal %></span></div>
-          <div class="order-total-row"><span>Shipping</span><span><%= parseFloat(shipping) === 0 ? 'FREE' : 'LKR ' + shipping %></span></div>
+          <div class="order-total-row"><span>Delivery</span><span><%= parseFloat(shipping) === 0 ? 'FREE' : 'LKR ' + shipping %></span></div>
           <% if (typeof couponDiscount !== 'undefined' && parseFloat(couponDiscount) > 0) { %>
             <div class="order-total-row" style="color: var(--success);"><span>Coupon (<%= appliedCoupon.code %>)</span><span>-LKR <%= couponDiscount %></span></div>
           <% } %>
@@ -218,11 +234,10 @@ function placeOrder() {
   var city = document.getElementById('city').value.trim();
   var state = document.getElementById('state').value.trim();
   var zip = document.getElementById('zip').value.trim();
-  var country = document.getElementById('country').value;
   var paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
   
-  if (!firstName || !lastName || !email || !street || !city || !state || !zip || !country) {
-    alert('Please fill in all shipping address fields.');
+  if (!firstName || !lastName || !email || !street || !city || !state) {
+    alert('Please fill in all required address fields.');
     return;
   }
   
@@ -238,11 +253,12 @@ function placeOrder() {
   formData.append('firstName', firstName);
   formData.append('lastName', lastName);
   formData.append('email', email);
+  formData.append('phone', document.getElementById('phone').value.trim());
   formData.append('street', street);
   formData.append('city', city);
   formData.append('state', state);
   formData.append('zipCode', zip);
-  formData.append('country', country);
+  formData.append('country', 'Sri Lanka');
   formData.append('paymentMethod', paymentMethod);
   
   if (paymentMethod === 'bank_transfer') {
