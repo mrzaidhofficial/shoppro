@@ -31,7 +31,7 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         var totalSales = salesResult.length > 0 ? salesResult[0].totalSales : 0;
         
         const profitResult = await Order.aggregate([
-            { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
+            { $match: { status: { $in: ['pending', 'processing', 'shipped', 'delivered'] } } },
             { $unwind: '$items' },
             { $lookup: { from: 'products', localField: 'items.product', foreignField: '_id', as: 'productData' } },
             { $unwind: { path: '$productData', preserveNullAndEmptyArrays: true } },
@@ -77,13 +77,13 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         
         var sixMonthsAgo = new Date(); sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
         const monthlySales = await Order.aggregate([
-            { $match: { createdAt: { $gte: sixMonthsAgo }, status: { $in: ['processing', 'shipped', 'delivered'] } } },
+            { $match: { createdAt: { $gte: sixMonthsAgo }, status: { $in: ['pending', 'processing', 'shipped', 'delivered'] } } },
             { $group: { _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } }, revenue: { $sum: '$total' }, orders: { $sum: 1 } } },
             { $sort: { _id: 1 } }
         ]);
         
         const topProducts = await Order.aggregate([
-            { $match: { status: { $in: ['processing', 'shipped', 'delivered'] } } },
+            { $match: { status: { $in: ['pending', 'processing', 'shipped', 'delivered'] } } },
             { $unwind: '$items' },
             { $group: { _id: '$items.product', totalSold: { $sum: '$items.quantity' }, revenue: { $sum: '$items.subtotal' } } },
             { $sort: { totalSold: -1 } }, { $limit: 5 },
@@ -177,7 +177,7 @@ router.get('/orders', isAdmin, async (req, res) => {
 router.post('/orders/update-status/:id', isAdmin, async (req, res) => {
     try {
         const { status } = req.body;
-        if (!['processing', 'shipped', 'delivered', 'cancelled'].includes(status)) { req.flash('error', 'Invalid status'); return res.redirect('/admin/orders'); }
+        if (!['pending', 'processing', 'shipped', 'delivered', 'cancelled'].includes(status)) { req.flash('error', 'Invalid status'); return res.redirect('/admin/orders'); }
         await Order.findByIdAndUpdate(req.params.id, { status: status, updatedAt: new Date() });
         Order.findById(req.params.id).populate('user', 'firstName lastName email').then(function(updatedOrder) {
             if (updatedOrder && updatedOrder.user && updatedOrder.user.email) {
@@ -192,7 +192,7 @@ router.post('/orders/update-status/:id', isAdmin, async (req, res) => {
 router.post('/orders/bulk-update', isAdmin, async (req, res) => {
     try {
         const { orderIds, status } = req.body;
-        if (!['processing', 'shipped', 'delivered', 'cancelled'].includes(status)) { req.flash('error', 'Invalid status'); return res.redirect('/admin/orders'); }
+        if (!['pending', 'processing', 'shipped', 'delivered', 'cancelled'].includes(status)) { req.flash('error', 'Invalid status'); return res.redirect('/admin/orders'); }
         if (!orderIds || orderIds.length === 0) { req.flash('error', 'No orders selected'); return res.redirect('/admin/orders'); }
         const ids = Array.isArray(orderIds) ? orderIds : [orderIds];
         await Order.updateMany({ _id: { $in: ids } }, { status: status, updatedAt: new Date() });

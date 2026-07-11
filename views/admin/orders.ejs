@@ -75,9 +75,9 @@
   }
   .admin-table th {
     text-align: left;
-    padding: 14px 18px;
+    padding: 12px 14px;
     background: var(--gray-50);
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -86,8 +86,8 @@
     white-space: nowrap;
   }
   .admin-table td {
-    padding: 14px 18px;
-    font-size: 0.87rem;
+    padding: 12px 14px;
+    font-size: 0.84rem;
     color: var(--gray-700);
     border-bottom: 1px solid var(--gray-100);
     vertical-align: middle;
@@ -102,11 +102,12 @@
   
   .badge-status {
     display: inline-block;
-    padding: 4px 12px;
+    padding: 4px 10px;
     border-radius: var(--radius-full);
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 600;
     text-transform: capitalize;
+    white-space: nowrap;
   }
   .badge-pending { background: #FEF3C7; color: #D97706; }
   .badge-processing { background: #FEF3C7; color: #D97706; }
@@ -196,55 +197,28 @@
     cursor: pointer;
     transition: var(--transition);
   }
-  .btn-bulk-clear:hover {
-    background: var(--white);
-  }
+  .btn-bulk-clear:hover { background: var(--white); }
   
-  .order-checkbox {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary);
-    cursor: pointer;
-  }
-  .select-all-checkbox {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary);
-    cursor: pointer;
-  }
+  .order-checkbox { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+  .select-all-checkbox { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
   
-  .status-update-form {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .status-select-sm {
-    padding: 6px 10px;
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-full);
-    font-size: 0.78rem;
-    font-family: var(--font-primary);
-    background: var(--white);
-    color: var(--gray-700);
-    outline: none;
-    cursor: pointer;
-  }
   .btn-status-update {
-    padding: 6px 14px;
+    padding: 5px 12px;
     background: var(--primary);
     color: var(--white);
     border: none;
     border-radius: var(--radius-full);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     font-family: var(--font-primary);
     cursor: pointer;
     transition: var(--transition-fast);
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .btn-status-update:hover { background: var(--primary-dark); }
   .btn-verify {
-    padding: 4px 10px;
+    padding: 5px 12px;
     background: #059669;
     color: var(--white);
     border: none;
@@ -255,6 +229,9 @@
     cursor: pointer;
     transition: var(--transition-fast);
     white-space: nowrap;
+    display: block;
+    width: 100%;
+    text-align: center;
   }
   .btn-verify:hover { background: #047857; }
   .btn-receipt {
@@ -263,7 +240,7 @@
     color: var(--white);
     border: none;
     border-radius: var(--radius-full);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 600;
     font-family: var(--font-primary);
     cursor: pointer;
@@ -273,6 +250,31 @@
     white-space: nowrap;
   }
   .btn-receipt:hover { background: #1D4ED8; }
+  
+  .action-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+  }
+  .action-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .action-row select {
+    padding: 5px 8px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-family: var(--font-primary);
+    background: var(--white);
+    color: var(--gray-700);
+    outline: none;
+    cursor: pointer;
+    flex: 1;
+    min-width: 90px;
+  }
   
   @media (max-width: 900px) {
     .admin-layout { grid-template-columns: 1fr; }
@@ -334,7 +336,7 @@
           <table class="admin-table">
             <thead>
               <tr>
-                <th style="width:40px;"><input type="checkbox" class="select-all-checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+                <th style="width:36px;"><input type="checkbox" class="select-all-checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
                 <th>Order #</th>
                 <th>Customer</th>
                 <th>Items</th>
@@ -353,13 +355,13 @@
                   <td><a href="/cart/order-confirmation/<%= order._id %>" class="order-number-link"><%= order.orderNumber %></a></td>
                   <td>
                     <div style="font-weight:500;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></div>
-                    <div style="font-size:0.75rem;color:var(--gray-400);"><%= order.user ? order.user.email : '' %></div>
+                    <div style="font-size:0.72rem;color:var(--gray-400);"><%= order.user ? order.user.email : '' %></div>
                   </td>
                   <td><%= order.items ? order.items.length : 0 %> item(s)</td>
                   <td class="order-total-amount">LKR <%= order.total.toFixed(2) %></td>
-                  <td style="font-size:0.78rem;">
+                  <td style="font-size:0.76rem;">
                     <% if (order.paymentMethod === 'bank_transfer') { %>
-                      Bank Transfer
+                      <div>Bank Transfer</div>
                       <% if (order.paymentVerified) { %>
                         <span class="badge-status badge-verified" style="font-size:0.6rem;">Verified</span>
                       <% } else { %>
@@ -376,26 +378,30 @@
                       <span style="font-size:0.7rem;color:var(--text-muted);">—</span>
                     <% } %>
                   </td>
-                  <td style="font-size:0.82rem;white-space:nowrap;">
-                    <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                  <td style="font-size:0.78rem;white-space:nowrap;">
+                    <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
                   </td>
                   <td><span class="badge-status badge-<%= order.status %>"><%= order.status %></span></td>
                   <td>
-                    <% if (order.paymentMethod === 'bank_transfer' && !order.paymentVerified) { %>
-                      <form action="/admin/orders/verify-payment/<%= order._id %>" method="POST" style="margin-bottom:4px;">
-                        <button type="submit" class="btn-verify">Verify Payment</button>
+                    <div class="action-cell">
+                      <% if (order.paymentMethod === 'bank_transfer' && !order.paymentVerified) { %>
+                        <form action="/admin/orders/verify-payment/<%= order._id %>" method="POST">
+                          <button type="submit" class="btn-verify">Verify Payment</button>
+                        </form>
+                      <% } %>
+                      <form action="/admin/orders/update-status/<%= order._id %>" method="POST">
+                        <div class="action-row">
+                          <select name="status">
+                            <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                            <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+                            <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                            <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                            <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                          </select>
+                          <button type="submit" class="btn-status-update">Update</button>
+                        </div>
                       </form>
-                    <% } %>
-                    <form action="/admin/orders/update-status/<%= order._id %>" method="POST" class="status-update-form">
-                      <select name="status" class="status-select-sm">
-                        <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                        <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
-                        <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
-                        <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
-                        <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-                      </select>
-                      <button type="submit" class="btn-status-update">Update</button>
-                    </form>
+                    </div>
                   </td>
                 </tr>
               <% }) %>
