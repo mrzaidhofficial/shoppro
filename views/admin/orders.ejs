@@ -108,14 +108,18 @@
     font-weight: 600;
     text-transform: capitalize;
   }
+  .badge-pending { background: #FEF3C7; color: #D97706; }
   .badge-processing { background: #FEF3C7; color: #D97706; }
   .badge-shipped { background: #DBEAFE; color: #2563EB; }
   .badge-delivered { background: var(--success-bg); color: var(--success); }
   .badge-cancelled { background: var(--error-bg); color: var(--error); }
+  .badge-verified { background: var(--success-bg); color: var(--success); }
+  [data-theme="dark"] .badge-pending { background: rgba(251,191,36,0.2); color: #FBBF24; }
   [data-theme="dark"] .badge-processing { background: rgba(251,191,36,0.2); color: #FBBF24; }
   [data-theme="dark"] .badge-shipped { background: rgba(59,130,246,0.2); color: #60A5FA; }
   [data-theme="dark"] .badge-delivered { background: rgba(52,211,153,0.2); color: #34D399; }
   [data-theme="dark"] .badge-cancelled { background: rgba(248,113,113,0.2); color: #F87171; }
+  [data-theme="dark"] .badge-verified { background: rgba(52,211,153,0.2); color: #34D399; }
   
   .empty-state {
     text-align: center;
@@ -238,9 +242,37 @@
     transition: var(--transition-fast);
     white-space: nowrap;
   }
-  .btn-status-update:hover {
-    background: var(--primary-dark);
+  .btn-status-update:hover { background: var(--primary-dark); }
+  .btn-verify {
+    padding: 4px 10px;
+    background: #059669;
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    white-space: nowrap;
   }
+  .btn-verify:hover { background: #047857; }
+  .btn-receipt {
+    padding: 4px 10px;
+    background: #2563EB;
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+  }
+  .btn-receipt:hover { background: #1D4ED8; }
   
   @media (max-width: 900px) {
     .admin-layout { grid-template-columns: 1fr; }
@@ -264,8 +296,8 @@
       <a href="/admin/orders" class="admin-nav-item active"><i class="fas fa-receipt"></i> Orders</a>
       <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
       <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
-      <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
       <a href="/admin/bank-details" class="admin-nav-item"><i class="fas fa-university"></i> Bank Details</a>
+      <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
       <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
     </aside>
@@ -281,6 +313,7 @@
           <span class="bulk-count" id="bulkCount">0 order(s) selected</span>
           <select class="bulk-status-select" id="bulkStatus">
             <option value="">Change status to...</option>
+            <option value="pending">Pending</option>
             <option value="processing">Processing</option>
             <option value="shipped">Shipped</option>
             <option value="delivered">Delivered</option>
@@ -301,13 +334,13 @@
           <table class="admin-table">
             <thead>
               <tr>
-                <th style="width:40px;">
-                  <input type="checkbox" class="select-all-checkbox" id="selectAll" onclick="toggleSelectAll(this)">
-                </th>
+                <th style="width:40px;"><input type="checkbox" class="select-all-checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
                 <th>Order #</th>
                 <th>Customer</th>
                 <th>Items</th>
                 <th>Total</th>
+                <th>Payment</th>
+                <th>Receipt</th>
                 <th>Date</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -316,29 +349,46 @@
             <tbody>
               <% orders.forEach(function(order) { %>
                 <tr>
-                  <td>
-                    <input type="checkbox" class="order-checkbox" value="<%= order._id %>" onchange="updateBulkBar()">
-                  </td>
-                  <td>
-                    <a href="/cart/order-confirmation/<%= order._id %>" class="order-number-link">
-                      <%= order.orderNumber %>
-                    </a>
-                  </td>
+                  <td><input type="checkbox" class="order-checkbox" value="<%= order._id %>" onchange="updateBulkBar()"></td>
+                  <td><a href="/cart/order-confirmation/<%= order._id %>" class="order-number-link"><%= order.orderNumber %></a></td>
                   <td>
                     <div style="font-weight:500;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></div>
                     <div style="font-size:0.75rem;color:var(--gray-400);"><%= order.user ? order.user.email : '' %></div>
                   </td>
                   <td><%= order.items ? order.items.length : 0 %> item(s)</td>
                   <td class="order-total-amount">LKR <%= order.total.toFixed(2) %></td>
+                  <td style="font-size:0.78rem;">
+                    <% if (order.paymentMethod === 'bank_transfer') { %>
+                      Bank Transfer
+                      <% if (order.paymentVerified) { %>
+                        <span class="badge-status badge-verified" style="font-size:0.6rem;">Verified</span>
+                      <% } else { %>
+                        <span class="badge-status badge-pending" style="font-size:0.6rem;">Pending</span>
+                      <% } %>
+                    <% } else { %>
+                      COD
+                    <% } %>
+                  </td>
+                  <td>
+                    <% if (order.paymentReceipt) { %>
+                      <a href="/uploads/receipts/<%= order.paymentReceipt %>" target="_blank" class="btn-receipt">View</a>
+                    <% } else { %>
+                      <span style="font-size:0.7rem;color:var(--text-muted);">—</span>
+                    <% } %>
+                  </td>
                   <td style="font-size:0.82rem;white-space:nowrap;">
                     <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
                   </td>
+                  <td><span class="badge-status badge-<%= order.status %>"><%= order.status %></span></td>
                   <td>
-                    <span class="badge-status badge-<%= order.status %>"><%= order.status %></span>
-                  </td>
-                  <td>
+                    <% if (order.paymentMethod === 'bank_transfer' && !order.paymentVerified) { %>
+                      <form action="/admin/orders/verify-payment/<%= order._id %>" method="POST" style="margin-bottom:4px;">
+                        <button type="submit" class="btn-verify">Verify Payment</button>
+                      </form>
+                    <% } %>
                     <form action="/admin/orders/update-status/<%= order._id %>" method="POST" class="status-update-form">
                       <select name="status" class="status-select-sm">
+                        <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
                         <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
                         <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
                         <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
@@ -365,67 +415,37 @@
 <script>
 function toggleSelectAll(selectAllCheckbox) {
   var checkboxes = document.querySelectorAll('.order-checkbox');
-  checkboxes.forEach(function(cb) {
-    cb.checked = selectAllCheckbox.checked;
-  });
+  checkboxes.forEach(function(cb) { cb.checked = selectAllCheckbox.checked; });
   updateBulkBar();
 }
-
 function updateBulkBar() {
   var checkedBoxes = document.querySelectorAll('.order-checkbox:checked');
   var bulkBar = document.getElementById('bulkActionsBar');
   var bulkCount = document.getElementById('bulkCount');
   var selectAll = document.getElementById('selectAll');
   var allBoxes = document.querySelectorAll('.order-checkbox');
-  
   var count = checkedBoxes.length;
-  
-  if (count > 0) {
-    bulkBar.classList.add('active');
-    bulkCount.textContent = count + ' order(s) selected';
-    selectAll.checked = (count === allBoxes.length);
-  } else {
-    bulkBar.classList.remove('active');
-    selectAll.checked = false;
-  }
+  if (count > 0) { bulkBar.classList.add('active'); bulkCount.textContent = count + ' order(s) selected'; selectAll.checked = (count === allBoxes.length); }
+  else { bulkBar.classList.remove('active'); selectAll.checked = false; }
 }
-
 function submitBulkUpdate() {
   var status = document.getElementById('bulkStatus').value;
-  if (!status) {
-    alert('Please select a status');
-    return;
-  }
-  
+  if (!status) { alert('Please select a status'); return; }
   var checkedBoxes = document.querySelectorAll('.order-checkbox:checked');
-  if (checkedBoxes.length === 0) {
-    alert('Please select at least one order');
-    return;
-  }
-  
-  if (!confirm('Update ' + checkedBoxes.length + ' order(s) to "' + status + '"?')) {
-    return;
-  }
-  
+  if (checkedBoxes.length === 0) { alert('Please select at least one order'); return; }
+  if (!confirm('Update ' + checkedBoxes.length + ' order(s) to "' + status + '"?')) return;
   document.getElementById('bulkStatusInput').value = status;
   var container = document.getElementById('bulkOrderIdsContainer');
   container.innerHTML = '';
-  
   checkedBoxes.forEach(function(cb) {
     var input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'orderIds';
-    input.value = cb.value;
+    input.type = 'hidden'; input.name = 'orderIds'; input.value = cb.value;
     container.appendChild(input);
   });
-  
   document.getElementById('bulkUpdateForm').submit();
 }
-
 function clearSelection() {
-  document.querySelectorAll('.order-checkbox').forEach(function(cb) {
-    cb.checked = false;
-  });
+  document.querySelectorAll('.order-checkbox').forEach(function(cb) { cb.checked = false; });
   document.getElementById('selectAll').checked = false;
   updateBulkBar();
 }
