@@ -178,6 +178,11 @@
         <div class="order-totals">
           <div class="order-total-row"><span>Subtotal</span><span>LKR <%= subtotal %></span></div>
           <div class="order-total-row"><span>Delivery</span><span><%= parseFloat(shipping) === 0 ? 'FREE' : 'LKR ' + shipping %></span></div>
+          <% if (typeof settings !== 'undefined' && settings.estimatedDelivery) { %>
+            <div style="font-size:0.72rem;color:var(--text-muted);text-align:right;margin-top:-4px;margin-bottom:2px;">
+              <i class="fas fa-truck"></i> Est. Delivery: <%= settings.estimatedDelivery %>
+            </div>
+          <% } %>
           <% if (typeof couponDiscount !== 'undefined' && parseFloat(couponDiscount) > 0) { %>
             <div class="order-total-row" style="color: var(--success);"><span>Coupon (<%= appliedCoupon.code %>)</span><span>-LKR <%= couponDiscount %></span></div>
           <% } %>
