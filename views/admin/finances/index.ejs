@@ -215,11 +215,11 @@
                       <td><%= item.quantity %></td>
                       <td class="amount neutral">LKR <%= item.price.toFixed(2) %></td>
                       <td class="amount cost-color">LKR <%= ((item.cost || 0) * item.quantity).toFixed(2) %></td>
-                      <td class="amount shipping-color"><%= idx === 0 ? '$' + itemShipping.toFixed(2) : '—' %></td>
+                      <td class="amount shipping-color"><%= idx === 0 ? 'LKR ' + itemShipping.toFixed(2) : '—' %></td>
                       <td class="amount coupon-color"><%= idx === 0 && itemCoupon > 0 ? '−$' + itemCoupon.toFixed(2) : 'LKR 0.00' %></td>
-                      <td class="amount revenue-color"><%= idx === 0 ? '$' + itemRevenue.toFixed(2) : '—' %></td>
+                      <td class="amount revenue-color"><%= idx === 0 ? 'LKR ' + itemRevenue.toFixed(2) : '—' %></td>
                       <td class="amount <%= itemProfit >= 0 ? 'profit-color' : 'cost-color' %>">
-                        <%= idx === 0 ? '$' + itemProfit.toFixed(2) : '$' + ((item.price - (item.cost || 0)) * item.quantity).toFixed(2) %>
+                        <%= idx === 0 ? 'LKR ' + itemProfit.toFixed(2) : 'LKR ' + ((item.price - (item.cost || 0)) * item.quantity).toFixed(2) %>
                       </td>
                       <td><span class="badge badge-<%= order.status %>"><%= order.status %></span></td>
                     </tr>

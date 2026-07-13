@@ -557,7 +557,7 @@
           <div class="info-grid">
             <div class="info-item"><div class="info-label">Status</div><div class="info-value" style="text-transform:capitalize;"><%= order.status %></div></div>
             <div class="info-item"><div class="info-label">Items</div><div class="info-value"><%= order.items ? order.items.length : 0 %> item(s)</div></div>
-            <div class="info-item"><div class="info-label">Shipping</div><div class="info-value"><%= order.shippingCost === 0 ? 'FREE' : '$' + order.shippingCost.toFixed(2) %></div></div>
+            <div class="info-item"><div class="info-label">Shipping</div><div class="info-value"><%= order.shippingCost === 0 ? 'FREE' : 'LKR ' + order.shippingCost.toFixed(2) %></div></div>
             <div class="info-item"><div class="info-label">Est. Delivery</div><div class="info-value">7-21 business days</div></div>
             <% if (orderShipping.trackingNumber) { %>
               <div class="info-item full-width"><div class="info-label">Tracking Number</div><div class="info-value tracking-num"><%= orderShipping.trackingNumber %></div></div>

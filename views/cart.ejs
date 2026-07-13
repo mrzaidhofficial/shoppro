@@ -35,7 +35,7 @@
           <h3 class="cart-summary-title">Order Summary</h3>
           <div class="cart-summary-rows">
             <div class="cart-summary-row"><span>Subtotal</span><span>LKR <%= subtotal %></span></div>
-            <div class="cart-summary-row"><span>Shipping</span><span><%= parseFloat(shipping) === 0 ? 'FREE' : '$' + shipping %></span></div>
+            <div class="cart-summary-row"><span>Shipping</span><span><%= parseFloat(shipping) === 0 ? 'FREE' : 'LKR ' + shipping %></span></div>
             <% if (typeof couponDiscount !== 'undefined' && parseFloat(couponDiscount) > 0) { %>
               <div class="cart-summary-row" style="color:var(--success);"><span>Coupon Discount</span><span>-LKR <%= couponDiscount %></span></div>
             <% } %>

@@ -53,8 +53,8 @@
               <% coupons.forEach(function(c) { %>
                 <tr>
                   <td style="font-weight:700;"><%= c.code %></td>
-                  <td><%= c.discountType === 'percentage' ? c.discountValue + '%' : '$' + c.discountValue.toFixed(2) %></td>
-                  <td><%= c.minPurchase > 0 ? '$' + c.minPurchase.toFixed(2) : 'None' %></td>
+                  <td><%= c.discountType === 'percentage' ? c.discountValue + '%' : 'LKR ' + c.discountValue.toFixed(2) %></td>
+                  <td><%= c.minPurchase > 0 ? 'LKR ' + c.minPurchase.toFixed(2) : 'None' %></td>
                   <td><%= c.usedCount %>/<%= c.usageLimit || '∞' %></td>
                   <td><%= c.expiryDate ? c.expiryDate.toLocaleDateString() : 'No expiry' %></td>
                   <td><span class="<%= c.isActive ? 'badge-active' : 'badge-inactive' %>"><%= c.isActive ? 'Active' : 'Inactive' %></span></td>
