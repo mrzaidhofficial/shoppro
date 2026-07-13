@@ -261,6 +261,18 @@
                   </div>
                   <div class="order-item-bottom">
                     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                      <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:0.75rem;color:var(--text-muted);">Order ID:</span>
+                        <span style="font-size:0.78rem;font-weight:500;color:var(--text-secondary);"><%= order.orderNumber %></span>
+                        <button class="copy-btn" onclick="copyToClipboard('<%= order.orderNumber %>', this)"><i class="fas fa-copy"></i> Copy</button>
+                      </div>
+                      <% if (order.trackingNumber) { %>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                          <span style="font-size:0.75rem;color:var(--text-muted);">Tracking No:</span>
+                          <span style="font-size:0.78rem;font-weight:500;color:var(--primary);"><%= order.trackingNumber %></span>
+                          <button class="copy-btn" onclick="copyToClipboard('<%= order.trackingNumber %>', this)"><i class="fas fa-copy"></i> Copy</button>
+                        </div>
+                      <% } %>
                       <% if (order.paymentMethod === 'bank_transfer') { %>
                         <span class="payment-badge <%= order.paymentVerified ? 'verified' : 'pending' %>">
                           <i class="fas <%= order.paymentVerified ? 'fa-check-circle' : 'fa-clock' %>"></i>
