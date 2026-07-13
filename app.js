@@ -48,12 +48,12 @@ app.use(session({
   store: MongoStore.create({
     mongoUrl: mongoUri,
     collectionName: 'sessions',
-    ttl: 14 * 24 * 60 * 60,
+    ttl: 1 * 24 * 60 * 60,
     autoRemove: 'native',
     touchAfter: 24 * 3600
   }),
   cookie: { 
-    maxAge: 86400000,
+    maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
     secure: false,
     sameSite: 'lax'
