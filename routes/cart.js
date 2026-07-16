@@ -237,7 +237,7 @@ router.post('/place-order', upload.single('paymentReceipt'), async function(req,
         if (total < 0) total = 0;
         var order = new Order({
             user: req.session.user.id, items: orderItems, 
-            shippingAddress: { firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, street: req.body.street, city: req.body.city, state: req.body.state, zipCode: req.body.zipCode, country: req.body.country },
+            shippingAddress: { firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, phone: req.body.phone || '', street: req.body.street, city: req.body.city, state: req.body.state, zipCode: req.body.zipCode, country: req.body.country },
             paymentMethod: paymentMethod, paymentReceipt: req.file ? req.file.filename : null, paymentVerified: false,
             subtotal: subtotal, shippingCost: shipping, tax: 0, total: total,
             couponCode: req.session.coupon ? req.session.coupon.code : null, couponDiscount: couponDiscount, status: 'pending'

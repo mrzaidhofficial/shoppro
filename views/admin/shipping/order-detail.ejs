@@ -23,6 +23,11 @@
   .info-card-value { font-weight: 600; color: var(--gray-900); font-size: 0.9rem; }
   .info-card-value.price { color: var(--primary); font-family: var(--font-display); }
   
+  .customer-card { background: var(--white); border: var(--border); border-radius: var(--radius-xl); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-xs); }
+  .customer-card h4 { font-size: 0.8rem; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+  .customer-details { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; font-size: 0.88rem; color: var(--gray-700); }
+  .customer-details strong { color: var(--gray-900); }
+  
   .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .detail-card { background: var(--white); border: var(--border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-xs); }
   .detail-card.span-2 { grid-column: 1 / -1; }
@@ -100,6 +105,7 @@
     .admin-nav-item { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 10px 16px; font-size: 0.8rem; }
     .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--primary); }
     .info-cards { grid-template-columns: 1fr 1fr; }
+    .customer-details { grid-template-columns: 1fr 1fr; }
     .detail-grid { grid-template-columns: 1fr; }
     .detail-card.span-2 { grid-column: 1; }
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
@@ -112,6 +118,7 @@
   @media (max-width: 500px) {
     .profit-metrics-row { grid-template-columns: repeat(2, 1fr); }
     .profit-metric-box:nth-child(2)::after, .profit-metric-box:nth-child(4)::after { display: none; }
+    .customer-details { grid-template-columns: 1fr; }
   }
 </style>
 
@@ -128,6 +135,7 @@
       <a href="/admin/orders" class="admin-nav-item"><i class="fas fa-receipt"></i> Orders</a>
       <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
       <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/bank-details" class="admin-nav-item"><i class="fas fa-university"></i> Bank Details</a>
       <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
       <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
@@ -147,6 +155,18 @@
         <div class="info-card"><div class="info-card-label">Order Date</div><div class="info-card-value"><%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></div></div>
         <div class="info-card"><div class="info-card-label">Order Total</div><div class="info-card-value price">LKR <%= order.total.toFixed(2) %></div></div>
         <div class="info-card"><div class="info-card-label">Shipping Charged</div><div class="info-card-value"><%= order.shippingCost === 0 ? 'FREE' : 'LKR ' + order.shippingCost.toFixed(2) %></div></div>
+      </div>
+      
+      <div class="customer-card">
+        <h4><i class="fas fa-map-marker-alt"></i> Customer Details</h4>
+        <div class="customer-details">
+          <div><strong>Name:</strong> <%= order.shippingAddress ? order.shippingAddress.firstName + ' ' + order.shippingAddress.lastName : 'N/A' %></div>
+          <div><strong>Email:</strong> <%= order.shippingAddress ? order.shippingAddress.email : 'N/A' %></div>
+          <div><strong>Phone:</strong> <%= order.shippingAddress && order.shippingAddress.phone ? order.shippingAddress.phone : 'Not provided' %></div>
+          <div><strong>Address:</strong> <%= order.shippingAddress ? order.shippingAddress.street + ', ' + order.shippingAddress.city + ', ' + order.shippingAddress.state + ' ' + (order.shippingAddress.zipCode || '') : 'N/A' %></div>
+          <div><strong>Country:</strong> <%= order.shippingAddress ? order.shippingAddress.country : 'N/A' %></div>
+          <div><strong>Payment:</strong> <%= order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Bank Transfer' %> <%= order.paymentMethod === 'bank_transfer' && order.paymentVerified ? '(Verified)' : order.paymentMethod === 'bank_transfer' ? '(Pending)' : '' %></div>
+        </div>
       </div>
       
       <form action="/admin/shipping/orders/<%= order._id %>" method="POST">
@@ -206,7 +226,7 @@
                 <div class="form-group"><label class="form-label">Supplier Order ID <span class="hint">— reference from your supplier</span></label><input type="text" name="supplierOrderId" class="form-input" value="<%= orderShipping.supplierOrderId || '' %>" placeholder="e.g. #ALI-2024-98765"></div>
               </div>
               <div class="form-row-3">
-                <div class="form-group"><label class="form-label">Carrier</label><input type="text" name="carrierName" class="form-input" value="<%= orderShipping.carrierName || '' %>" placeholder="e.g. USPS, DHL, FedEx"></div>
+                <div class="form-group"><label class="form-label">Carrier</label><input type="text" name="carrierName" class="form-input" value="<%= orderShipping.carrierName || '' %>" placeholder="e.g. Domex, PromptX"></div>
                 <div class="form-group"><label class="form-label">Tracking Number</label><input type="text" name="trackingNumber" class="form-input" value="<%= orderShipping.trackingNumber || '' %>" placeholder="Enter tracking number"></div>
                 <div class="form-group"><label class="form-label">Tracking URL</label><input type="text" name="trackingUrl" class="form-input" value="<%= orderShipping.trackingUrl || '' %>" placeholder="https://track.17track.net"></div>
               </div>
