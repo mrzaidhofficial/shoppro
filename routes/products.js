@@ -24,8 +24,19 @@ router.get('/', async function(req, res) {
     
     var products = await Product.find(query).sort(sortOption).skip(skip).limit(limit);
     
-    // Fetch ALL distinct categories from the ENTIRE database (not just filtered results)
-    var categories = await Product.distinct('category');
+    // Hardcoded full category list so it always shows even when no products exist
+    var allCategories = ['Electronics', 'Clothing', 'Home & Garden', 'Accessories', 'Sports', 'Books', 'Other'];
+    
+    // Also fetch from DB to catch any custom categories
+    var dbCategories = await Product.distinct('category');
+    
+    // Merge and deduplicate
+    var categories = allCategories;
+    dbCategories.forEach(function(cat) {
+      if (categories.indexOf(cat) === -1) {
+        categories.push(cat);
+      }
+    });
     
     res.render('products', {
       title: 'Products',
@@ -60,7 +71,6 @@ router.get('/:id', async function(req, res) {
     if (req.session.recentlyViewed && req.session.recentlyViewed.length > 1) {
       var recentIds = req.session.recentlyViewed.filter(function(id) { return id !== req.params.id; }).slice(0, 4);
       recentlyViewed = await Product.find({ _id: { $in: recentIds } });
-      // Reorder to match session order
       recentlyViewed.sort(function(a, b) {
         return recentIds.indexOf(a._id.toString()) - recentIds.indexOf(b._id.toString());
       });
