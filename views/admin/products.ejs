@@ -193,7 +193,7 @@
     border-radius: var(--radius-xl);
   }
   .empty-state i { font-size: 4rem; color: var(--gray-200); margin-bottom: 16px; display: block; }
-  .empty-state p { color: var(--gray-500); margin-bottom: 20px; }
+  .empty-state p { color: var(--gray-500); }
   
   @media (max-width: 900px) {
     .admin-layout { grid-template-columns: 1fr; }
@@ -310,9 +310,6 @@
         <div class="empty-state">
           <i class="fas fa-box-open"></i>
           <p>No products found. Add your first product to get started.</p>
-          <a href="/admin/products/add" class="btn-admin-primary">
-            <i class="fas fa-plus"></i> Add Product
-          </a>
         </div>
       <% } %>
     </div>
