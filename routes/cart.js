@@ -212,9 +212,17 @@ router.post('/place-order', upload.single('paymentReceipt'), async function(req,
         if (!req.session.user) return res.status(401).json({ error: 'Please sign in' });
         var cart = req.session.cart || [];
         if (cart.length === 0) return res.status(400).json({ error: 'Cart is empty' });
+        
         var paymentMethod = req.body.paymentMethod;
-        if (!paymentMethod || !['cod', 'bank_transfer', 'card_payment'].includes(paymentMethod)) return res.status(400).json({ error: 'Invalid payment method' });
-        if ((paymentMethod === 'bank_transfer' || paymentMethod === 'card_payment') && !req.file) return res.status(400).json({ error: 'Please upload your payment receipt' });
+        if (!paymentMethod || !['cod', 'bank_transfer', 'card_payment'].includes(paymentMethod)) {
+            return res.status(400).json({ error: 'Invalid payment method' });
+        }
+        
+        // Only require receipt upload for bank transfer
+        if (paymentMethod === 'bank_transfer' && !req.file) {
+            return res.status(400).json({ error: 'Please upload your payment receipt' });
+        }
+        
         var subtotal = 0; var orderItems = [];
         for (var i = 0; i < cart.length; i++) {
             var item = cart[i]; var product = await Product.findById(item.productId);
@@ -225,30 +233,73 @@ router.post('/place-order', upload.single('paymentReceipt'), async function(req,
             product.stock -= item.quantity; await product.save();
         }
         subtotal = Math.round(subtotal * 100) / 100;
+        
         var shipping = req.session.cartShipping || 0;
         var couponDiscount = 0; var appliedCouponId = null;
         if (req.session.coupon) {
             var coupon = req.session.coupon;
-            if (coupon.discountType === 'percentage') { couponDiscount = Math.round(subtotal * (coupon.discountValue / 100) * 100) / 100; if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) couponDiscount = coupon.maxDiscount; }
-            else { couponDiscount = coupon.discountValue; }
-            if (couponDiscount > subtotal) couponDiscount = subtotal; appliedCouponId = coupon._id;
+            if (coupon.discountType === 'percentage') { 
+                couponDiscount = Math.round(subtotal * (coupon.discountValue / 100) * 100) / 100; 
+                if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) couponDiscount = coupon.maxDiscount; 
+            } else { 
+                couponDiscount = coupon.discountValue; 
+            }
+            if (couponDiscount > subtotal) couponDiscount = subtotal; 
+            appliedCouponId = coupon._id;
         }
+        
         var total = Math.round((subtotal + shipping - couponDiscount) * 100) / 100;
         if (total < 0) total = 0;
+        
         var order = new Order({
-            user: req.session.user.id, items: orderItems, 
-            shippingAddress: { firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, phone: req.body.phone || '', whatsapp: req.body.whatsapp || req.body.phone || '', street: req.body.street, city: req.body.city, state: req.body.state, zipCode: req.body.zipCode, country: req.body.country },
-            paymentMethod: paymentMethod, paymentReceipt: req.file ? req.file.filename : null, paymentVerified: false,
-            subtotal: subtotal, shippingCost: shipping, tax: 0, total: total,
-            couponCode: req.session.coupon ? req.session.coupon.code : null, couponDiscount: couponDiscount, status: 'pending'
+            user: req.session.user.id, 
+            items: orderItems, 
+            shippingAddress: { 
+                firstName: req.body.firstName, 
+                lastName: req.body.lastName, 
+                email: req.body.email, 
+                phone: req.body.phone || '', 
+                whatsapp: req.body.whatsapp || req.body.phone || '', 
+                street: req.body.street, 
+                city: req.body.city, 
+                state: req.body.state, 
+                zipCode: req.body.zipCode, 
+                country: req.body.country 
+            },
+            paymentMethod: paymentMethod, 
+            paymentReceipt: req.file ? req.file.filename : null, 
+            paymentVerified: false,
+            subtotal: subtotal, 
+            shippingCost: shipping, 
+            tax: 0, 
+            total: total,
+            couponCode: req.session.coupon ? req.session.coupon.code : null, 
+            couponDiscount: couponDiscount, 
+            status: 'pending'
         });
         await order.save();
-        if (appliedCouponId) await Coupon.findByIdAndUpdate(appliedCouponId, { $inc: { usedCount: 1 } });
+        
+        if (appliedCouponId) {
+            await Coupon.findByIdAndUpdate(appliedCouponId, { $inc: { usedCount: 1 } });
+        }
+        
         var User = require('../models/User');
-        User.findById(req.session.user.id).then(function(customer) { if (customer && customer.email) emailService.sendOrderConfirmation(customer.email, customer.firstName, order).catch(function(err) { console.error('Email failed:', err.message); }); });
-        req.session.cart = []; req.session.coupon = null; req.session.cartShipping = 0;
+        User.findById(req.session.user.id).then(function(customer) { 
+            if (customer && customer.email) {
+                emailService.sendOrderConfirmation(customer.email, customer.firstName, order).catch(function(err) { 
+                    console.error('Email failed:', err.message); 
+                });
+            }
+        });
+        
+        req.session.cart = []; 
+        req.session.coupon = null; 
+        req.session.cartShipping = 0;
         res.json({ success: true, orderId: order._id, orderNumber: order.orderNumber });
-    } catch (err) { console.error('Order error:', err.message); res.status(500).json({ error: 'Failed to place order' }); }
+    } catch (err) { 
+        console.error('Order error:', err.message); 
+        res.status(500).json({ error: 'Failed to place order' }); 
+    }
 });
 
 router.get('/order-confirmation/:id', async function(req, res) {

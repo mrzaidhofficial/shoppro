@@ -53,6 +53,229 @@
     color: var(--text-muted);
     text-align: center;
   }
+  .required-star { color: var(--error); font-weight: 700; }
+  
+  .whatsapp-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    padding: 8px 12px;
+    background: rgba(37, 211, 102, 0.08);
+    border: 1px solid rgba(37, 211, 102, 0.2);
+    border-radius: var(--radius);
+    font-size: 0.75rem;
+    color: #059669;
+    font-weight: 500;
+  }
+  [data-theme="dark"] .whatsapp-note {
+    background: rgba(52, 211, 153, 0.1);
+    border-color: rgba(52, 211, 153, 0.2);
+    color: #34D399;
+  }
+  
+  /* Payment Method Cards — spaced out */
+  .payment-method-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: var(--bg-card-alt);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    margin-bottom: 14px;
+    transition: all 0.25s ease;
+    position: relative;
+  }
+  .payment-method-card:last-child {
+    margin-bottom: 0;
+  }
+  .payment-method-card:hover {
+    border-color: var(--primary);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+  }
+  .payment-method-card.selected {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    box-shadow: 0 0 0 4px rgba(0,102,255,0.06);
+  }
+  .payment-method-card input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .payment-method-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+  }
+  .payment-method-icon.cod { background: rgba(16,185,129,0.1); color: #059669; }
+  .payment-method-icon.card { background: rgba(59,130,246,0.1); color: #3B82F6; }
+  .payment-method-icon.bank { background: rgba(124,58,237,0.1); color: #7C3AED; }
+  [data-theme="dark"] .payment-method-icon.cod { background: rgba(52,211,153,0.15); color: #34D399; }
+  [data-theme="dark"] .payment-method-icon.card { background: rgba(59,130,246,0.15); color: #60A5FA; }
+  [data-theme="dark"] .payment-method-icon.bank { background: rgba(124,58,237,0.15); color: #A78BFA; }
+  
+  .payment-method-info { flex: 1; min-width: 0; }
+  .payment-method-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.92rem;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .payment-method-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .payment-method-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(16,185,129,0.1);
+    color: #059669;
+    white-space: nowrap;
+  }
+  [data-theme="dark"] .payment-method-badge {
+    background: rgba(52,211,153,0.15);
+    color: #34D399;
+  }
+  
+  .payment-detail-panel {
+    display: none;
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    margin-bottom: 16px;
+    animation: panelSlideIn 0.3s ease;
+  }
+  .payment-detail-panel.active { display: block; }
+  @keyframes panelSlideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .panel-title {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-title i { font-size: 0.95rem; }
+  .panel-title i.blue { color: #3B82F6; }
+  .panel-title i.purple { color: #7C3AED; }
+  [data-theme="dark"] .panel-title i.blue { color: #60A5FA; }
+  [data-theme="dark"] .panel-title i.purple { color: #A78BFA; }
+  
+  .bank-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .bank-detail-grid div span:first-child { color: var(--text-muted); }
+  .bank-detail-grid div strong { color: var(--text-primary); }
+  
+  .card-payment-desc {
+    color: var(--text-body);
+    font-size: 0.85rem;
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+  
+  .delivery-channels {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .delivery-channel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+  }
+  .delivery-channel:hover {
+    border-color: var(--primary);
+    transform: translateX(4px);
+  }
+  .delivery-channel i {
+    width: 22px;
+    text-align: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .delivery-channel i.fa-envelope { color: #EA580C; }
+  .delivery-channel i.fa-comment-sms { color: #2563EB; }
+  .delivery-channel i.fa-whatsapp { color: #25D366; }
+  
+  .security-footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(59,130,246,0.15);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+  .security-footer i { color: var(--success); }
+  
+  .form-all-required-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: rgba(239,68,68,0.05);
+    border: 1px solid rgba(239,68,68,0.12);
+    border-radius: var(--radius);
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+  }
+  .form-all-required-note i { color: var(--error); font-size: 0.7rem; }
+  
+  @media (max-width: 500px) {
+    .payment-method-card { padding: 14px 16px; gap: 10px; }
+    .payment-method-icon { width: 36px; height: 36px; font-size: 0.95rem; }
+    .payment-method-name { font-size: 0.85rem; }
+    .payment-method-desc { font-size: 0.73rem; }
+    .payment-detail-panel { padding: 16px; }
+    .bank-detail-grid { grid-template-columns: 1fr; }
+    .delivery-channel { font-size: 0.78rem; padding: 6px 10px; }
+  }
 </style>
 
 <section class="checkout-section-page">
@@ -62,23 +285,61 @@
     <div class="checkout-layout">
       
       <div class="checkout-form-card">
+        
+        <!-- Delivery Address -->
         <h3 class="checkout-section-title">
           <i class="fas fa-shipping-fast" style="color: var(--primary); margin-right: 8px;"></i>
           Delivery Address
         </h3>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">First Name *</label><input type="text" class="form-input" id="firstName" name="firstName" required placeholder="John"></div>
-          <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-input" id="lastName" name="lastName" required placeholder="Doe"></div>
+        
+        <div class="form-all-required-note">
+          <i class="fas fa-asterisk"></i>
+          <span>All fields are required to place your order</span>
         </div>
-        <div class="form-group"><label class="form-label">Email Address *</label><input type="email" class="form-input" id="email" name="email" required placeholder="john@example.com"></div>
+        
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Phone Number *</label><input type="tel" class="form-input" id="phone" name="phone" required placeholder="07XXXXXXXX"></div>
-          <div class="form-group"><label class="form-label">WhatsApp Number <span style="font-weight:400;color:var(--text-muted);">— for payment links</span></label><input type="tel" class="form-input" id="whatsapp" name="whatsapp" placeholder="07XXXXXXXX (if different)"></div>
+          <div class="form-group">
+            <label class="form-label">First Name <span class="required-star">*</span></label>
+            <input type="text" class="form-input" id="firstName" name="firstName" required placeholder="John">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name <span class="required-star">*</span></label>
+            <input type="text" class="form-input" id="lastName" name="lastName" required placeholder="Doe">
+          </div>
         </div>
-        <div class="form-group"><label class="form-label">Street Address *</label><input type="text" class="form-input" id="address" name="street" required placeholder="123 Main Street, Apt 4B"></div>
+        
+        <div class="form-group">
+          <label class="form-label">Email Address <span class="required-star">*</span></label>
+          <input type="email" class="form-input" id="email" name="email" required placeholder="john@example.com">
+        </div>
+        
         <div class="form-row">
-          <div class="form-group"><label class="form-label">City *</label><input type="text" class="form-input" id="city" name="city" required placeholder="Colombo"></div>
-          <div class="form-group"><label class="form-label">District *</label>
+          <div class="form-group">
+            <label class="form-label">Phone Number <span class="required-star">*</span></label>
+            <input type="tel" class="form-input" id="phone" name="phone" required placeholder="07XXXXXXXX">
+          </div>
+          <div class="form-group">
+            <label class="form-label">WhatsApp Number <span class="required-star">*</span></label>
+            <input type="tel" class="form-input" id="whatsapp" name="whatsapp" required placeholder="07XXXXXXXX">
+            <div class="whatsapp-note">
+              <i class="fab fa-whatsapp"></i>
+              <span>Please enter your WhatsApp number even if it's the same as your phone number</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Street Address <span class="required-star">*</span></label>
+          <input type="text" class="form-input" id="address" name="street" required placeholder="123 Main Street, Apt 4B">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">City <span class="required-star">*</span></label>
+            <input type="text" class="form-input" id="city" name="city" required placeholder="Colombo">
+          </div>
+          <div class="form-group">
+            <label class="form-label">District <span class="required-star">*</span></label>
             <select class="form-input form-select" id="state" name="state" required>
               <option value="">Select District</option>
               <option value="Colombo">Colombo</option>
@@ -109,56 +370,106 @@
             </select>
           </div>
         </div>
+        
         <div class="form-group">
-          <label class="form-label">Postal Code</label>
-          <input type="text" class="form-input" id="zip" name="zipCode" placeholder="e.g. 00100">
+          <label class="form-label">Postal Code <span class="required-star">*</span></label>
+          <input type="text" class="form-input" id="zip" name="zipCode" required placeholder="e.g. 00100">
         </div>
         <input type="hidden" name="country" value="Sri Lanka">
 
-        <h3 class="checkout-section-title" style="margin-top: 28px;">
+        <!-- Payment Method -->
+        <h3 class="checkout-section-title" style="margin-top: 32px;">
           <i class="fas fa-credit-card" style="color: var(--primary); margin-right: 8px;"></i>
           Payment Method
         </h3>
         
-        <div style="margin-bottom: 16px;">
-          <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card-alt); border: 2px solid var(--primary); border-radius: var(--radius-lg); cursor: pointer; margin-bottom: 10px; transition: border-color 0.2s;" id="codLabel">
-            <input type="radio" name="paymentMethod" value="cod" checked onchange="togglePaymentMethod()" style="width: 18px; height: 18px; accent-color: var(--primary);">
-            <div>
-              <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">Cash on Delivery</div>
-              <div style="font-size: 0.78rem; color: var(--text-muted);">Pay when you receive your order</div>
+        <!-- Cash on Delivery -->
+        <label class="payment-method-card selected" id="codCard">
+          <input type="radio" name="paymentMethod" value="cod" checked onchange="togglePaymentMethod()">
+          <div class="payment-method-icon cod">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+          <div class="payment-method-info">
+            <div class="payment-method-name">
+              Cash on Delivery
+              <span class="payment-method-badge">Most Popular</span>
             </div>
-          </label>
-          
-          <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card-alt); border: 2px solid var(--border-color); border-radius: var(--radius-lg); cursor: pointer; transition: border-color 0.2s;" id="cardLabel">
-            <input type="radio" name="paymentMethod" value="card_payment" onchange="togglePaymentMethod()" style="width: 18px; height: 18px; accent-color: var(--primary);">
-            <div>
-              <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">Card Payment</div>
-              <div style="font-size: 0.78rem; color: var(--text-muted);">Pay via secure payment link sent to your WhatsApp</div>
+            <div class="payment-method-desc">Pay when you receive your order at your doorstep</div>
+          </div>
+        </label>
+        
+        <!-- Card Payment -->
+        <label class="payment-method-card" id="cardCard">
+          <input type="radio" name="paymentMethod" value="card_payment" onchange="togglePaymentMethod()">
+          <div class="payment-method-icon card">
+            <i class="fas fa-credit-card"></i>
+          </div>
+          <div class="payment-method-info">
+            <div class="payment-method-name">Card Payment</div>
+            <div class="payment-method-desc">Pay via secure payment link sent to you (Visa / Mastercard)</div>
+          </div>
+        </label>
+        
+        <!-- Bank Transfer -->
+        <label class="payment-method-card" id="bankCard">
+          <input type="radio" name="paymentMethod" value="bank_transfer" onchange="togglePaymentMethod()">
+          <div class="payment-method-icon bank">
+            <i class="fas fa-university"></i>
+          </div>
+          <div class="payment-method-info">
+            <div class="payment-method-name">Bank Transfer</div>
+            <div class="payment-method-desc">Transfer directly to our bank account & upload your receipt</div>
+          </div>
+        </label>
+
+        <!-- Card Payment Detail Panel -->
+        <div class="payment-detail-panel" id="cardPaymentInfo" style="margin-top: 14px;">
+          <div class="panel-title">
+            <i class="fas fa-credit-card blue"></i>
+            Card Payment via HNB Accept
+          </div>
+          <p class="card-payment-desc">
+            After placing your order, we will send a <strong>secure payment link</strong> through multiple channels. 
+            You can pay using your Visa or Mastercard. <strong>No payment receipt upload is needed</strong> — just place your order and pay via the link we send you.
+          </p>
+          <div style="font-weight: 600; color: var(--text-primary); font-size: 0.82rem; margin-bottom: 8px;">
+            <i class="fas fa-paper-plane" style="color: var(--primary); margin-right: 6px;"></i> Payment link will be sent to:
+          </div>
+          <div class="delivery-channels">
+            <div class="delivery-channel">
+              <i class="fas fa-envelope"></i>
+              <span><strong>Email</strong> — to your email address</span>
             </div>
-          </label>
-          
-          <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card-alt); border: 2px solid var(--border-color); border-radius: var(--radius-lg); cursor: pointer; transition: border-color 0.2s;" id="bankLabel">
-            <input type="radio" name="paymentMethod" value="bank_transfer" onchange="togglePaymentMethod()" style="width: 18px; height: 18px; accent-color: var(--primary);">
-            <div>
-              <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">Bank Transfer</div>
-              <div style="font-size: 0.78rem; color: var(--text-muted);">Upload your payment receipt</div>
+            <div class="delivery-channel">
+              <i class="fas fa-comment-sms"></i>
+              <span><strong>SMS</strong> — as a text message to your phone number</span>
             </div>
-          </label>
+            <div class="delivery-channel">
+              <i class="fab fa-whatsapp"></i>
+              <span><strong>WhatsApp</strong> — to your WhatsApp number</span>
+            </div>
+          </div>
+          <div class="security-footer">
+            <i class="fas fa-shield-alt"></i>
+            <span>Secured by HNB Accept — Sri Lanka's trusted payment gateway</span>
+          </div>
         </div>
 
-        <div id="bankDetails" style="display: none; background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 18px;">
-          <div style="font-weight: 600; color: var(--text-primary); font-size: 0.88rem; margin-bottom: 12px;">
-            <i class="fas fa-university" style="color: var(--primary); margin-right: 6px;"></i> Bank Account Details
+        <!-- Bank Transfer Detail Panel -->
+        <div class="payment-detail-panel" id="bankDetails" style="margin-top: 14px;">
+          <div class="panel-title">
+            <i class="fas fa-university purple"></i>
+            Bank Account Details
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem;">
+          <div class="bank-detail-grid">
             <div><span style="color: var(--text-muted);">Bank:</span> <strong style="color: var(--text-primary);"><%= bankDetails.bankName || '—' %></strong></div>
             <div><span style="color: var(--text-muted);">Branch:</span> <strong style="color: var(--text-primary);"><%= bankDetails.bankBranch || '—' %></strong></div>
             <div><span style="color: var(--text-muted);">Account Name:</span> <strong style="color: var(--text-primary);"><%= bankDetails.bankAccountName || '—' %></strong></div>
             <div><span style="color: var(--text-muted);">Account Number:</span> <strong style="color: var(--text-primary);"><%= bankDetails.bankAccountNumber || '—' %></strong></div>
           </div>
           
-          <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color);">
-            <label class="form-label">Upload Payment Receipt *</label>
+          <div>
+            <label class="form-label">Upload Payment Receipt <span class="required-star">*</span></label>
             <div class="upload-btn-wrapper">
               <button type="button" class="upload-btn-custom" id="uploadBtn">
                 <i class="fas fa-cloud-upload-alt"></i> Choose File
@@ -170,30 +481,23 @@
           </div>
         </div>
 
-        <div id="cardPaymentInfo" style="display: none; background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 18px;">
-          <div style="font-weight: 600; color: var(--text-primary); font-size: 0.88rem; margin-bottom: 12px;">
-            <i class="fas fa-credit-card" style="color: var(--primary); margin-right: 6px;"></i> Card Payment via HNB Accept
-          </div>
-          <p style="color: var(--text-body); font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px;">
-            After placing your order, we will send a secure payment link to your WhatsApp number. You can pay using your Visa or Mastercard.
-          </p>
-          <div style="font-size: 0.72rem; color: var(--text-muted);">
-            <i class="fas fa-shield-alt" style="margin-right: 4px;"></i> Secured by HNB Accept — Sri Lanka's trusted payment gateway
-          </div>
-        </div>
-
-        <p style="color: var(--text-muted); font-size: 0.82rem; text-align: center; margin: 8px 0 0;">
+        <!-- Security Note -->
+        <p style="color: var(--text-muted); font-size: 0.82rem; text-align: center; margin: 18px 0 0;">
           <i class="fas fa-lock" style="margin-right: 4px;"></i> Your information is encrypted and secure
         </p>
       </div>
 
+      <!-- Order Summary -->
       <div class="order-summary-card">
         <h3 class="order-summary-title">Your Order</h3>
         <div class="order-items-list">
           <% cartItems.forEach(function(item) { %>
             <div class="order-item-mini">
               <img src="<%= item.image %>" alt="<%= item.name %>" class="order-item-mini-image" onerror="this.src='https://picsum.photos/60/60'">
-              <div class="order-item-mini-info"><div class="order-item-mini-name"><%= item.name %></div><div class="order-item-mini-qty">Qty: <%= item.quantity %></div></div>
+              <div class="order-item-mini-info">
+                <div class="order-item-mini-name"><%= item.name %></div>
+                <div class="order-item-mini-qty">Qty: <%= item.quantity %></div>
+              </div>
               <div class="order-item-mini-price">LKR <%= (item.price * item.quantity).toFixed(2) %></div>
             </div>
           <% }) %>
@@ -242,24 +546,26 @@ function togglePaymentMethod() {
   var method = document.querySelector('input[name="paymentMethod"]:checked').value;
   var bankDetails = document.getElementById('bankDetails');
   var cardInfo = document.getElementById('cardPaymentInfo');
-  var codLabel = document.getElementById('codLabel');
-  var cardLabel = document.getElementById('cardLabel');
-  var bankLabel = document.getElementById('bankLabel');
+  var codCard = document.getElementById('codCard');
+  var cardCard = document.getElementById('cardCard');
+  var bankCard = document.getElementById('bankCard');
   
-  bankDetails.style.display = 'none';
-  cardInfo.style.display = 'none';
-  codLabel.style.borderColor = 'var(--border-color)';
-  cardLabel.style.borderColor = 'var(--border-color)';
-  bankLabel.style.borderColor = 'var(--border-color)';
+  // Hide all panels and deselect all cards
+  bankDetails.classList.remove('active');
+  cardInfo.classList.remove('active');
+  codCard.classList.remove('selected');
+  cardCard.classList.remove('selected');
+  bankCard.classList.remove('selected');
   
+  // Show relevant panel and highlight selected card
   if (method === 'bank_transfer') {
-    bankDetails.style.display = 'block';
-    bankLabel.style.borderColor = 'var(--primary)';
+    bankDetails.classList.add('active');
+    bankCard.classList.add('selected');
   } else if (method === 'card_payment') {
-    cardInfo.style.display = 'block';
-    cardLabel.style.borderColor = 'var(--primary)';
+    cardInfo.classList.add('active');
+    cardCard.classList.add('selected');
   } else {
-    codLabel.style.borderColor = 'var(--primary)';
+    codCard.classList.add('selected');
   }
 }
 
@@ -275,15 +581,22 @@ function placeOrder() {
   var zip = document.getElementById('zip').value.trim();
   var paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
   
-  if (!firstName || !lastName || !email || !phone || !street || !city || !state) {
-    alert('Please fill in all required address fields.');
-    return;
-  }
+  // Validate all required fields with individual messages
+  if (!firstName) { alert('Please enter your First Name.'); document.getElementById('firstName').focus(); return; }
+  if (!lastName) { alert('Please enter your Last Name.'); document.getElementById('lastName').focus(); return; }
+  if (!email) { alert('Please enter your Email Address.'); document.getElementById('email').focus(); return; }
+  if (!phone) { alert('Please enter your Phone Number.'); document.getElementById('phone').focus(); return; }
+  if (!whatsapp) { alert('Please enter your WhatsApp Number (even if it is the same as your phone number).'); document.getElementById('whatsapp').focus(); return; }
+  if (!street) { alert('Please enter your Street Address.'); document.getElementById('address').focus(); return; }
+  if (!city) { alert('Please enter your City.'); document.getElementById('city').focus(); return; }
+  if (!state) { alert('Please select your District.'); document.getElementById('state').focus(); return; }
+  if (!zip) { alert('Please enter your Postal Code.'); document.getElementById('zip').focus(); return; }
   
+  // Only require receipt upload for bank transfer
   if (paymentMethod === 'bank_transfer') {
     var receiptFile = document.getElementById('paymentReceipt').files[0];
     if (!receiptFile) {
-      alert('Please upload your payment receipt.');
+      alert('Please upload your payment receipt for Bank Transfer.');
       return;
     }
   }
@@ -293,7 +606,7 @@ function placeOrder() {
   formData.append('lastName', lastName);
   formData.append('email', email);
   formData.append('phone', phone);
-  formData.append('whatsapp', whatsapp || phone);
+  formData.append('whatsapp', whatsapp);
   formData.append('street', street);
   formData.append('city', city);
   formData.append('state', state);
@@ -301,6 +614,7 @@ function placeOrder() {
   formData.append('country', 'Sri Lanka');
   formData.append('paymentMethod', paymentMethod);
   
+  // Only append receipt for bank transfer
   if (paymentMethod === 'bank_transfer') {
     formData.append('paymentReceipt', document.getElementById('paymentReceipt').files[0]);
   }
