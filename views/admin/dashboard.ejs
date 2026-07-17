@@ -294,6 +294,13 @@
                       <% } else { %>
                         <span style="color:#D97706;">Pending</span>
                       <% } %>
+                    <% } else if (order.paymentMethod === 'card_payment') { %>
+                      Card Payment
+                      <% if (order.paymentVerified) { %>
+                        <span style="color:var(--success);font-weight:600;">✓</span>
+                      <% } else { %>
+                        <span style="color:#D97706;">Pending</span>
+                      <% } %>
                     <% } else { %>
                       COD
                     <% } %>

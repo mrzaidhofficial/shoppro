@@ -217,6 +217,40 @@
     flex-shrink: 0;
   }
   .btn-status-update:hover { background: var(--primary-dark); }
+  .btn-verify {
+    padding: 5px 12px;
+    background: #059669;
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .btn-verify:hover { background: #047857; }
+  .btn-link-sent {
+    padding: 5px 12px;
+    background: #7C3AED;
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .btn-link-sent:hover { background: #6D28D9; }
   .btn-receipt {
     padding: 4px 10px;
     background: #2563EB;
@@ -233,6 +267,22 @@
     white-space: nowrap;
   }
   .btn-receipt:hover { background: #1D4ED8; }
+  .btn-view {
+    padding: 4px 10px;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.68rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+  }
+  .btn-view:hover { background: var(--primary-dark); }
   
   .action-cell {
     display: flex;
@@ -371,6 +421,23 @@
                         </select>
                         <button type="submit">Save</button>
                       </form>
+                    <% } else if (order.paymentMethod === 'card_payment') { %>
+                      <div style="margin-bottom:4px;">Card Payment</div>
+                      <form action="/admin/orders/payment-status/<%= order._id %>" method="POST" class="payment-status-form" style="display:flex;gap:3px;align-items:center;">
+                        <select name="paymentStatus">
+                          <option value="pending" <%= !order.paymentVerified ? 'selected' : '' %>>Pending</option>
+                          <option value="verified" <%= order.paymentVerified ? 'selected' : '' %>>Verified</option>
+                          <option value="unverified">Unverified</option>
+                        </select>
+                        <button type="submit">Save</button>
+                      </form>
+                      <% if (!order.paymentLinkSent) { %>
+                        <form action="/admin/orders/payment-link-sent/<%= order._id %>" method="POST" style="margin-top:3px;">
+                          <button type="submit" class="btn-link-sent">Link Sent</button>
+                        </form>
+                      <% } else { %>
+                        <span class="badge-status badge-verified" style="font-size:0.6rem;">Link Sent</span>
+                      <% } %>
                     <% } else { %>
                       COD
                     <% } %>
@@ -388,6 +455,11 @@
                   <td><span class="badge-status badge-<%= order.status %>"><%= order.status %></span></td>
                   <td>
                     <div class="action-cell">
+                      <% if ((order.paymentMethod === 'bank_transfer' || order.paymentMethod === 'card_payment') && !order.paymentVerified) { %>
+                        <form action="/admin/orders/verify-payment/<%= order._id %>" method="POST">
+                          <button type="submit" class="btn-verify">Verify Payment</button>
+                        </form>
+                      <% } %>
                       <form action="/admin/orders/update-status/<%= order._id %>" method="POST">
                         <div class="action-row">
                           <select name="status">

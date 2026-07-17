@@ -278,13 +278,18 @@
                           <i class="fas <%= order.paymentVerified ? 'fa-check-circle' : 'fa-clock' %>"></i>
                           Bank Transfer: <%= order.paymentVerified ? 'Verified' : 'Pending' %>
                         </span>
+                      <% } else if (order.paymentMethod === 'card_payment') { %>
+                        <span class="payment-badge <%= order.paymentVerified ? 'verified' : 'pending' %>">
+                          <i class="fas fa-credit-card"></i>
+                          Card Payment: <%= order.paymentVerified ? 'Verified' : 'Pending' %>
+                        </span>
                       <% } else { %>
                         <span class="payment-badge" style="color:var(--text-secondary);">
                           <i class="fas fa-money-bill-wave"></i> COD
                         </span>
                       <% } %>
                     </div>
-                    <a href="/cart/order-confirmation/<%= order._id %>" style="font-size:0.78rem;color:var(--primary);font-weight:600;text-decoration:none;">View Details →</a>
+                    <a href="/cart/order-confirmation/<%= order._id %>" style="font-size:0.78rem;color:var(--primary);font-weight:600;text-decoration: none;">View Details →</a>
                   </div>
                 </div>
               <% }) %>
