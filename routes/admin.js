@@ -1,10 +1,37 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Coupon = require('../models/Coupon');
 const User = require('../models/User');
 const emailService = require('../services/emailService');
+
+// Configure multer for product image uploads
+const productStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        const dir = 'uploads/products';
+        if (!fs.existsSync(dir)) { fs.mkdirSync(dir, { recursive: true }); }
+        cb(null, dir);
+    },
+    filename: function(req, file, cb) {
+        cb(null, 'product-' + Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
+    }
+});
+
+const productUpload = multer({
+    storage: productStorage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+    fileFilter: function(req, file, cb) {
+        const allowedTypes = /jpeg|jpg|png|webp/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = file.mimetype.startsWith('image/');
+        if (extname && mimetype) return cb(null, true);
+        cb(new Error('Only JPG, PNG, and WebP images are allowed'));
+    }
+});
 
 const isAdmin = (req, res, next) => {
     if (req.session.user && req.session.user.role === 'admin') {
@@ -130,18 +157,34 @@ router.get('/products/add', isAdmin, (req, res) => {
     res.render('admin/add-product', { title: 'Add Product' });
 });
 
-router.post('/products/add', isAdmin, async (req, res) => {
+router.post('/products/add', isAdmin, productUpload.array('productImages', 10), async (req, res) => {
     try {
         var images = [];
-        if (req.body.images) {
-            if (Array.isArray(req.body.images)) images = req.body.images.filter(function(url) { return url.trim() !== ''; });
-            else if (typeof req.body.images === 'string' && req.body.images.trim() !== '') images = [req.body.images.trim()];
+        if (req.files && req.files.length > 0) {
+            req.files.forEach(function(file) {
+                images.push('/uploads/products/' + file.filename);
+            });
         }
-        const product = new Product({ name: req.body.name, shortDescription: req.body.shortDescription || '', description: req.body.description, price: req.body.price, cost: req.body.cost || 0, category: req.body.category, stock: req.body.stock, featured: req.body.featured === 'on', freeShipping: req.body.freeShipping === 'on', images: images });
+        const product = new Product({ 
+            name: req.body.name, 
+            shortDescription: req.body.shortDescription || '', 
+            description: req.body.description, 
+            price: req.body.price, 
+            cost: req.body.cost || 0, 
+            category: req.body.category, 
+            stock: req.body.stock, 
+            featured: req.body.featured === 'on', 
+            freeShipping: req.body.freeShipping === 'on', 
+            images: images 
+        });
         await product.save();
         req.flash('success', 'Product added successfully');
         res.redirect('/admin/products');
-    } catch (error) { req.flash('error', 'Error adding product'); res.redirect('/admin/products/add'); }
+    } catch (error) { 
+        console.error('Error adding product:', error);
+        req.flash('error', 'Error adding product'); 
+        res.redirect('/admin/products/add'); 
+    }
 });
 
 router.get('/products/edit/:id', isAdmin, async (req, res) => {
@@ -149,24 +192,90 @@ router.get('/products/edit/:id', isAdmin, async (req, res) => {
     res.render('admin/edit-product', { title: 'Edit Product', product });
 });
 
-router.post('/products/edit/:id', isAdmin, async (req, res) => {
+router.post('/products/edit/:id', isAdmin, productUpload.array('productImages', 10), async (req, res) => {
     try {
-        var images = [];
-        if (req.body.images) {
-            if (Array.isArray(req.body.images)) images = req.body.images.filter(function(url) { return url.trim() !== ''; });
-            else if (typeof req.body.images === 'string' && req.body.images.trim() !== '') images = [req.body.images.trim()];
+        var product = await Product.findById(req.params.id);
+        if (!product) {
+            req.flash('error', 'Product not found');
+            return res.redirect('/admin/products');
         }
-        await Product.findByIdAndUpdate(req.params.id, { name: req.body.name, shortDescription: req.body.shortDescription || '', description: req.body.description, price: req.body.price, cost: req.body.cost || 0, category: req.body.category, stock: req.body.stock, featured: req.body.featured === 'on', freeShipping: req.body.freeShipping === 'on', images: images });
-        var updatedProduct = await Product.findById(req.params.id);
-        if (updatedProduct.cost && updatedProduct.price) { updatedProduct.profit = updatedProduct.price - updatedProduct.cost; await updatedProduct.save(); }
+        
+        var images = [];
+        
+        // Keep existing images that were not removed (passed as hidden fields)
+        if (req.body.existingImages) {
+            if (Array.isArray(req.body.existingImages)) {
+                images = req.body.existingImages;
+            } else {
+                images = [req.body.existingImages];
+            }
+        }
+        
+        // Add newly uploaded images
+        if (req.files && req.files.length > 0) {
+            req.files.forEach(function(file) {
+                images.push('/uploads/products/' + file.filename);
+            });
+        }
+        
+        // Delete old images that were removed
+        if (product.images && product.images.length > 0) {
+            product.images.forEach(function(oldImg) {
+                if (images.indexOf(oldImg) === -1 && oldImg.startsWith('/uploads/products/')) {
+                    var filePath = path.join(__dirname, '..', oldImg);
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
+                }
+            });
+        }
+        
+        product.name = req.body.name;
+        product.shortDescription = req.body.shortDescription || '';
+        product.description = req.body.description;
+        product.price = req.body.price;
+        product.cost = req.body.cost || 0;
+        product.category = req.body.category;
+        product.stock = req.body.stock;
+        product.featured = req.body.featured === 'on';
+        product.freeShipping = req.body.freeShipping === 'on';
+        product.images = images;
+        
+        if (product.cost && product.price) { 
+            product.profit = product.price - product.cost; 
+        }
+        
+        await product.save();
         req.flash('success', 'Product updated successfully');
         res.redirect('/admin/products');
-    } catch (error) { req.flash('error', 'Error updating product'); res.redirect('/admin/products'); }
+    } catch (error) { 
+        console.error('Error updating product:', error);
+        req.flash('error', 'Error updating product'); 
+        res.redirect('/admin/products'); 
+    }
 });
 
 router.post('/products/delete/:id', isAdmin, async (req, res) => {
-    try { await Product.findByIdAndDelete(req.params.id); req.flash('success', 'Product deleted'); res.redirect('/admin/products'); }
-    catch (error) { req.flash('error', 'Error deleting product'); res.redirect('/admin/products'); }
+    try { 
+        var product = await Product.findById(req.params.id);
+        if (product && product.images && product.images.length > 0) {
+            product.images.forEach(function(img) {
+                if (img.startsWith('/uploads/products/')) {
+                    var filePath = path.join(__dirname, '..', img);
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
+                }
+            });
+        }
+        await Product.findByIdAndDelete(req.params.id); 
+        req.flash('success', 'Product deleted'); 
+        res.redirect('/admin/products'); 
+    }
+    catch (error) { 
+        req.flash('error', 'Error deleting product'); 
+        res.redirect('/admin/products'); 
+    }
 });
 
 // Orders

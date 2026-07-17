@@ -28,17 +28,114 @@
   .btn-cancel { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: var(--white); color: var(--gray-600); border: 2px solid var(--gray-200); border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; text-decoration: none; transition: var(--transition); }
   .btn-cancel:hover { background: var(--gray-50); border-color: var(--gray-300); }
   .form-actions { display: flex; gap: 12px; margin-top: 10px; }
-  .image-preview-container { margin-bottom: 22px; }
-  .image-preview { width: 200px; height: 200px; border-radius: var(--radius-lg); object-fit: cover; background: var(--gray-100); border: 2px solid var(--gray-200); display: block; }
-  .image-preview-placeholder { width: 200px; height: 200px; border-radius: var(--radius-lg); background: var(--gray-100); border: 2px dashed var(--gray-300); display: flex; align-items: center; justify-content: center; color: var(--gray-400); font-size: 0.85rem; }
-  .image-urls-section { margin-bottom: 22px; }
-  .image-url-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
-  .image-url-row .form-input { flex: 1; }
-  .btn-add-image { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; background: var(--gray-100); color: var(--primary); border: 2px dashed var(--primary); border-radius: var(--radius-full); font-size: 0.82rem; font-weight: 600; font-family: var(--font-primary); cursor: pointer; transition: var(--transition); }
-  .btn-add-image:hover { background: var(--primary-light); }
-  .btn-remove-image { width: 38px; height: 38px; border-radius: var(--radius-full); border: none; background: var(--error-bg); color: var(--error); cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: var(--transition); }
-  .btn-remove-image:hover { background: var(--error); color: var(--white); }
-  @media (max-width: 900px) { .admin-layout { grid-template-columns: 1fr; } .admin-sidebar { position: static; display: flex; overflow-x: auto; padding: 12px; gap: 4px; } .admin-sidebar-header { display: none; } .admin-nav-item { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 10px 16px; font-size: 0.8rem; } .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--primary); } .form-row { grid-template-columns: 1fr; } .form-card { padding: 24px; } }
+  
+  /* Image Upload Styles */
+  .image-upload-section { margin-bottom: 22px; }
+  .image-upload-zone {
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: var(--gray-50);
+    position: relative;
+  }
+  .image-upload-zone:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+  .image-upload-zone.dragover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    box-shadow: 0 0 0 4px rgba(0,102,255,0.08);
+  }
+  .image-upload-zone i {
+    font-size: 2.5rem;
+    color: var(--gray-400);
+    margin-bottom: 10px;
+    display: block;
+    transition: color 0.25s ease;
+  }
+  .image-upload-zone:hover i { color: var(--primary); }
+  .image-upload-zone p {
+    font-size: 0.88rem;
+    color: var(--gray-500);
+    margin: 0;
+    font-weight: 500;
+  }
+  .image-upload-zone span {
+    font-size: 0.75rem;
+    color: var(--gray-400);
+    display: block;
+    margin-top: 4px;
+  }
+  .image-upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .image-previews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .image-preview-item {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    border: 2px solid var(--gray-200);
+    background: var(--gray-100);
+  }
+  .image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .image-preview-item .remove-image {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--error);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .image-preview-item .remove-image:hover {
+    background: #DC2626;
+    transform: scale(1.1);
+  }
+  .image-count {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 900px) { 
+    .admin-layout { grid-template-columns: 1fr; } 
+    .admin-sidebar { position: static; display: flex; overflow-x: auto; padding: 12px; gap: 4px; } 
+    .admin-sidebar-header { display: none; } 
+    .admin-nav-item { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 10px 16px; font-size: 0.8rem; } 
+    .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--primary); } 
+    .form-row { grid-template-columns: 1fr; } 
+    .form-card { padding: 24px; } 
+    .image-preview-item { width: 90px; height: 90px; }
+  }
 </style>
 
 <div class="container">
@@ -58,19 +155,22 @@
     <div class="admin-content">
       <h1 class="admin-page-title">Add New Product</h1>
       <div class="form-card">
-        <form action="/admin/products/add" method="POST" id="addProductForm">
-          <div class="image-urls-section">
+        <form action="/admin/products/add" method="POST" enctype="multipart/form-data" id="addProductForm">
+          
+          <!-- Image Upload -->
+          <div class="image-upload-section">
             <label class="form-label">Product Images</label>
-            <span class="form-hint" style="margin-bottom:10px;display:block;">Add image URLs. The first image will be the main product image.</span>
-            <div class="image-preview-container">
-              <div class="image-preview-placeholder" id="imagePreviewPlaceholder"><span>No image</span></div>
-              <img src="" alt="Preview" class="image-preview" id="imagePreview" style="display:none;" onerror="this.style.display='none';document.getElementById('imagePreviewPlaceholder').style.display='flex';">
+            <span class="form-hint" style="margin-bottom:10px;display:block;">Upload up to 10 images. The first image will be the main product image. Supported: JPG, PNG, WebP (Max 10MB each).</span>
+            <div class="image-upload-zone" id="uploadZone">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Click to upload images or drag & drop here</p>
+              <span>JPG, PNG, or WebP — Up to 10 images</span>
+              <input type="file" name="productImages" id="productImages" accept="image/jpeg,image/png,image/webp" multiple onchange="handleFileSelect(event)">
             </div>
-            <div id="imageUrlsContainer">
-              <div class="image-url-row"><input type="text" name="images" class="form-input" value="" placeholder="https://example.com/image.jpg" oninput="updatePreview()"><button type="button" class="btn-remove-image" onclick="removeImageRow(this)" title="Remove image"><i class="fas fa-times"></i></button></div>
-            </div>
-            <button type="button" class="btn-add-image" onclick="addImageRow()"><i class="fas fa-plus"></i> Add Another Image</button>
+            <div class="image-previews" id="imagePreviews"></div>
+            <div class="image-count" id="imageCount">0 image(s) selected</div>
           </div>
+          
           <div class="form-group"><label class="form-label" for="name">Product Name *</label><input type="text" class="form-input" id="name" name="name" required placeholder="e.g. Wireless Bluetooth Headphones" maxlength="200"></div>
           <div class="form-group"><label class="form-label" for="shortDescription">Short Description</label><input type="text" class="form-input" id="shortDescription" name="shortDescription" placeholder="Brief summary shown in quick view and product cards (max 200 characters)" maxlength="200"><span class="form-hint">This appears in quick view popups and search results. Keep it brief (1-2 sentences).</span></div>
           <div class="form-group"><label class="form-label" for="description">Full Description *</label><textarea class="form-textarea" id="description" name="description" required placeholder="Describe the product in detail..."></textarea><span class="form-hint">Detailed product information shown on the product detail page.</span></div>
@@ -92,9 +192,85 @@
 </div>
 
 <script>
-function updatePreview() { var firstInput = document.querySelector('#imageUrlsContainer input[name="images"]'); var previewImg = document.getElementById('imagePreview'); var placeholder = document.getElementById('imagePreviewPlaceholder'); if (firstInput && firstInput.value.trim()) { if (placeholder) placeholder.style.display = 'none'; previewImg.style.display = 'block'; previewImg.src = firstInput.value.trim(); } else { previewImg.style.display = 'none'; if (placeholder) placeholder.style.display = 'flex'; } }
-function addImageRow() { var container = document.getElementById('imageUrlsContainer'); var row = document.createElement('div'); row.className = 'image-url-row'; row.innerHTML = '<input type="text" name="images" class="form-input" value="" placeholder="https://example.com/image.jpg" oninput="updatePreview()"><button type="button" class="btn-remove-image" onclick="removeImageRow(this)" title="Remove image"><i class="fas fa-times"></i></button>'; container.appendChild(row); }
-function removeImageRow(btn) { var container = document.getElementById('imageUrlsContainer'); var rows = container.querySelectorAll('.image-url-row'); if (rows.length <= 1) { rows[0].querySelector('input').value = ''; updatePreview(); return; } btn.parentElement.remove(); updatePreview(); }
+var selectedFiles = [];
+
+function handleFileSelect(event) {
+  var files = Array.from(event.target.files);
+  files.forEach(function(file) {
+    if (selectedFiles.length >= 10) {
+      alert('Maximum 10 images allowed.');
+      return;
+    }
+    if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
+      alert('Only JPG, PNG, and WebP images are allowed.');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size must be less than 10MB.');
+      return;
+    }
+    selectedFiles.push(file);
+  });
+  renderPreviews();
+  updateFileInput();
+}
+
+function renderPreviews() {
+  var container = document.getElementById('imagePreviews');
+  container.innerHTML = '';
+  selectedFiles.forEach(function(file, index) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var item = document.createElement('div');
+      item.className = 'image-preview-item';
+      item.innerHTML = '<img src="' + e.target.result + '" alt="Preview"><button type="button" class="remove-image" onclick="removeImage(' + index + ')" title="Remove image"><i class="fas fa-times"></i></button>';
+      container.appendChild(item);
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('imageCount').textContent = selectedFiles.length + ' image(s) selected';
+}
+
+function removeImage(index) {
+  selectedFiles.splice(index, 1);
+  renderPreviews();
+  updateFileInput();
+}
+
+function updateFileInput() {
+  var dt = new DataTransfer();
+  selectedFiles.forEach(function(file) {
+    dt.items.add(file);
+  });
+  document.getElementById('productImages').files = dt.files;
+}
+
+// Drag and drop
+var uploadZone = document.getElementById('uploadZone');
+uploadZone.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  uploadZone.classList.add('dragover');
+});
+uploadZone.addEventListener('dragleave', function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  uploadZone.classList.remove('dragover');
+});
+uploadZone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  uploadZone.classList.remove('dragover');
+  var files = Array.from(e.dataTransfer.files);
+  files.forEach(function(file) {
+    if (selectedFiles.length >= 10) return;
+    if (!file.type.match(/^image\/(jpeg|png|webp)$/)) return;
+    if (file.size > 10 * 1024 * 1024) return;
+    selectedFiles.push(file);
+  });
+  renderPreviews();
+  updateFileInput();
+});
 </script>
 
 <%- include('../partials/footer') %>
