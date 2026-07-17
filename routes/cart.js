@@ -213,8 +213,8 @@ router.post('/place-order', upload.single('paymentReceipt'), async function(req,
         var cart = req.session.cart || [];
         if (cart.length === 0) return res.status(400).json({ error: 'Cart is empty' });
         var paymentMethod = req.body.paymentMethod;
-        if (!paymentMethod || !['cod', 'bank_transfer'].includes(paymentMethod)) return res.status(400).json({ error: 'Invalid payment method' });
-        if (paymentMethod === 'bank_transfer' && !req.file) return res.status(400).json({ error: 'Please upload your payment receipt' });
+        if (!paymentMethod || !['cod', 'bank_transfer', 'card_payment'].includes(paymentMethod)) return res.status(400).json({ error: 'Invalid payment method' });
+        if ((paymentMethod === 'bank_transfer' || paymentMethod === 'card_payment') && !req.file) return res.status(400).json({ error: 'Please upload your payment receipt' });
         var subtotal = 0; var orderItems = [];
         for (var i = 0; i < cart.length; i++) {
             var item = cart[i]; var product = await Product.findById(item.productId);
@@ -237,7 +237,7 @@ router.post('/place-order', upload.single('paymentReceipt'), async function(req,
         if (total < 0) total = 0;
         var order = new Order({
             user: req.session.user.id, items: orderItems, 
-            shippingAddress: { firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, phone: req.body.phone || '', street: req.body.street, city: req.body.city, state: req.body.state, zipCode: req.body.zipCode, country: req.body.country },
+            shippingAddress: { firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, phone: req.body.phone || '', whatsapp: req.body.whatsapp || req.body.phone || '', street: req.body.street, city: req.body.city, state: req.body.state, zipCode: req.body.zipCode, country: req.body.country },
             paymentMethod: paymentMethod, paymentReceipt: req.file ? req.file.filename : null, paymentVerified: false,
             subtotal: subtotal, shippingCost: shipping, tax: 0, total: total,
             couponCode: req.session.coupon ? req.session.coupon.code : null, couponDiscount: couponDiscount, status: 'pending'

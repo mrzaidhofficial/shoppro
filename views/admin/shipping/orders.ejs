@@ -1,4 +1,4 @@
-<%- include('../../partials/header') %>
+<%- include('../partials/header') %>
 
 <style>
   .admin-layout {
@@ -75,9 +75,9 @@
   }
   .admin-table th {
     text-align: left;
-    padding: 14px 18px;
+    padding: 12px 14px;
     background: var(--gray-50);
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -86,8 +86,8 @@
     white-space: nowrap;
   }
   .admin-table td {
-    padding: 14px 18px;
-    font-size: 0.87rem;
+    padding: 12px 14px;
+    font-size: 0.84rem;
     color: var(--gray-700);
     border-bottom: 1px solid var(--gray-100);
     vertical-align: middle;
@@ -102,11 +102,12 @@
   
   .badge-status {
     display: inline-block;
-    padding: 4px 12px;
+    padding: 4px 10px;
     border-radius: var(--radius-full);
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 600;
     text-transform: capitalize;
+    white-space: nowrap;
   }
   .badge-pending { background: #FEF3C7; color: #D97706; }
   .badge-processing { background: #FEF3C7; color: #D97706; }
@@ -196,55 +197,28 @@
     cursor: pointer;
     transition: var(--transition);
   }
-  .btn-bulk-clear:hover {
-    background: var(--white);
-  }
+  .btn-bulk-clear:hover { background: var(--white); }
   
-  .order-checkbox {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary);
-    cursor: pointer;
-  }
-  .select-all-checkbox {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary);
-    cursor: pointer;
-  }
+  .order-checkbox { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+  .select-all-checkbox { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
   
-  .status-update-form {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .status-select-sm {
-    padding: 6px 10px;
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-full);
-    font-size: 0.78rem;
-    font-family: var(--font-primary);
-    background: var(--white);
-    color: var(--gray-700);
-    outline: none;
-    cursor: pointer;
-  }
   .btn-status-update {
-    padding: 6px 14px;
+    padding: 5px 12px;
     background: var(--primary);
     color: var(--white);
     border: none;
     border-radius: var(--radius-full);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     font-family: var(--font-primary);
     cursor: pointer;
     transition: var(--transition-fast);
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .btn-status-update:hover { background: var(--primary-dark); }
   .btn-verify {
-    padding: 4px 10px;
+    padding: 5px 12px;
     background: #059669;
     color: var(--white);
     border: none;
@@ -255,15 +229,35 @@
     cursor: pointer;
     transition: var(--transition-fast);
     white-space: nowrap;
+    display: block;
+    width: 100%;
+    text-align: center;
   }
   .btn-verify:hover { background: #047857; }
+  .btn-link-sent {
+    padding: 5px 12px;
+    background: #7C3AED;
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .btn-link-sent:hover { background: #6D28D9; }
   .btn-receipt {
     padding: 4px 10px;
     background: #2563EB;
     color: var(--white);
     border: none;
     border-radius: var(--radius-full);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 600;
     font-family: var(--font-primary);
     cursor: pointer;
@@ -273,6 +267,65 @@
     white-space: nowrap;
   }
   .btn-receipt:hover { background: #1D4ED8; }
+  .btn-view {
+    padding: 4px 10px;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.68rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+  }
+  .btn-view:hover { background: var(--primary-dark); }
+  
+  .action-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+  }
+  .action-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .action-row select {
+    padding: 5px 8px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-family: var(--font-primary);
+    background: var(--white);
+    color: var(--gray-700);
+    outline: none;
+    cursor: pointer;
+    flex: 1;
+    min-width: 90px;
+  }
+  .payment-status-form select {
+    font-size: 0.62rem;
+    padding: 2px 4px;
+    border: 1px solid var(--gray-200);
+    border-radius: 4px;
+    max-width: 80px;
+    background: var(--white);
+    color: var(--gray-700);
+  }
+  .payment-status-form button {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
   
   @media (max-width: 900px) {
     .admin-layout { grid-template-columns: 1fr; }
@@ -296,6 +349,7 @@
       <a href="/admin/orders" class="admin-nav-item active"><i class="fas fa-receipt"></i> Orders</a>
       <a href="/admin/coupons" class="admin-nav-item"><i class="fas fa-tags"></i> Coupons</a>
       <a href="/admin/shipping/settings" class="admin-nav-item"><i class="fas fa-truck"></i> Shipping</a>
+      <a href="/admin/bank-details" class="admin-nav-item"><i class="fas fa-university"></i> Bank Details</a>
       <a href="/admin/finances" class="admin-nav-item"><i class="fas fa-chart-pie"></i> Finances</a>
       <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
       <a href="/auth/logout" class="admin-nav-item" style="color:var(--error);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
@@ -333,7 +387,7 @@
           <table class="admin-table">
             <thead>
               <tr>
-                <th style="width:40px;"><input type="checkbox" class="select-all-checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+                <th style="width:36px;"><input type="checkbox" class="select-all-checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
                 <th>Order #</th>
                 <th>Customer</th>
                 <th>Items</th>
@@ -352,17 +406,37 @@
                   <td><a href="/cart/order-confirmation/<%= order._id %>" class="order-number-link"><%= order.orderNumber %></a></td>
                   <td>
                     <div style="font-weight:500;"><%= order.user ? order.user.firstName + ' ' + order.user.lastName : 'N/A' %></div>
-                    <div style="font-size:0.75rem;color:var(--gray-400);"><%= order.user ? order.user.email : '' %></div>
+                    <div style="font-size:0.72rem;color:var(--gray-400);"><%= order.user ? order.user.email : '' %></div>
                   </td>
                   <td><%= order.items ? order.items.length : 0 %> item(s)</td>
                   <td class="order-total-amount">LKR <%= order.total.toFixed(2) %></td>
-                  <td style="font-size:0.78rem;">
+                  <td style="font-size:0.76rem;">
                     <% if (order.paymentMethod === 'bank_transfer') { %>
-                      Bank Transfer
-                      <% if (order.paymentVerified) { %>
-                        <span class="badge-status badge-verified" style="font-size:0.6rem;">Verified</span>
+                      <div style="margin-bottom:4px;">Bank Transfer</div>
+                      <form action="/admin/orders/payment-status/<%= order._id %>" method="POST" class="payment-status-form" style="display:flex;gap:3px;align-items:center;">
+                        <select name="paymentStatus">
+                          <option value="pending" <%= !order.paymentVerified ? 'selected' : '' %>>Pending</option>
+                          <option value="verified" <%= order.paymentVerified ? 'selected' : '' %>>Verified</option>
+                          <option value="unverified">Unverified</option>
+                        </select>
+                        <button type="submit">Save</button>
+                      </form>
+                    <% } else if (order.paymentMethod === 'card_payment') { %>
+                      <div style="margin-bottom:4px;">Card Payment</div>
+                      <form action="/admin/orders/payment-status/<%= order._id %>" method="POST" class="payment-status-form" style="display:flex;gap:3px;align-items:center;">
+                        <select name="paymentStatus">
+                          <option value="pending" <%= !order.paymentVerified ? 'selected' : '' %>>Pending</option>
+                          <option value="verified" <%= order.paymentVerified ? 'selected' : '' %>>Verified</option>
+                          <option value="unverified">Unverified</option>
+                        </select>
+                        <button type="submit">Save</button>
+                      </form>
+                      <% if (!order.paymentLinkSent) { %>
+                        <form action="/admin/orders/payment-link-sent/<%= order._id %>" method="POST" style="margin-top:3px;">
+                          <button type="submit" class="btn-link-sent">Link Sent</button>
+                        </form>
                       <% } else { %>
-                        <span class="badge-status badge-pending" style="font-size:0.6rem;">Pending</span>
+                        <span class="badge-status badge-verified" style="font-size:0.6rem;">Link Sent</span>
                       <% } %>
                     <% } else { %>
                       COD
@@ -375,26 +449,30 @@
                       <span style="font-size:0.7rem;color:var(--text-muted);">—</span>
                     <% } %>
                   </td>
-                  <td style="font-size:0.82rem;white-space:nowrap;">
-                    <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                  <td style="font-size:0.78rem;white-space:nowrap;">
+                    <%= order.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
                   </td>
                   <td><span class="badge-status badge-<%= order.status %>"><%= order.status %></span></td>
                   <td>
-                    <% if (order.paymentMethod === 'bank_transfer' && !order.paymentVerified) { %>
-                      <form action="/admin/orders/verify-payment/<%= order._id %>" method="POST" style="margin-bottom:4px;">
-                        <button type="submit" class="btn-verify">Verify Payment</button>
+                    <div class="action-cell">
+                      <% if ((order.paymentMethod === 'bank_transfer' || order.paymentMethod === 'card_payment') && !order.paymentVerified) { %>
+                        <form action="/admin/orders/verify-payment/<%= order._id %>" method="POST">
+                          <button type="submit" class="btn-verify">Verify Payment</button>
+                        </form>
+                      <% } %>
+                      <form action="/admin/orders/update-status/<%= order._id %>" method="POST">
+                        <div class="action-row">
+                          <select name="status">
+                            <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                            <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+                            <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                            <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                            <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                          </select>
+                          <button type="submit" class="btn-status-update">Update</button>
+                        </div>
                       </form>
-                    <% } %>
-                    <form action="/admin/orders/update-status/<%= order._id %>" method="POST" class="status-update-form">
-                      <select name="status" class="status-select-sm">
-                        <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                        <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
-                        <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
-                        <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
-                        <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-                      </select>
-                      <button type="submit" class="btn-status-update">Update</button>
-                    </form>
+                    </div>
                   </td>
                 </tr>
               <% }) %>
@@ -450,4 +528,4 @@ function clearSelection() {
 }
 </script>
 
-<%- include('../../partials/footer') %>
+<%- include('../partials/footer') %>

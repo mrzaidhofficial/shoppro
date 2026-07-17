@@ -30,6 +30,7 @@ var orderSchema = new mongoose.Schema({
         lastName: String,
         email: String,
         phone: String,
+        whatsapp: String,
         street: String,
         city: String,
         state: String,
@@ -38,7 +39,7 @@ var orderSchema = new mongoose.Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ['cod', 'bank_transfer'],
+        enum: ['cod', 'bank_transfer', 'card_payment'],
         default: 'cod'
     },
     paymentReceipt: {
@@ -46,6 +47,10 @@ var orderSchema = new mongoose.Schema({
         default: null
     },
     paymentVerified: {
+        type: Boolean,
+        default: false
+    },
+    paymentLinkSent: {
         type: Boolean,
         default: false
     },
@@ -90,7 +95,6 @@ var orderSchema = new mongoose.Schema({
     }
 });
 
-// Generate order number before saving
 orderSchema.pre('save', function(next) {
     if (!this.orderNumber) {
         var now = new Date();

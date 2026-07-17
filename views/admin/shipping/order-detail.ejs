@@ -146,7 +146,7 @@
         <h1 class="page-title">Order #<%= order.orderNumber %></h1>
         <div style="display:flex;align-items:center;gap:12px;">
           <span class="status-badge status-<%= order.status %>"><%= order.status %></span>
-          <a href="/admin/shipping/settings" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+          <a href="/admin/orders" class="back-link"><i class="fas fa-arrow-left"></i> Back to Orders</a>
         </div>
       </div>
       
@@ -163,9 +163,14 @@
           <div><strong>Name:</strong> <%= order.shippingAddress ? order.shippingAddress.firstName + ' ' + order.shippingAddress.lastName : 'N/A' %></div>
           <div><strong>Email:</strong> <%= order.shippingAddress ? order.shippingAddress.email : 'N/A' %></div>
           <div><strong>Phone:</strong> <%= order.shippingAddress && order.shippingAddress.phone ? order.shippingAddress.phone : 'Not provided' %></div>
+          <div><strong>WhatsApp:</strong> <%= order.shippingAddress && order.shippingAddress.whatsapp ? order.shippingAddress.whatsapp : (order.shippingAddress && order.shippingAddress.phone ? order.shippingAddress.phone : 'Not provided') %></div>
           <div><strong>Address:</strong> <%= order.shippingAddress ? order.shippingAddress.street + ', ' + order.shippingAddress.city + ', ' + order.shippingAddress.state + ' ' + (order.shippingAddress.zipCode || '') : 'N/A' %></div>
-          <div><strong>Country:</strong> <%= order.shippingAddress ? order.shippingAddress.country : 'N/A' %></div>
-          <div><strong>Payment:</strong> <%= order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Bank Transfer' %> <%= order.paymentMethod === 'bank_transfer' && order.paymentVerified ? '(Verified)' : order.paymentMethod === 'bank_transfer' ? '(Pending)' : '' %></div>
+          <div><strong>Payment:</strong> 
+            <% if (order.paymentMethod === 'cod') { %>Cash on Delivery
+            <% } else if (order.paymentMethod === 'bank_transfer') { %>Bank Transfer <%= order.paymentVerified ? '(Verified)' : '(Pending)' %>
+            <% } else if (order.paymentMethod === 'card_payment') { %>Card Payment (HNB Accept) <%= order.paymentVerified ? '(Verified)' : '(Pending)' %> <%= order.paymentLinkSent ? '- Link Sent' : '- Link Not Sent' %>
+            <% } %>
+          </div>
         </div>
       </div>
       
@@ -260,7 +265,7 @@
         
         <div class="form-actions">
           <button type="submit" class="btn-save"><i class="fas fa-save"></i> Save Details</button>
-          <a href="/admin/shipping/settings" class="btn-cancel">Cancel</a>
+          <a href="/admin/orders" class="btn-cancel">Cancel</a>
         </div>
       </form>
     </div>

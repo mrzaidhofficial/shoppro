@@ -71,7 +71,10 @@
           <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-input" id="lastName" name="lastName" required placeholder="Doe"></div>
         </div>
         <div class="form-group"><label class="form-label">Email Address *</label><input type="email" class="form-input" id="email" name="email" required placeholder="john@example.com"></div>
-        <div class="form-group"><label class="form-label">Phone Number *</label><input type="tel" class="form-input" id="phone" name="phone" required placeholder="07XXXXXXXX"></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Phone Number *</label><input type="tel" class="form-input" id="phone" name="phone" required placeholder="07XXXXXXXX"></div>
+          <div class="form-group"><label class="form-label">WhatsApp Number <span style="font-weight:400;color:var(--text-muted);">— for payment links</span></label><input type="tel" class="form-input" id="whatsapp" name="whatsapp" placeholder="07XXXXXXXX (if different)"></div>
+        </div>
         <div class="form-group"><label class="form-label">Street Address *</label><input type="text" class="form-input" id="address" name="street" required placeholder="123 Main Street, Apt 4B"></div>
         <div class="form-row">
           <div class="form-group"><label class="form-label">City *</label><input type="text" class="form-input" id="city" name="city" required placeholder="Colombo"></div>
@@ -126,6 +129,14 @@
             </div>
           </label>
           
+          <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card-alt); border: 2px solid var(--border-color); border-radius: var(--radius-lg); cursor: pointer; transition: border-color 0.2s;" id="cardLabel">
+            <input type="radio" name="paymentMethod" value="card_payment" onchange="togglePaymentMethod()" style="width: 18px; height: 18px; accent-color: var(--primary);">
+            <div>
+              <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">Card Payment</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">Pay via secure payment link sent to your WhatsApp</div>
+            </div>
+          </label>
+          
           <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card-alt); border: 2px solid var(--border-color); border-radius: var(--radius-lg); cursor: pointer; transition: border-color 0.2s;" id="bankLabel">
             <input type="radio" name="paymentMethod" value="bank_transfer" onchange="togglePaymentMethod()" style="width: 18px; height: 18px; accent-color: var(--primary);">
             <div>
@@ -156,6 +167,18 @@
             </div>
             <span id="file-name"></span>
             <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Accepted: JPG, PNG, PDF. Max size: 5MB</div>
+          </div>
+        </div>
+
+        <div id="cardPaymentInfo" style="display: none; background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 18px;">
+          <div style="font-weight: 600; color: var(--text-primary); font-size: 0.88rem; margin-bottom: 12px;">
+            <i class="fas fa-credit-card" style="color: var(--primary); margin-right: 6px;"></i> Card Payment via HNB Accept
+          </div>
+          <p style="color: var(--text-body); font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px;">
+            After placing your order, we will send a secure payment link to your WhatsApp number. You can pay using any Visa, Mastercard, or AMEX card.
+          </p>
+          <div style="font-size: 0.72rem; color: var(--text-muted);">
+            <i class="fas fa-shield-alt" style="margin-right: 4px;"></i> Secured by HNB Accept — Sri Lanka's trusted payment gateway
           </div>
         </div>
 
@@ -218,16 +241,25 @@ function updateFileName() {
 function togglePaymentMethod() {
   var method = document.querySelector('input[name="paymentMethod"]:checked').value;
   var bankDetails = document.getElementById('bankDetails');
+  var cardInfo = document.getElementById('cardPaymentInfo');
   var codLabel = document.getElementById('codLabel');
+  var cardLabel = document.getElementById('cardLabel');
   var bankLabel = document.getElementById('bankLabel');
+  
+  bankDetails.style.display = 'none';
+  cardInfo.style.display = 'none';
+  codLabel.style.borderColor = 'var(--border-color)';
+  cardLabel.style.borderColor = 'var(--border-color)';
+  bankLabel.style.borderColor = 'var(--border-color)';
+  
   if (method === 'bank_transfer') {
     bankDetails.style.display = 'block';
     bankLabel.style.borderColor = 'var(--primary)';
-    codLabel.style.borderColor = 'var(--border-color)';
+  } else if (method === 'card_payment') {
+    cardInfo.style.display = 'block';
+    cardLabel.style.borderColor = 'var(--primary)';
   } else {
-    bankDetails.style.display = 'none';
     codLabel.style.borderColor = 'var(--primary)';
-    bankLabel.style.borderColor = 'var(--border-color)';
   }
 }
 
@@ -235,13 +267,15 @@ function placeOrder() {
   var firstName = document.getElementById('firstName').value.trim();
   var lastName = document.getElementById('lastName').value.trim();
   var email = document.getElementById('email').value.trim();
+  var phone = document.getElementById('phone').value.trim();
+  var whatsapp = document.getElementById('whatsapp').value.trim();
   var street = document.getElementById('address').value.trim();
   var city = document.getElementById('city').value.trim();
   var state = document.getElementById('state').value.trim();
   var zip = document.getElementById('zip').value.trim();
   var paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
   
-  if (!firstName || !lastName || !email || !street || !city || !state) {
+  if (!firstName || !lastName || !email || !phone || !street || !city || !state) {
     alert('Please fill in all required address fields.');
     return;
   }
@@ -258,7 +292,8 @@ function placeOrder() {
   formData.append('firstName', firstName);
   formData.append('lastName', lastName);
   formData.append('email', email);
-  formData.append('phone', document.getElementById('phone').value.trim());
+  formData.append('phone', phone);
+  formData.append('whatsapp', whatsapp || phone);
   formData.append('street', street);
   formData.append('city', city);
   formData.append('state', state);

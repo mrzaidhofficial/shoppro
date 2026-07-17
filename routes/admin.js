@@ -202,7 +202,7 @@ router.post('/orders/bulk-update', isAdmin, async (req, res) => {
     } catch (error) { req.flash('error', 'Error updating orders'); res.redirect('/admin/orders'); }
 });
 
-// Verify payment for bank transfer orders
+// Verify payment for bank transfer and card payment orders
 router.post('/orders/verify-payment/:id', isAdmin, async (req, res) => {
     try {
         var order = await Order.findById(req.params.id);
@@ -231,6 +231,19 @@ router.post('/orders/payment-status/:id', isAdmin, async (req, res) => {
         req.flash('success', 'Payment status updated for Order #' + order.orderNumber);
         res.redirect('/admin/orders');
     } catch (error) { req.flash('error', 'Error updating payment status'); res.redirect('/admin/orders'); }
+});
+
+// Mark payment link as sent (for card payments)
+router.post('/orders/payment-link-sent/:id', isAdmin, async (req, res) => {
+    try {
+        var order = await Order.findById(req.params.id);
+        if (!order) { req.flash('error', 'Order not found'); return res.redirect('/admin/orders'); }
+        order.paymentLinkSent = true;
+        order.updatedAt = new Date();
+        await order.save();
+        req.flash('success', 'Payment link marked as sent for Order #' + order.orderNumber);
+        res.redirect('/admin/orders');
+    } catch (error) { req.flash('error', 'Error updating payment link status'); res.redirect('/admin/orders'); }
 });
 
 // Bank Details Settings
