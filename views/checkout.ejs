@@ -132,32 +132,11 @@
     color: var(--text-primary);
     font-size: 0.92rem;
     margin-bottom: 2px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
   }
   .payment-method-desc {
     font-size: 0.78rem;
     color: var(--text-muted);
     line-height: 1.4;
-  }
-  .payment-method-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 10px;
-    border-radius: var(--radius-full);
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background: rgba(16,185,129,0.1);
-    color: #059669;
-    white-space: nowrap;
-  }
-  [data-theme="dark"] .payment-method-badge {
-    background: rgba(52,211,153,0.15);
-    color: #34D399;
   }
   
   .payment-detail-panel {
@@ -323,7 +302,7 @@
             <input type="tel" class="form-input" id="whatsapp" name="whatsapp" required placeholder="07XXXXXXXX">
             <div class="whatsapp-note">
               <i class="fab fa-whatsapp"></i>
-              <span>Please enter your WhatsApp number even if it's the same as your phone number</span>
+              <span>Enter even if same as phone number above</span>
             </div>
           </div>
         </div>
@@ -390,10 +369,7 @@
             <i class="fas fa-money-bill-wave"></i>
           </div>
           <div class="payment-method-info">
-            <div class="payment-method-name">
-              Cash on Delivery
-              <span class="payment-method-badge">Most Popular</span>
-            </div>
+            <div class="payment-method-name">Cash on Delivery</div>
             <div class="payment-method-desc">Pay when you receive your order at your doorstep</div>
           </div>
         </label>
