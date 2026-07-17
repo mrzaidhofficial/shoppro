@@ -20,41 +20,32 @@
       </div>
 
       <% if (order.paymentMethod === 'card_payment') { %>
-        <div style="background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(6,182,212,0.08)); border: 1px solid rgba(59,130,246,0.25); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 20px; text-align: left; max-width: 100%;">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-            <div style="width: 40px; height: 40px; border-radius: var(--radius); background: rgba(59,130,246,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <% if (order.paymentVerified) { %>
+        <% if (order.paymentVerified) { %>
+          <!-- VERIFIED STATE -->
+          <div style="background: linear-gradient(135deg, rgba(5,150,105,0.06), rgba(52,211,153,0.06)); border: 1px solid rgba(5,150,105,0.2); border-radius: var(--radius-lg); padding: 18px 24px; margin-bottom: 20px; text-align: left; max-width: 100%;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 40px; height: 40px; border-radius: var(--radius); background: rgba(5,150,105,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <i class="fas fa-check-circle" style="color: #059669; font-size: 1.2rem;"></i>
-              <% } else { %>
-                <i class="fas fa-credit-card" style="color: #3B82F6; font-size: 1rem;"></i>
-              <% } %>
-            </div>
-            <div>
-              <% if (order.paymentVerified) { %>
-                <div style="font-weight: 700; color: #059669; font-size: 0.9rem;">Card Payment — Verified ✓</div>
-                <div style="font-size: 0.78rem; color: #059669;">Your payment has been verified. Your order is now being processed.</div>
-              <% } else if (order.paymentLinkSent) { %>
-                <div style="font-weight: 700; color: #7C3AED; font-size: 0.9rem;">Card Payment — Awaiting Verification</div>
-                <div style="font-size: 0.78rem; color: var(--text-muted);">Payment link has been sent. Waiting for your payment.</div>
-              <% } else { %>
-                <div style="font-weight: 700; color: #EA580C; font-size: 0.9rem;">Card Payment — Awaiting Payment Link</div>
-                <div style="font-size: 0.78rem; color: var(--text-muted);">We will send you a secure payment link shortly</div>
-              <% } %>
+              </div>
+              <div>
+                <div style="font-weight: 700; color: #059669; font-size: 0.9rem;">Payment Verified ✓</div>
+                <div style="font-size: 0.8rem; color: #059669; opacity: 0.8;">Your order is now being processed</div>
+              </div>
             </div>
           </div>
-          
-          <% if (!order.paymentVerified && !order.paymentLinkSent) { %>
-            <p style="color: var(--text-body); font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px;">
-              A secure payment link will be sent to you through the following channels:
-            </p>
-          <% } else if (!order.paymentVerified && order.paymentLinkSent) { %>
-            <p style="color: var(--text-body); font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px;">
-              A secure payment link has been sent to you through the following channels:
-            </p>
-          <% } %>
-          
-          <% if (!order.paymentVerified && order.paymentLinkSent) { %>
-            <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;">
+        <% } else if (order.paymentLinkSent) { %>
+          <!-- LINK SENT STATE -->
+          <div style="background: linear-gradient(135deg, rgba(124,58,237,0.06), rgba(167,139,250,0.06)); border: 1px solid rgba(124,58,237,0.2); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 20px; text-align: left; max-width: 100%;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+              <div style="width: 40px; height: 40px; border-radius: var(--radius); background: rgba(124,58,237,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i class="fas fa-paper-plane" style="color: #7C3AED; font-size: 1rem;"></i>
+              </div>
+              <div>
+                <div style="font-weight: 700; color: #7C3AED; font-size: 0.9rem;">Awaiting Payment Verification</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">A secure payment link has been sent to you</div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
               <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-secondary);">
                 <i class="fas fa-envelope" style="color: #EA580C; width: 20px; text-align: center;"></i>
                 <span><strong>Email</strong> — to your email address</span>
@@ -68,37 +59,43 @@
                 <span><strong>WhatsApp</strong> — to your WhatsApp number</span>
               </div>
             </div>
-          <% } %>
-          
-          <% if (!order.paymentVerified && !order.paymentLinkSent) { %>
-            <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;">
-              <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-secondary);">
-                <i class="fas fa-envelope" style="color: #EA580C; width: 20px; text-align: center;"></i>
-                <span><strong>Email</strong> — to your email address</span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-secondary);">
-                <i class="fas fa-comment-sms" style="color: #2563EB; width: 20px; text-align: center;"></i>
-                <span><strong>SMS</strong> — as a text message to your phone</span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-secondary);">
-                <i class="fab fa-whatsapp" style="color: #25D366; width: 20px; text-align: center;"></i>
-                <span><strong>WhatsApp</strong> — to your WhatsApp number</span>
-              </div>
-            </div>
-          <% } %>
-          
-          <% if (!order.paymentVerified) { %>
-            <div style="background: rgba(59,130,246,0.06); border-radius: var(--radius); padding: 10px 14px; font-size: 0.76rem; color: #3B82F6; font-weight: 500;">
+            <div style="margin-top: 12px; background: rgba(124,58,237,0.06); border-radius: var(--radius); padding: 10px 14px; font-size: 0.76rem; color: #7C3AED; font-weight: 500;">
               <i class="fas fa-shield-alt" style="margin-right: 4px;"></i>
               Secured by HNB Accept. Pay using your Visa or Mastercard.
             </div>
-          <% } else { %>
-            <div style="background: rgba(5,150,105,0.06); border-radius: var(--radius); padding: 10px 14px; font-size: 0.76rem; color: #059669; font-weight: 500;">
-              <i class="fas fa-check-circle" style="margin-right: 4px;"></i>
-              Payment verified via HNB Accept. Your order is now being processed.
+          </div>
+        <% } else { %>
+          <!-- AWAITING LINK STATE -->
+          <div style="background: linear-gradient(135deg, rgba(234,88,12,0.04), rgba(249,115,22,0.04)); border: 1px solid rgba(234,88,12,0.2); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 20px; text-align: left; max-width: 100%;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+              <div style="width: 40px; height: 40px; border-radius: var(--radius); background: rgba(234,88,12,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i class="fas fa-clock" style="color: #EA580C; font-size: 1rem;"></i>
+              </div>
+              <div>
+                <div style="font-weight: 700; color: #EA580C; font-size: 0.9rem;">Awaiting Payment Link</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">We will send you a secure payment link shortly</div>
+              </div>
             </div>
-          <% } %>
-        </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-secondary);">
+                <i class="fas fa-envelope" style="color: #EA580C; width: 20px; text-align: center;"></i>
+                <span><strong>Email</strong> — to your email address</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-secondary);">
+                <i class="fas fa-comment-sms" style="color: #2563EB; width: 20px; text-align: center;"></i>
+                <span><strong>SMS</strong> — as a text message to your phone</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-secondary);">
+                <i class="fab fa-whatsapp" style="color: #25D366; width: 20px; text-align: center;"></i>
+                <span><strong>WhatsApp</strong> — to your WhatsApp number</span>
+              </div>
+            </div>
+            <div style="margin-top: 12px; background: rgba(234,88,12,0.06); border-radius: var(--radius); padding: 10px 14px; font-size: 0.76rem; color: #EA580C; font-weight: 500;">
+              <i class="fas fa-shield-alt" style="margin-right: 4px;"></i>
+              Secured by HNB Accept. Pay using your Visa or Mastercard.
+            </div>
+          </div>
+        <% } %>
       <% } %>
 
       <% if (order.paymentMethod === 'bank_transfer') { %>
