@@ -39,10 +39,17 @@
             </div>
           </div>
           
-          <% if (!order.paymentVerified) { %>
+          <% if (!order.paymentVerified && !order.paymentLinkSent) { %>
             <p style="color: var(--text-body); font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px;">
               A secure payment link will be sent to you through the following channels:
             </p>
+          <% } else if (!order.paymentVerified && order.paymentLinkSent) { %>
+            <p style="color: var(--text-body); font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px;">
+              A secure payment link has been sent to you through the following channels:
+            </p>
+          <% } %>
+          
+          <% if (!order.paymentVerified) { %>
             <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;">
               <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-secondary);">
                 <i class="fas fa-envelope" style="color: #EA580C; width: 20px; text-align: center;"></i>
