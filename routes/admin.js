@@ -202,7 +202,7 @@ router.post('/orders/bulk-update', isAdmin, async (req, res) => {
     } catch (error) { req.flash('error', 'Error updating orders'); res.redirect('/admin/orders'); }
 });
 
-// Verify payment for bank transfer and card payment orders
+// Verify payment for bank transfer orders
 router.post('/orders/verify-payment/:id', isAdmin, async (req, res) => {
     try {
         var order = await Order.findById(req.params.id);
@@ -215,7 +215,7 @@ router.post('/orders/verify-payment/:id', isAdmin, async (req, res) => {
     } catch (error) { req.flash('error', 'Error verifying payment'); res.redirect('/admin/orders'); }
 });
 
-// Change payment verification status
+// Change payment verification status (for bank transfer)
 router.post('/orders/payment-status/:id', isAdmin, async (req, res) => {
     try {
         var order = await Order.findById(req.params.id);
@@ -233,7 +233,39 @@ router.post('/orders/payment-status/:id', isAdmin, async (req, res) => {
     } catch (error) { req.flash('error', 'Error updating payment status'); res.redirect('/admin/orders'); }
 });
 
-// Mark payment link as sent (for card payments)
+// Card Payment Status Management (single dropdown + apply button)
+router.post('/orders/card-payment-status/:id', isAdmin, async (req, res) => {
+    try {
+        var order = await Order.findById(req.params.id);
+        if (!order) { req.flash('error', 'Order not found'); return res.redirect('/admin/orders'); }
+        
+        var newStatus = req.body.cardPaymentStatus;
+        
+        if (newStatus === 'awaiting_link') {
+            order.paymentLinkSent = false;
+            order.paymentVerified = false;
+        } else if (newStatus === 'link_sent') {
+            order.paymentLinkSent = true;
+            order.paymentVerified = false;
+        } else if (newStatus === 'verified') {
+            order.paymentLinkSent = true;
+            order.paymentVerified = true;
+        }
+        
+        order.updatedAt = new Date();
+        await order.save();
+        
+        var statusLabel = newStatus === 'verified' ? 'Payment Verified' : (newStatus === 'link_sent' ? 'Link Sent' : 'Awaiting Link');
+        req.flash('success', 'Card payment status updated to: ' + statusLabel + ' for Order #' + order.orderNumber);
+        res.redirect('/admin/orders');
+    } catch (error) {
+        console.error('Error updating card payment status:', error);
+        req.flash('error', 'Error updating card payment status');
+        res.redirect('/admin/orders');
+    }
+});
+
+// Mark payment link as sent (for card payments) - kept for backward compatibility
 router.post('/orders/payment-link-sent/:id', isAdmin, async (req, res) => {
     try {
         var order = await Order.findById(req.params.id);

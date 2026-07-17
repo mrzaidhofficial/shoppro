@@ -279,10 +279,22 @@
                           Bank Transfer: <%= order.paymentVerified ? 'Verified' : 'Pending' %>
                         </span>
                       <% } else if (order.paymentMethod === 'card_payment') { %>
-                        <span class="payment-badge <%= order.paymentVerified ? 'verified' : 'pending' %>">
-                          <i class="fas fa-credit-card"></i>
-                          Card Payment: <%= order.paymentVerified ? 'Verified' : 'Pending' %>
-                        </span>
+                        <% if (order.paymentVerified) { %>
+                          <span class="payment-badge verified">
+                            <i class="fas fa-check-circle"></i>
+                            Card Payment: Verified
+                          </span>
+                        <% } else if (order.paymentLinkSent) { %>
+                          <span class="payment-badge" style="color:#7C3AED;">
+                            <i class="fas fa-paper-plane"></i>
+                            Card Payment: Awaiting Verification
+                          </span>
+                        <% } else { %>
+                          <span class="payment-badge pending">
+                            <i class="fas fa-clock"></i>
+                            Card Payment: Awaiting Link
+                          </span>
+                        <% } %>
                       <% } else { %>
                         <span class="payment-badge" style="color:var(--text-secondary);">
                           <i class="fas fa-money-bill-wave"></i> COD

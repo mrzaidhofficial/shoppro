@@ -115,12 +115,16 @@
   .badge-delivered { background: var(--success-bg); color: var(--success); }
   .badge-cancelled { background: var(--error-bg); color: var(--error); }
   .badge-verified { background: var(--success-bg); color: var(--success); }
+  .badge-link-sent { background: #EDE9FE; color: #7C3AED; }
+  .badge-awaiting { background: #FFF7ED; color: #EA580C; }
   [data-theme="dark"] .badge-pending { background: rgba(251,191,36,0.2); color: #FBBF24; }
   [data-theme="dark"] .badge-processing { background: rgba(251,191,36,0.2); color: #FBBF24; }
   [data-theme="dark"] .badge-shipped { background: rgba(59,130,246,0.2); color: #60A5FA; }
   [data-theme="dark"] .badge-delivered { background: rgba(52,211,153,0.2); color: #34D399; }
   [data-theme="dark"] .badge-cancelled { background: rgba(248,113,113,0.2); color: #F87171; }
   [data-theme="dark"] .badge-verified { background: rgba(52,211,153,0.2); color: #34D399; }
+  [data-theme="dark"] .badge-link-sent { background: rgba(124,58,237,0.2); color: #A78BFA; }
+  [data-theme="dark"] .badge-awaiting { background: rgba(249,115,22,0.2); color: #FB923C; }
   
   .empty-state {
     text-align: center;
@@ -217,40 +221,6 @@
     flex-shrink: 0;
   }
   .btn-status-update:hover { background: var(--primary-dark); }
-  .btn-verify {
-    padding: 5px 12px;
-    background: #059669;
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-full);
-    font-size: 0.7rem;
-    font-weight: 600;
-    font-family: var(--font-primary);
-    cursor: pointer;
-    transition: var(--transition-fast);
-    white-space: nowrap;
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-  .btn-verify:hover { background: #047857; }
-  .btn-link-sent {
-    padding: 5px 12px;
-    background: #7C3AED;
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-full);
-    font-size: 0.7rem;
-    font-weight: 600;
-    font-family: var(--font-primary);
-    cursor: pointer;
-    transition: var(--transition-fast);
-    white-space: nowrap;
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-  .btn-link-sent:hover { background: #6D28D9; }
   .btn-receipt {
     padding: 4px 10px;
     background: #2563EB;
@@ -267,22 +237,6 @@
     white-space: nowrap;
   }
   .btn-receipt:hover { background: #1D4ED8; }
-  .btn-view {
-    padding: 4px 10px;
-    background: var(--primary);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-full);
-    font-size: 0.68rem;
-    font-weight: 600;
-    font-family: var(--font-primary);
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: var(--transition-fast);
-    white-space: nowrap;
-  }
-  .btn-view:hover { background: var(--primary-dark); }
   
   .action-cell {
     display: flex;
@@ -308,24 +262,68 @@
     flex: 1;
     min-width: 90px;
   }
-  .payment-status-form select {
-    font-size: 0.62rem;
-    padding: 2px 4px;
-    border: 1px solid var(--gray-200);
-    border-radius: 4px;
-    max-width: 80px;
-    background: var(--white);
-    color: var(--gray-700);
+  
+  /* Card Payment Status Control */
+  .card-payment-status-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 170px;
   }
-  .payment-status-form button {
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 4px;
+  .card-payment-status-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .card-payment-status-row select {
+    padding: 6px 10px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-full);
+    font-size: 0.72rem;
+    font-family: var(--font-primary);
+    background: var(--bg-input);
+    color: var(--text-body);
+    outline: none;
     cursor: pointer;
+    flex: 1;
+    min-width: 120px;
+    transition: all 0.2s ease;
   }
+  .card-payment-status-row select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0,102,255,0.06);
+  }
+  .btn-apply-card {
+    padding: 6px 14px;
+    background: var(--primary-gradient);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .btn-apply-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,102,255,0.3);
+  }
+  .current-payment-badge {
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .current-payment-badge.awaiting-link { background: #FFF7ED; color: #EA580C; }
+  .current-payment-badge.link-sent { background: #EDE9FE; color: #7C3AED; }
+  .current-payment-badge.verified { background: var(--success-bg); color: var(--success); }
+  [data-theme="dark"] .current-payment-badge.awaiting-link { background: rgba(249,115,22,0.2); color: #FB923C; }
+  [data-theme="dark"] .current-payment-badge.link-sent { background: rgba(124,58,237,0.2); color: #A78BFA; }
+  [data-theme="dark"] .current-payment-badge.verified { background: rgba(52,211,153,0.2); color: #34D399; }
   
   @media (max-width: 900px) {
     .admin-layout { grid-template-columns: 1fr; }
@@ -413,31 +411,43 @@
                   <td style="font-size:0.76rem;">
                     <% if (order.paymentMethod === 'bank_transfer') { %>
                       <div style="margin-bottom:4px;">Bank Transfer</div>
-                      <form action="/admin/orders/payment-status/<%= order._id %>" method="POST" class="payment-status-form" style="display:flex;gap:3px;align-items:center;">
-                        <select name="paymentStatus">
+                      <form action="/admin/orders/payment-status/<%= order._id %>" method="POST" style="display:flex;gap:4px;align-items:center;">
+                        <select name="paymentStatus" style="font-size:0.64rem;padding:2px 4px;border:1px solid var(--gray-200);border-radius:4px;background:var(--white);color:var(--gray-700);">
                           <option value="pending" <%= !order.paymentVerified ? 'selected' : '' %>>Pending</option>
                           <option value="verified" <%= order.paymentVerified ? 'selected' : '' %>>Verified</option>
                           <option value="unverified">Unverified</option>
                         </select>
-                        <button type="submit">Save</button>
+                        <button type="submit" style="font-size:0.62rem;padding:2px 6px;background:var(--primary);color:white;border:none;border-radius:4px;cursor:pointer;">Save</button>
                       </form>
                     <% } else if (order.paymentMethod === 'card_payment') { %>
-                      <div style="margin-bottom:4px;">Card Payment</div>
-                      <form action="/admin/orders/payment-status/<%= order._id %>" method="POST" class="payment-status-form" style="display:flex;gap:3px;align-items:center;">
-                        <select name="paymentStatus">
-                          <option value="pending" <%= !order.paymentVerified ? 'selected' : '' %>>Pending</option>
-                          <option value="verified" <%= order.paymentVerified ? 'selected' : '' %>>Verified</option>
-                          <option value="unverified">Unverified</option>
-                        </select>
-                        <button type="submit">Save</button>
-                      </form>
-                      <% if (!order.paymentLinkSent) { %>
-                        <form action="/admin/orders/payment-link-sent/<%= order._id %>" method="POST" style="margin-top:3px;">
-                          <button type="submit" class="btn-link-sent">Link Sent</button>
+                      <div class="card-payment-status-cell">
+                        <div style="font-weight:600;font-size:0.74rem;color:var(--text-primary);">Card Payment</div>
+                        <%
+                          var cardStatus = 'awaiting_link';
+                          if (order.paymentVerified) {
+                            cardStatus = 'verified';
+                          } else if (order.paymentLinkSent) {
+                            cardStatus = 'link_sent';
+                          }
+                        %>
+                        <span class="current-payment-badge <%= cardStatus === 'verified' ? 'verified' : (cardStatus === 'link_sent' ? 'link-sent' : 'awaiting-link') %>">
+                          <% if (cardStatus === 'verified') { %>
+                            <i class="fas fa-check-circle"></i> Verified
+                          <% } else if (cardStatus === 'link_sent') { %>
+                            <i class="fas fa-paper-plane"></i> Link Sent
+                          <% } else { %>
+                            <i class="fas fa-clock"></i> Awaiting Link
+                          <% } %>
+                        </span>
+                        <form action="/admin/orders/card-payment-status/<%= order._id %>" method="POST" class="card-payment-status-row">
+                          <select name="cardPaymentStatus">
+                            <option value="awaiting_link" <%= cardStatus === 'awaiting_link' ? 'selected' : '' %>>Awaiting Link</option>
+                            <option value="link_sent" <%= cardStatus === 'link_sent' ? 'selected' : '' %>>Link Sent</option>
+                            <option value="verified" <%= cardStatus === 'verified' ? 'selected' : '' %>>Payment Verified</option>
+                          </select>
+                          <button type="submit" class="btn-apply-card">Apply</button>
                         </form>
-                      <% } else { %>
-                        <span class="badge-status badge-verified" style="font-size:0.6rem;">Link Sent</span>
-                      <% } %>
+                      </div>
                     <% } else { %>
                       COD
                     <% } %>
@@ -455,11 +465,6 @@
                   <td><span class="badge-status badge-<%= order.status %>"><%= order.status %></span></td>
                   <td>
                     <div class="action-cell">
-                      <% if ((order.paymentMethod === 'bank_transfer' || order.paymentMethod === 'card_payment') && !order.paymentVerified) { %>
-                        <form action="/admin/orders/verify-payment/<%= order._id %>" method="POST">
-                          <button type="submit" class="btn-verify">Verify Payment</button>
-                        </form>
-                      <% } %>
                       <form action="/admin/orders/update-status/<%= order._id %>" method="POST">
                         <div class="action-row">
                           <select name="status">
