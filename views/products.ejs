@@ -86,9 +86,14 @@
       <% } %>
     <% } else { %>
       <div style="text-align:center;padding:80px 0;">
-        <h3>No products found</h3>
-        <p style="color:#888;">Try adjusting your filters.</p>
-        <a href="/products" class="btn btn-primary mt-3">Clear Filters</a>
+        <div style="font-size:4rem;color:var(--gray-200);margin-bottom:16px;">
+          <i class="fas fa-search"></i>
+        </div>
+        <h3 style="font-family:var(--font-display);font-size:1.4rem;color:var(--text-secondary);margin-bottom:8px;">No products found</h3>
+        <p style="color:var(--text-muted);margin-bottom:28px;font-size:0.95rem;">Try adjusting your filters or browse all products.</p>
+        <a href="/products" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--primary-gradient);color:#FFFFFF;border:none;border-radius:var(--radius-full);font-size:0.9rem;font-weight:600;font-family:var(--font-primary);text-decoration:none;cursor:pointer;transition:all 0.25s ease;box-shadow:0 4px 16px rgba(0,102,255,0.25);">
+          <i class="fas fa-times"></i> Clear Filters
+        </a>
       </div>
     <% } %>
   </div>
