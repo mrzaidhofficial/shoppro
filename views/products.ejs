@@ -8,7 +8,7 @@
         <label class="filter-label">Category</label>
         <select name="category" class="filter-select" onchange="this.form.submit()">
           <option value="">All Categories</option>
-          <% if (typeof categories !== 'undefined') { %>
+          <% if (typeof categories !== 'undefined' && categories.length > 0) { %>
             <% categories.forEach(function(cat) { %>
               <option value="<%= cat %>" <%= (typeof currentCategory !== 'undefined' && currentCategory === cat) ? 'selected' : '' %>><%= cat %></option>
             <% }) %>
@@ -85,15 +85,17 @@
         </div>
       <% } %>
     <% } else { %>
-      <div style="text-align:center;padding:80px 0;">
-        <div style="font-size:4rem;color:var(--gray-200);margin-bottom:16px;">
-          <i class="fas fa-search"></i>
+      <div style="display:flex;align-items:center;justify-content:center;min-height:400px;width:100%;">
+        <div style="text-align:center;">
+          <div style="font-size:4rem;color:var(--gray-200);margin-bottom:16px;">
+            <i class="fas fa-search"></i>
+          </div>
+          <h3 style="font-family:var(--font-display);font-size:1.4rem;color:var(--text-secondary);margin-bottom:8px;">No products found</h3>
+          <p style="color:var(--text-muted);margin-bottom:28px;font-size:0.95rem;">Try adjusting your filters or browse all products.</p>
+          <a href="/products" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--primary-gradient);color:#FFFFFF;border:none;border-radius:var(--radius-full);font-size:0.9rem;font-weight:600;font-family:var(--font-primary);text-decoration:none;cursor:pointer;transition:all 0.25s ease;box-shadow:0 4px 16px rgba(0,102,255,0.25);">
+            <i class="fas fa-times"></i> Clear Filters
+          </a>
         </div>
-        <h3 style="font-family:var(--font-display);font-size:1.4rem;color:var(--text-secondary);margin-bottom:8px;">No products found</h3>
-        <p style="color:var(--text-muted);margin-bottom:28px;font-size:0.95rem;">Try adjusting your filters or browse all products.</p>
-        <a href="/products" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--primary-gradient);color:#FFFFFF;border:none;border-radius:var(--radius-full);font-size:0.9rem;font-weight:600;font-family:var(--font-primary);text-decoration:none;cursor:pointer;transition:all 0.25s ease;box-shadow:0 4px 16px rgba(0,102,255,0.25);">
-          <i class="fas fa-times"></i> Clear Filters
-        </a>
       </div>
     <% } %>
   </div>

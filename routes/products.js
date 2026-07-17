@@ -23,6 +23,8 @@ router.get('/', async function(req, res) {
     var totalPages = Math.ceil(totalProducts / limit);
     
     var products = await Product.find(query).sort(sortOption).skip(skip).limit(limit);
+    
+    // Fetch ALL distinct categories from the ENTIRE database (not just filtered results)
     var categories = await Product.distinct('category');
     
     res.render('products', {
