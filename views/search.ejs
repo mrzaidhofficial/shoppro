@@ -15,6 +15,9 @@
             <% if (product.stock <= 5 && product.stock > 0) { %>
               <span class="product-badge" style="background:#F59E0B;color:white;">Low Stock</span>
             <% } %>
+            <% if (product.freeShipping) { %>
+              <span class="product-badge" style="background:#10B981;color:white;">Free Delivery</span>
+            <% } %>
             <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= product._id %>">Quick View</button></div>
           </div>
           <div class="product-card-body">
