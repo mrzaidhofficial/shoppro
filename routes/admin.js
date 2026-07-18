@@ -2,27 +2,15 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Coupon = require('../models/Coupon');
 const User = require('../models/User');
 const emailService = require('../services/emailService');
 
-// Configure multer for product image uploads
-const productStorage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        const dir = 'uploads/products';
-        if (!fs.existsSync(dir)) { fs.mkdirSync(dir, { recursive: true }); }
-        cb(null, dir);
-    },
-    filename: function(req, file, cb) {
-        cb(null, 'product-' + Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
-    }
-});
-
+// Configure multer for memory storage (images stored as Base64 in MongoDB)
 const productUpload = multer({
-    storage: productStorage,
+    storage: multer.memoryStorage(),
     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
     fileFilter: function(req, file, cb) {
         const allowedTypes = /jpeg|jpg|png|webp/;
@@ -32,6 +20,11 @@ const productUpload = multer({
         cb(new Error('Only JPG, PNG, and WebP images are allowed'));
     }
 });
+
+// Helper: Convert file buffer to Base64 data URL
+function bufferToBase64(buffer, mimetype) {
+    return 'data:' + mimetype + ';base64,' + buffer.toString('base64');
+}
 
 const isAdmin = (req, res, next) => {
     if (req.session.user && req.session.user.role === 'admin') {
@@ -162,7 +155,8 @@ router.post('/products/add', isAdmin, productUpload.array('productImages', 10), 
         var images = [];
         if (req.files && req.files.length > 0) {
             req.files.forEach(function(file) {
-                images.push('/uploads/products/' + file.filename);
+                var dataUrl = bufferToBase64(file.buffer, file.mimetype);
+                images.push(dataUrl);
             });
         }
         const product = new Product({ 
@@ -202,7 +196,7 @@ router.post('/products/edit/:id', isAdmin, productUpload.array('productImages', 
         
         var images = [];
         
-        // Keep existing images that were not removed (passed as hidden fields)
+        // Keep existing images that were not removed
         if (req.body.existingImages) {
             if (Array.isArray(req.body.existingImages)) {
                 images = req.body.existingImages;
@@ -211,22 +205,11 @@ router.post('/products/edit/:id', isAdmin, productUpload.array('productImages', 
             }
         }
         
-        // Add newly uploaded images
+        // Add newly uploaded images as Base64
         if (req.files && req.files.length > 0) {
             req.files.forEach(function(file) {
-                images.push('/uploads/products/' + file.filename);
-            });
-        }
-        
-        // Delete old images that were removed
-        if (product.images && product.images.length > 0) {
-            product.images.forEach(function(oldImg) {
-                if (images.indexOf(oldImg) === -1 && oldImg.startsWith('/uploads/products/')) {
-                    var filePath = path.join(__dirname, '..', oldImg);
-                    if (fs.existsSync(filePath)) {
-                        fs.unlinkSync(filePath);
-                    }
-                }
+                var dataUrl = bufferToBase64(file.buffer, file.mimetype);
+                images.push(dataUrl);
             });
         }
         
@@ -257,17 +240,6 @@ router.post('/products/edit/:id', isAdmin, productUpload.array('productImages', 
 
 router.post('/products/delete/:id', isAdmin, async (req, res) => {
     try { 
-        var product = await Product.findById(req.params.id);
-        if (product && product.images && product.images.length > 0) {
-            product.images.forEach(function(img) {
-                if (img.startsWith('/uploads/products/')) {
-                    var filePath = path.join(__dirname, '..', img);
-                    if (fs.existsSync(filePath)) {
-                        fs.unlinkSync(filePath);
-                    }
-                }
-            });
-        }
         await Product.findByIdAndDelete(req.params.id); 
         req.flash('success', 'Product deleted'); 
         res.redirect('/admin/products'); 
