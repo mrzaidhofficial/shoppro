@@ -320,6 +320,7 @@ ul { list-style: none; }
 .product-badge { position: absolute; top: 14px; left: 14px; padding: 5px 13px; border-radius: var(--radius-full); font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; z-index: 2; }
 .badge-featured { background: var(--primary); color: white; }
 .badge-new { background: var(--accent); color: #0F172A; }
+.product-badge + .product-badge { top: 42px; }
 .quick-view-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); display: flex; justify-content: center; opacity: 0; transform: translateY(8px); transition: opacity 0.3s ease, transform 0.3s ease; }
 .product-card:hover .quick-view-overlay { opacity: 1; transform: translateY(0); }
 .quick-view-btn { background: #FFFFFF; border: none; padding: 10px 24px; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600; cursor: pointer; color: #0F172A; font-family: var(--font-primary); transition: var(--transition-fast); }
