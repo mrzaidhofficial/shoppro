@@ -102,10 +102,10 @@
               </a>
               <span class="product-badge badge-featured">Featured</span>
               <% if (product.stock <= 5 && product.stock > 0) { %>
-                <span class="product-badge" style="background:#F59E0B;color:white;top:48px;">Low Stock</span>
+                <span class="product-badge" style="background:#F59E0B;color:white;">Low Stock</span>
               <% } %>
               <% if (product.freeShipping) { %>
-                <span class="product-badge" style="background:#10B981;color:white;top:48px;">Free Delivery</span>
+                <span class="product-badge" style="background:#10B981;color:white;">Free Delivery</span>
               <% } %>
               <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= product._id %>">Quick View</button></div>
             </div>
@@ -160,10 +160,10 @@
               <a href="/products/<%= product._id %>"><img src="<%= product.images && product.images[0] ? product.images[0] : 'https://picsum.photos/400/400' %>" alt="<%= product.name %>" loading="lazy" onerror="this.src='https://picsum.photos/400/400'"></a>
               <span class="product-badge badge-new">New</span>
               <% if (product.stock <= 5 && product.stock > 0) { %>
-                <span class="product-badge" style="background:#F59E0B;color:white;top:48px;">Low Stock</span>
+                <span class="product-badge" style="background:#F59E0B;color:white;">Low Stock</span>
               <% } %>
               <% if (product.freeShipping) { %>
-                <span class="product-badge" style="background:#10B981;color:white;top:48px;">Free Delivery</span>
+                <span class="product-badge" style="background:#10B981;color:white;">Free Delivery</span>
               <% } %>
               <div class="quick-view-overlay"><button class="quick-view-btn" data-id="<%= product._id %>">Quick View</button></div>
             </div>
