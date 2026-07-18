@@ -162,7 +162,6 @@ async function sendOrderStatusUpdate(userEmail, userName, order) {
 }
 
 async function sendContactNotification(name, email, subject, message) {
-  // Notify admin
   var adminContent = '<p>New message from the contact form:</p>' +
     '<div style="background:#F8FAFC;border:1px solid #E8ECF1;border-radius:12px;padding:20px;margin-bottom:16px;">' +
     '<table width="100%"><tr><td style="color:#8B8FA3;font-size:12px;">From</td><td style="text-align:right;font-weight:600;">' + name + '</td></tr>' +
@@ -173,7 +172,6 @@ async function sendContactNotification(name, email, subject, message) {
 
   await sendViaApi({ to: getSenderEmail(), name: 'Admin', subject: 'New message from ' + name + ' - ' + subject, html: getEmailTemplate('📬 New Contact Message', adminContent) });
 
-  // Send confirmation to customer
   var customerContent = '<p>Hi <strong>' + name + '</strong>,</p>' +
     '<p>Thank you for reaching out to ShopNest! We have received your message and our team will get back to you within <strong>24-48 hours</strong>.</p>' +
     '<div style="background:#F8FAFC;border:1px solid #E8ECF1;border-radius:12px;padding:20px;margin:16px 0;">' +
@@ -188,7 +186,6 @@ async function sendContactNotification(name, email, subject, message) {
 }
 
 async function sendNewsletterNotification(subscriberEmail) {
-  // Notify admin
   var adminContent = '<p>A new user has subscribed to your newsletter:</p>' +
     '<div style="background:#F8FAFC;border:1px solid #E8ECF1;border-radius:12px;padding:24px;text-align:center;">' +
     '<div style="font-size:40px;">📧</div><p style="font-size:18px;font-weight:700;">' + subscriberEmail + '</p>' +
@@ -196,7 +193,6 @@ async function sendNewsletterNotification(subscriberEmail) {
 
   await sendViaApi({ to: getSenderEmail(), name: 'Admin', subject: 'New Subscriber: ' + subscriberEmail, html: getEmailTemplate('📰 New Subscriber!', adminContent) });
 
-  // Send welcome email to subscriber
   var welcomeContent = '<p>Welcome to the ShopNest family! 🎉</p>' +
     '<p>Thank you for subscribing to our newsletter. You will receive updates about <strong>new products</strong>, <strong>exclusive deals</strong>, and <strong>special offers</strong> straight to your inbox.</p>' +
     '<p>Stay tuned — exciting things are coming your way!</p>' +
@@ -209,4 +205,18 @@ async function sendNewsletterNotification(subscriberEmail) {
   return true;
 }
 
-module.exports = { sendOrderConfirmation, sendOrderStatusUpdate, sendContactNotification, sendNewsletterNotification };
+async function sendPasswordResetEmail(userEmail, userName, resetToken) {
+  var resetUrl = 'https://shopnest-production.up.railway.app/auth/reset-password/' + resetToken;
+  
+  var content = '<p>Hi <strong>' + userName + '</strong>,</p>' +
+    '<p>You requested a password reset for your ShopNest account. Click the button below to reset your password:</p>' +
+    '<div style="text-align:center;margin:28px 0;">' +
+    '<a href="' + resetUrl + '" style="display:inline-block;background:#0066FF;color:#FFFFFF;text-decoration:none;padding:14px 32px;border-radius:25px;font-weight:600;font-size:15px;">Reset Password</a></div>' +
+    '<p>Or copy and paste this link into your browser:</p>' +
+    '<p style="background:#F8FAFC;border:1px solid #E8ECF1;border-radius:8px;padding:12px;font-size:12px;word-break:break-all;color:#3B82F6;">' + resetUrl + '</p>' +
+    '<p style="margin-top:20px;">This link will expire in 1 hour. If you did not request a password reset, please ignore this email.</p>';
+
+  return sendViaApi({ to: userEmail, name: userName, subject: 'Reset Your Password - ShopNest', html: getEmailTemplate('Password Reset 🔐', content) });
+}
+
+module.exports = { sendOrderConfirmation, sendOrderStatusUpdate, sendContactNotification, sendNewsletterNotification, sendPasswordResetEmail };
