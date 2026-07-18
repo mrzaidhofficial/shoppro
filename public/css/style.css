@@ -830,8 +830,8 @@ ul { list-style: none; }
   .qty-input { width: 45px; height: 38px; font-size: 0.9rem; }
   .breadcrumb-nav { font-size: 0.78rem; margin-bottom: 20px; }
   
-  .products-layout { gap: 20px; padding: 24px 0; }
-  .filter-panel { padding: 16px; }
+  .products-layout { gap: 20px; padding: 36px 0 24px; }
+  .filter-panel { padding: 16px; margin-top: 0; }
   .filter-title { font-size: 0.95rem; margin-bottom: 14px; }
   .filter-group { margin-bottom: 14px; }
   .filter-label { font-size: 0.68rem; }
@@ -951,6 +951,8 @@ ul { list-style: none; }
   .form-input, .form-select { padding: 10px 12px; font-size: 0.82rem; }
   
   .auth-card { padding: 24px 16px; }
+  
+  .products-layout { padding: 36px 0 24px; }
   
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 18px; }
   .footer-col:first-child { grid-column: 1 / -1; }
