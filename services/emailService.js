@@ -197,7 +197,7 @@ async function sendNewsletterNotification(subscriberEmail) {
     '<p>Thank you for subscribing to our newsletter. You will receive updates about <strong>new products</strong>, <strong>exclusive deals</strong>, and <strong>special offers</strong> straight to your inbox.</p>' +
     '<p>Stay tuned — exciting things are coming your way!</p>' +
     '<div style="text-align:center;margin:24px 0;">' +
-    '<a href="https://shopnest-production.up.railway.app" style="display:inline-block;background:#0066FF;color:#FFFFFF;text-decoration:none;padding:14px 32px;border-radius:25px;font-weight:600;">Visit ShopNest</a></div>' +
+    '<a href="https://shopnest-tqf3.onrender.com" style="display:inline-block;background:#0066FF;color:#FFFFFF;text-decoration:none;padding:14px 32px;border-radius:25px;font-weight:600;">Visit ShopNest</a></div>' +
     '<p style="font-size:12px;color:#8B8FA3;">You can unsubscribe anytime by replying to this email.</p>';
 
   await sendViaApi({ to: subscriberEmail, name: '', subject: 'Welcome to ShopNest! 🎁', html: getEmailTemplate('Welcome to ShopNest! 🎁', welcomeContent) });
@@ -206,7 +206,7 @@ async function sendNewsletterNotification(subscriberEmail) {
 }
 
 async function sendPasswordResetEmail(userEmail, userName, resetToken) {
-  var resetUrl = 'https://shopnest-production.up.railway.app/auth/reset-password/' + resetToken;
+  var resetUrl = 'https://shopnest-tqf3.onrender.com/auth/reset-password/' + resetToken;
   
   var content = '<p>Hi <strong>' + userName + '</strong>,</p>' +
     '<p>You requested a password reset for your ShopNest account. Click the button below to reset your password:</p>' +
