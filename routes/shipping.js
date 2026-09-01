@@ -23,7 +23,7 @@ async function getShippingSettings() {
             freeShippingEnabled: false,
             freeShippingMinAmount: 100,
             handlingFee: 0,
-            estimatedDelivery: '7-21 business days',
+            estimatedDelivery: '3-5 business days',
             supplierInfo: '',
             bankName: 'Sample Bank',
             bankBranch: 'Colombo',
@@ -98,7 +98,7 @@ router.post('/settings', isAdmin, async function(req, res) {
         settings.freeShippingEnabled = req.body.freeShippingEnabled === 'on';
         settings.freeShippingMinAmount = parseFloat(req.body.freeShippingMinAmount) || 0;
         settings.handlingFee = parseFloat(req.body.handlingFee) || 0;
-        settings.estimatedDelivery = req.body.estimatedDelivery || '7-21 business days';
+        settings.estimatedDelivery = req.body.estimatedDelivery || '3-5 business days';
         settings.supplierInfo = req.body.supplierInfo || '';
         settings.bankName = req.body.bankName || 'Sample Bank';
         settings.bankBranch = req.body.bankBranch || 'Colombo';

@@ -12,7 +12,7 @@ var shippingSettingsSchema = new mongoose.Schema({
     freeShippingEnabled: { type: Boolean, default: false },
     freeShippingMinAmount: { type: Number, default: 100 },
     handlingFee: { type: Number, default: 0 },
-    estimatedDelivery: { type: String, default: '7-21 business days' },
+    estimatedDelivery: { type: String, default: '3-5 business days' },
     supplierInfo: { type: String, default: '' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
