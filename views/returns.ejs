@@ -48,50 +48,32 @@
   }
   .policy-card ul li i { color: var(--success); margin-top: 4px; flex-shrink: 0; }
   
-  .timeline-steps {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+  .warning-box {
+    background: var(--warning-bg);
+    border: 1px solid var(--warning);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
     margin: 16px 0;
   }
-  .step-card {
-    text-align: center;
-    padding: 20px 14px;
-    background: var(--bg-card-alt);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    transition: all 0.2s ease;
+  .warning-box p {
+    color: #92400E; font-weight: 600; font-size: 0.9rem; margin: 0;
+    display: flex; align-items: center; gap: 10px;
   }
-  .step-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-  .step-num {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: var(--primary-gradient);
-    color: #FFFFFF;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-  }
-  .step-label { font-weight: 600; color: var(--text-primary); font-size: 0.88rem; margin-bottom: 4px; }
-  .step-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
   
   @media (max-width: 600px) {
     .page-hero { padding: 48px 0; }
     .page-hero-icon { width: 50px; height: 50px; font-size: 1.3rem; margin-bottom: 14px; }
     .page-content { padding: 36px 0; }
     .policy-card { padding: 20px; }
-    .timeline-steps { grid-template-columns: 1fr; gap: 10px; }
     .policy-card p { font-size: 0.85rem; }
     .policy-card ul li { font-size: 0.85rem; }
+    .warning-box { padding: 14px 16px; }
   }
 </style>
 
 <div class="page-hero">
   <div class="page-hero-icon"><i class="fas fa-undo-alt"></i></div>
-  <h1 class="page-hero-title">Returns & Exchanges</h1>
+  <h1 class="page-hero-title">Returns & Complaints</h1>
 </div>
 
 <div class="page-content">
@@ -99,54 +81,49 @@
     <div class="content-wrapper">
       
       <div class="policy-card">
-        <h2><i class="fas fa-shield-alt"></i> Our Return Policy</h2>
-        <p>We want you to be completely satisfied with your purchase. If you're not happy with your order, we offer a <strong>7-day return policy</strong> from the date of delivery. Items must be unused, in original packaging, and in the same condition as received.</p>
-      </div>
-      
-      <div class="policy-card">
-        <h2><i class="fas fa-list-ol"></i> How to Return an Item</h2>
-        <div class="timeline-steps">
-          <div class="step-card">
-            <div class="step-num">1</div>
-            <div class="step-label">Contact Us</div>
-            <div class="step-desc">Email us at shopnest.management@gmail.com with your order number and reason for return</div>
-          </div>
-          <div class="step-card">
-            <div class="step-num">2</div>
-            <div class="step-label">Get Approval</div>
-            <div class="step-desc">We'll review your request and send return instructions within 24-48 hours</div>
-          </div>
-          <div class="step-card">
-            <div class="step-num">3</div>
-            <div class="step-label">Return Package</div>
-            <div class="step-desc">Pack the item securely and ship it to our return address in Sri Lanka</div>
-          </div>
+        <h2><i class="fas fa-clock"></i> 48-Hour Reporting Window</h2>
+        <p>If you receive a damaged product, wrong item, or have any complaint about your order, you must report it <strong>within 48 hours (2 days)</strong> of receiving your order.</p>
+        <div class="warning-box">
+          <p><i class="fas fa-exclamation-triangle"></i> Reports made after 48 hours of delivery cannot be accepted.</p>
         </div>
+        <p>This reporting window ensures we can quickly address any issues with our fulfillment partners and resolve your concern promptly.</p>
       </div>
       
       <div class="policy-card">
-        <h2><i class="fas fa-check-circle"></i> Eligible Items</h2>
+        <h2><i class="fas fa-list-check"></i> How to Report an Issue</h2>
         <ul>
-          <li><i class="fas fa-check"></i> Items must be unused and in original condition</li>
-          <li><i class="fas fa-check"></i> Original packaging must be intact</li>
-          <li><i class="fas fa-check"></i> Return request must be made within 7 days of delivery</li>
-          <li><i class="fas fa-check"></i> Proof of purchase is required</li>
+          <li><i class="fas fa-check"></i> Contact us immediately via email or WhatsApp</li>
+          <li><i class="fas fa-check"></i> Provide your Order Number and photos of the issue</li>
+          <li><i class="fas fa-check"></i> Our team will review and respond within 24-48 hours</li>
+          <li><i class="fas fa-check"></i> Resolutions may include replacement, refund, or credit</li>
         </ul>
       </div>
       
       <div class="policy-card">
-        <h2><i class="fas fa-times-circle"></i> Non-Returnable Items</h2>
+        <h2><i class="fas fa-box-open"></i> What Can Be Reported</h2>
         <ul>
-          <li><i class="fas fa-times"></i> Items marked as final sale</li>
-          <li><i class="fas fa-times"></i> Gift cards</li>
-          <li><i class="fas fa-times"></i> Personal care items (for hygiene reasons)</li>
-          <li><i class="fas fa-times"></i> Items damaged by customer misuse</li>
+          <li><i class="fas fa-check"></i> Damaged or broken product on arrival</li>
+          <li><i class="fas fa-check"></i> Wrong item received (different from what was ordered)</li>
+          <li><i class="fas fa-check"></i> Missing items from the order</li>
+          <li><i class="fas fa-check"></i> Product not functioning as described</li>
         </ul>
       </div>
       
       <div class="policy-card">
-        <h2><i class="fas fa-undo"></i> Refunds</h2>
-        <p>Once we receive and inspect your return, we will notify you via email. If approved, your refund will be processed to your original payment method within <strong>5-10 business days</strong>. Delivery charges are non-refundable unless the return is due to our error.</p>
+        <h2><i class="fas fa-handshake"></i> Resolution Process</h2>
+        <p>All complaints are handled by our fulfillment partners who pack and ship your orders. ShopNest acts as your advocate to ensure the issue is resolved fairly. Resolution options include:</p>
+        <ul>
+          <li><i class="fas fa-check"></i> Full or partial refund</li>
+          <li><i class="fas fa-check"></i> Product replacement</li>
+          <li><i class="fas fa-check"></i> Store credit for future purchases</li>
+        </ul>
+      </div>
+      
+      <div class="policy-card">
+        <h2><i class="fas fa-phone"></i> Contact for Complaints</h2>
+        <p>Email: <strong>shopnest.management@gmail.com</strong></p>
+        <p>WhatsApp: <strong>+94 72 128 9555</strong></p>
+        <p>Response within 24-48 hours.</p>
       </div>
       
     </div>

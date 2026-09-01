@@ -39,7 +39,7 @@ async function getShippingSettings() {
     if (!settings) {
         settings = new ShippingSettings({
             shippingEnabled: true, shippingType: 'flat_rate', flatRatePerItem: 5.99, flatRatePerOrder: 0,
-            freeShippingEnabled: false, freeShippingMinAmount: 100, handlingFee: 0, estimatedDelivery: '7-21 business days'
+            freeShippingEnabled: false, freeShippingMinAmount: 100, handlingFee: 0, estimatedDelivery: '3-5 business days'
         });
         await settings.save();
     }
@@ -120,7 +120,19 @@ router.post('/add/:id', async function(req, res) {
         if (!req.session.cart) req.session.cart = [];
         var existingItem = req.session.cart.find(function(item) { return item.productId === req.params.id; });
         if (existingItem) { existingItem.quantity += parseInt(req.body.quantity) || 1; }
-        else { req.session.cart.push({ productId: product._id.toString(), name: product.name, price: product.price, image: product.images && product.images[0] ? product.images[0] : '/images/placeholder.jpg', quantity: parseInt(req.body.quantity) || 1 }); }
+        else { 
+            var productImage = '/images/placeholder.jpg';
+            if (product.images && product.images.length > 0 && product.images[0]) {
+                productImage = product.images[0];
+            }
+            req.session.cart.push({ 
+                productId: product._id.toString(), 
+                name: product.name, 
+                price: product.price, 
+                image: productImage, 
+                quantity: parseInt(req.body.quantity) || 1 
+            }); 
+        }
         req.session.cartShipping = await calculateShipping(req.session.cart);
         if (!req.session.recentlyViewed) req.session.recentlyViewed = [];
         req.session.recentlyViewed = req.session.recentlyViewed.filter(function(id) { return id !== req.params.id; });
@@ -218,7 +230,6 @@ router.post('/place-order', upload.single('paymentReceipt'), async function(req,
             return res.status(400).json({ error: 'Invalid payment method' });
         }
         
-        // Only require receipt upload for bank transfer
         if (paymentMethod === 'bank_transfer' && !req.file) {
             return res.status(400).json({ error: 'Please upload your payment receipt' });
         }
