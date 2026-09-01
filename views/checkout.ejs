@@ -233,7 +233,7 @@
   }
   .form-all-required-note i { color: var(--error); font-size: 0.7rem; }
   
-  /* Order Item Styles - Enhanced Quantity Display */
+  /* Order Item Styles - Enhanced Quantity and Price Display */
   .order-item-mini {
     display: flex;
     align-items: center;
@@ -279,11 +279,19 @@
   }
   .order-item-mini-price {
     font-weight: 700;
-    font-size: 0.88rem;
+    font-size: 1rem;
     color: var(--text-primary);
     font-family: var(--font-display);
     white-space: nowrap;
     flex-shrink: 0;
+    background: var(--bg-card-alt);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-color);
+  }
+  [data-theme="dark"] .order-item-mini-price {
+    background: rgba(30,41,59,0.6);
+    border-color: rgba(255,255,255,0.08);
   }
   
   @media (max-width: 500px) {
@@ -291,6 +299,7 @@
     .payment-method-icon { width: 36px; height: 36px; font-size: 0.95rem; }
     .order-item-mini-image { width: 50px; height: 50px; }
     .order-item-mini { flex-wrap: nowrap; gap: 10px; }
+    .order-item-mini-price { font-size: 0.85rem; padding: 5px 10px; }
   }
 </style>
 
