@@ -70,8 +70,8 @@ router.post('/newsletter', async function(req, res) {
   }
 });
 
-router.get('/shipping-policy', function(req, res) {
-  res.render('shipping-policy', { title: 'Shipping Policy' });
+router.get('/delivery-policy', function(req, res) {
+  res.render('shipping-policy', { title: 'Delivery Policy' });
 });
 
 router.get('/returns', function(req, res) {
