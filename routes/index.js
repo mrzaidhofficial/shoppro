@@ -19,8 +19,8 @@ router.get('/', async function(req, res) {
   }
 });
 
-router.get('/about', function(req, res) {
-  res.render('about', { title: 'About' });
+router.get('/about-us', function(req, res) {
+  res.render('about', { title: 'About Us' });
 });
 
 router.get('/contact', function(req, res) {
@@ -96,7 +96,7 @@ router.get('/search', async function(req, res) {
   }
 });
 
-router.get('/track', function(req, res) {
+router.get('/track-order', function(req, res) {
   res.render('track', { 
     title: 'Track Order',
     order: null,
@@ -106,7 +106,7 @@ router.get('/track', function(req, res) {
   });
 });
 
-router.post('/track', async function(req, res) {
+router.post('/track-order', async function(req, res) {
   try {
     var orderNumber = req.body.orderNumber ? req.body.orderNumber.trim() : '';
     var email = req.body.email ? req.body.email.trim().toLowerCase() : '';
