@@ -74,7 +74,7 @@ router.get('/delivery-policy', function(req, res) {
   res.render('shipping-policy', { title: 'Delivery Policy' });
 });
 
-router.get('/returns', function(req, res) {
+router.get('/returns-exchanges', function(req, res) {
   res.render('returns', { title: 'Returns & Exchanges' });
 });
 
