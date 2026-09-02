@@ -68,6 +68,7 @@
     .policy-card p { font-size: 0.85rem; }
     .policy-card ul li { font-size: 0.85rem; }
     .warning-box { padding: 14px 16px; }
+    .contact-grid { grid-template-columns: 1fr !important; }
   }
 </style>
 
@@ -126,15 +127,33 @@
       <div class="policy-card">
         <h2><i class="fas fa-phone"></i> Contact for Complaints</h2>
         
-        <p style="font-weight:700;color:var(--text-primary);margin-top:12px;"><i class="fas fa-box" style="color:var(--warning);margin-right:6px;"></i> Product Issues & Queries</p>
-        <p>Phone: <strong>077 269 7087</strong></p>
-        <p style="font-size:0.82rem;color:var(--text-muted);">Contact this number for issues regarding products you have received — damaged items, wrong items, or product quality concerns.</p>
-        
-        <p style="font-weight:700;color:var(--text-primary);margin-top:16px;"><i class="fas fa-store" style="color:var(--primary);margin-right:6px;"></i> ShopNest Customer Support</p>
-        <p>Email: <strong>shopnest.management@gmail.com</strong></p>
-        <p>WhatsApp: <strong>+94 72 128 9555</strong></p>
-        
-        <p style="font-size:0.82rem;color:var(--text-muted);margin-top:12px;">Response within 24-48 hours.</p>
+        <div class="contact-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
+          
+          <div style="background:var(--bg-card-alt);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:20px 22px;text-align:center;">
+            <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+              <i class="fas fa-box" style="color:#F59E0B;font-size:1.2rem;"></i>
+            </div>
+            <h3 style="font-size:0.85rem;font-weight:700;color:var(--text-primary);margin-bottom:6px;">Product Issues & Queries</h3>
+            <p style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--primary);margin:0 0 6px;">077 269 7087</p>
+            <p style="font-size:0.78rem;color:var(--text-muted);margin:0;">For issues with products you have received</p>
+            <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Damaged items, wrong items, quality concerns</p>
+          </div>
+          
+          <div style="background:var(--bg-card-alt);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:20px 22px;text-align:center;">
+            <div style="width:48px;height:48px;border-radius:50%;background:rgba(0,102,255,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+              <i class="fas fa-headset" style="color:#0066FF;font-size:1.2rem;"></i>
+            </div>
+            <h3 style="font-size:0.85rem;font-weight:700;color:var(--text-primary);margin-bottom:6px;">ShopNest Customer Support</h3>
+            <p style="font-family:var(--font-display);font-size:0.85rem;font-weight:600;color:var(--text-primary);margin:0 0 6px;">
+              <i class="fas fa-envelope" style="color:#EA580C;margin-right:4px;"></i> shopnest.management@gmail.com
+            </p>
+            <p style="font-family:var(--font-display);font-size:0.85rem;font-weight:600;color:var(--text-primary);margin:0 0 6px;">
+              <i class="fab fa-whatsapp" style="color:#25D366;margin-right:4px;"></i> +94 72 128 9555
+            </p>
+            <p style="font-size:0.78rem;color:var(--text-muted);margin:0;">Response within 24-48 hours</p>
+          </div>
+          
+        </div>
       </div>
       
     </div>
