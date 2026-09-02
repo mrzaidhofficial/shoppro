@@ -194,7 +194,7 @@
       <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
         <% if (order.paymentMethod === 'cod' || order.paymentVerified) { %>
           <a href="/cart/invoice/<%= order._id %>" class="hero-btn-outline" style="font-size: 0.95rem; border-color: var(--primary); color: var(--primary); background: transparent; text-decoration: none;">
-            <i class="fas fa-download"></i> Download Invoice
+            <i class="fas fa-download"></i> Download e-Bill
           </a>
         <% } %>
         <a href="/products" class="hero-btn-primary" style="font-size: 0.95rem; text-decoration: none;">
