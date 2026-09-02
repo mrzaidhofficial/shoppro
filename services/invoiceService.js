@@ -33,18 +33,15 @@ function drawHeader(doc, order) {
   var logoPath = path.join(__dirname, '..', 'public', 'logo.png');
   if (fs.existsSync(logoPath)) {
     doc.image(logoPath, 50, 25, { width: 50, height: 50 });
-    doc.fontSize(28).font('Helvetica-Bold').fillColor(COLORS.white).text('ShopNest', 110, 30);
-  } else {
-    doc.fontSize(28).font('Helvetica-Bold').fillColor(COLORS.white).text('ShopNest', 50, 35);
   }
   
   // Motto
   doc.fontSize(10).font('Helvetica').fillColor('rgba(255,255,255,0.7)')
-    .text('Shop Smarter. Discover Better.', 50, 70);
+    .text('Shop Smarter. Discover Better.', 50, 85);
   
   // Email
   doc.fontSize(9).font('Helvetica').fillColor('rgba(255,255,255,0.5)')
-    .text('shopnest.management@gmail.com', 50, 85);
+    .text('shopnest.management@gmail.com', 50, 100);
   
   // Title
   doc.fontSize(11).font('Helvetica-Bold').fillColor('rgba(255,255,255,0.6)')
@@ -64,7 +61,6 @@ function drawFooter(doc) {
   doc.rect(0, y, 612, 72).fill(COLORS.lightGray);
   doc.fontSize(8).font('Helvetica').fillColor(COLORS.gray).text('Thank you for shopping with ShopNest!', 50, y + 20);
   doc.text('Shop Smarter. Discover Better. | shopnest.management@gmail.com', 50, y + 34);
-  doc.fontSize(9).font('Helvetica-Bold').fillColor(COLORS.dark).text('www.shopnest.lk', 400, y + 20, { align: 'right' });
   doc.fontSize(8).font('Helvetica').fillColor(COLORS.gray).text('Page 1 of 1', 400, y + 34, { align: 'right' });
 }
 
