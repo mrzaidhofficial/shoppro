@@ -25,7 +25,7 @@ router.get('/', async function(req, res) {
     var products = await Product.find(query).sort(sortOption).skip(skip).limit(limit);
     
     // Hardcoded full category list so it always shows even when no products exist
-    var allCategories = ['Electronics', 'Apparels', 'Home & Garden', 'Accessories', 'Sports', 'Beauty Care', 'Other'];
+    var allCategories = ['Electronics', 'Accessories', 'Home & Garden', 'Beauty Care', 'Apparels', 'Sports', 'Other'];
     
     // Also fetch from DB to catch any custom categories
     var dbCategories = await Product.distinct('category');
