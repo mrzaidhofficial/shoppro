@@ -207,7 +207,7 @@
           </div>
           <div class="form-row">
             <div class="form-group"><label class="form-label" for="stock">Stock Quantity *</label><input type="number" class="form-input" id="stock" name="stock" required value="<%= product.stock %>" min="0"></div>
-            <div class="form-group"><label class="form-label" for="category">Category *</label><select class="form-select" id="category" name="category" required><option value="">Select a category</option><% var categories = ['Electronics', 'Apparels', 'Home & Garden', 'Accessories', 'Sports', 'Books', 'Other']; categories.forEach(function(cat) { %><option value="<%= cat %>" <%= product.category === cat ? 'selected' : '' %>><%= cat %></option><% }); %></select></div>
+            <div class="form-group"><label class="form-label" for="category">Category *</label><select class="form-select" id="category" name="category" required><option value="">Select a category</option><% var categories = ['Electronics', 'Apparels', 'Home & Garden', 'Accessories', 'Sports', 'Beauty Care', 'Other']; categories.forEach(function(cat) { %><option value="<%= cat %>" <%= product.category === cat ? 'selected' : '' %>><%= cat %></option><% }); %></select></div>
           </div>
           <div class="checkbox-group"><input type="checkbox" id="featured" name="featured" <%= product.featured ? 'checked' : '' %>><label for="featured">Mark as Featured Product</label></div>
           <div class="checkbox-group"><input type="checkbox" id="freeShipping" name="freeShipping" <%= product.freeShipping ? 'checked' : '' %>><label for="freeShipping">Free Shipping</label></div>
